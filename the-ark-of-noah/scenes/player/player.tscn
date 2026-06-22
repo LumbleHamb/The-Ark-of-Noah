@@ -2136,6 +2136,9 @@ height = 22.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wodrh"]
 size = Vector2(24, 27)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_wodrh"]
+radius = 19.0
+
 [node name="player" type="CharacterBody2D" unique_id=425553129]
 collision_layer = 2
 script = ExtResource("5_p47bc")
@@ -2164,3 +2167,15 @@ metadata/_edit_group_ = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox" unique_id=1155194552]
 position = Vector2(3, 3.5)
 shape = SubResource("RectangleShape2D_wodrh")
+
+[node name="rope_range" type="Area2D" parent="." unique_id=474351622]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="rope_range" unique_id=2037572743]
+position = Vector2(0, -11)
+shape = SubResource("CircleShape2D_wodrh")
+
+[node name="rope_line" type="Line2D" parent="." unique_id=1885249428]
+z_index = 9
+y_sort_enabled = true
+width = 2.0
+default_color = Color(0.4402557, 0.232636, 0.13219273, 1)

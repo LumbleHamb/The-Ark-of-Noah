@@ -1,6 +1,11 @@
 [gd_scene format=3 uid="uid://mql20hs56okw"]
 
+[ext_resource type="Script" uid="uid://bmgtvefv2ydmh" path="res://scripts/trees/logs.gd" id="1_4s4d2"]
 [ext_resource type="Texture2D" uid="uid://cdj1141fhpect" path="res://images/sprites/static/props/props.png" id="1_d6ki3"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wodrh"]
+radius = 6.0
+height = 40.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4s4d2"]
 atlas = ExtResource("1_d6ki3")
@@ -17,7 +22,17 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="logs" type="Node2D" unique_id=1822089501]
+[node name="logs" type="RigidBody2D" unique_id=1694807621]
+gravity_scale = 0.0
+script = ExtResource("1_4s4d2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1086589753]
+position = Vector2(-17, 0)
+shape = SubResource("CapsuleShape2D_wodrh")
 
 [node name="logs_animation" type="AnimatedSprite2D" parent="." unique_id=1469910523]
+position = Vector2(-12, -2)
 sprite_frames = SubResource("SpriteFrames_wodrh")
+
+[node name="rope_anchor" type="Marker2D" parent="." unique_id=1405962076]
+position = Vector2(-16, 16)

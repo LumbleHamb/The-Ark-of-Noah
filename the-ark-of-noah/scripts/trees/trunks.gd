@@ -3,7 +3,6 @@ extends StaticBody2D
 @export var min_hits := 4
 @export var max_hits := 6
 
-# FIXED: correct path to logs scene
 const LOG_SCENE = preload("res://scenes/trees/logs.tscn")
 
 var hp := 0
@@ -11,8 +10,6 @@ var is_shaking := false
 var is_dead := false
 
 @onready var anim_sprite: AnimatedSprite2D = $trunks_animation
-
-# Leaves (instanced scene)
 @onready var leaves_container = get_node_or_null("Leaves")
 @onready var leaves_animation = get_node_or_null("Leaves/leaves_animation")
 @onready var leaves_particles = get_node_or_null("Leaves/leaves_particles")
@@ -24,24 +21,20 @@ func _ready():
 
 	print("[TREE] READY")
 	print("[TREE] HP =", hp)
-	print("[TREE] LOG SCENE =", LOG_SCENE)
 
 
 func hit():
 	if is_dead:
 		return
 
-	print("[TREE] HIT RECEIVED")
-
 	hp -= 1
-	print("[TREE] HP =", hp)
 
 	play_hit_feedback()
 	play_leaf_feedback()
 
 	if hp <= 0:
-		print("[TREE] BREAK TRIGGERED")
-		break_tree()
+		# IMPORTANT: avoid physics flush crash
+		call_deferred("break_tree")
 
 
 # ---------------- FEEDBACK ----------------
@@ -70,8 +63,8 @@ func jiggle():
 	position += Vector2(randf_range(-2, 2), randf_range(-1, 1))
 
 	await get_tree().create_timer(0.05).timeout
-
 	position = original_pos
+
 	is_shaking = false
 
 
@@ -82,7 +75,7 @@ func play_leaf_feedback():
 		return
 
 	if leaves_animation != null:
-		var original: Vector2 = leaves_animation.position
+		var original = leaves_animation.position
 		leaves_animation.position += Vector2(randf_range(-1, 1), randf_range(-0.5, 0.5))
 
 		await get_tree().create_timer(0.05).timeout
@@ -99,42 +92,46 @@ func break_tree():
 		return
 
 	is_dead = true
-	print("[TREE] break_tree() → spawning log")
+	print("[TREE] BREAK")
 
-	# stop logic
-	set_process(false)
+	# safe physics shutdown (deferred-safe)
+	set_deferred("collision_layer", 0)
+	set_deferred("collision_mask", 0)
 	set_physics_process(false)
-
-	# disable collisions
-	collision_layer = 0
-	collision_mask = 0
+	set_process(false)
 
 	# hide visuals
 	anim_sprite.visible = false
 	if leaves_container != null:
 		leaves_container.visible = false
 
-
 	# ---------------- SPAWN LOG ----------------
 	if LOG_SCENE == null:
-		print("[TREE] ERROR: LOG_SCENE failed to load")
+		print("[TREE] ERROR: LOG_SCENE missing")
 		return
-
-	print("[TREE] SPAWNING LOG")
 
 	var log_instance = LOG_SCENE.instantiate()
 
+	# IMPORTANT: spawn into active world scene
 	get_tree().current_scene.add_child(log_instance)
 
-	log_instance.global_position = global_position
+	# slight offset prevents ground clipping + weird initial physics impulse
+	log_instance.global_position = global_position + Vector2(0, -6)
 	log_instance.rotation = rotation
 
+	# stabilize spawn state
+	if log_instance is RigidBody2D:
+		log_instance.linear_velocity = Vector2.ZERO
+		log_instance.angular_velocity = 0.0
+
+	# mark rope-compatible
+	log_instance.add_to_group("log")
 
 	# ---------------- FALL ANIMATION ----------------
 	var start_rot = rotation
 	var start_pos = position
 
-	var target_rot = deg_to_rad(randf_range(8, 20))
+	var target_rot = deg_to_rad(randf_range(10, 25))
 	var target_pos = position + Vector2(randf_range(-3, 3), 2)
 
 	var t := 0.0
