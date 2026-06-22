@@ -1,111 +1,76 @@
 extends RigidBody2D
 
-var is_pulled := false
+var is_ready := false 
 var pull_target: Node2D = null
+var logs_pushed_count := 0 
 
-@export var pull_strength: float = 600.0
-@export var torque_strength: float = 1800.0
+@onready var pull_marker: Marker2D = $pull_marker 
+@onready var push_detector: Area2D = $push_detector 
 
-@export var rope_min_length: float = 60.0
-@export var rope_max_length: float = 120.0
-@export var max_pull_distance: float = 400.0
-
-@onready var rope_anchor: Node2D = $rope_anchor
-
-var spawn_lock := true
-var attach_grace_timer := 0.0
-
+@export var drag_speed := 150.0
+@export var rotation_speed := 0.1
+@export var base_multiplier := 0.4
+@export var stack_penalty := 0.1
 
 func _ready():
-	linear_damp = 1.0
-	angular_damp = 1.0
+	# Configure for manual control
+	custom_integrator = true 
+	
+	if push_detector:
+		push_detector.body_entered.connect(_on_push_detector_body_entered)
+		push_detector.body_exited.connect(_on_push_detector_body_exited)
+	
+	await get_tree().create_timer(1.0).timeout
+	is_ready = true
 
-	freeze = true
-	await get_tree().create_timer(0.15).timeout
-	freeze = false
+# Use _integrate_forces instead of _physics_process when custom_integrator is true
+func _integrate_forces(state: PhysicsDirectBodyState2D):
+	if is_instance_valid(pull_target):
+		var anchor_global = pull_marker.global_position
+		var target_pos = pull_target.global_position
+		
+		# 1. Calculate direction and distance
+		var dir = (target_pos - anchor_global).normalized()
+		var dist = anchor_global.distance_to(target_pos)
+		
+		# 2. Set velocity manually
+		if dist > 50:
+			state.linear_velocity = dir * drag_speed
+		else:
+			state.linear_velocity = Vector2.ZERO
+		
+		# 3. Handle rotation
+		state.angular_velocity = 0
+		rotation = lerp_angle(rotation, anchor_global.angle_to_point(target_pos), rotation_speed)
+	else:
+		state.linear_velocity = Vector2.ZERO
+		state.angular_velocity = 0
 
-	spawn_lock = false
+func _on_push_detector_body_entered(body: Node2D):
+	if body.is_in_group("log") and body != self:
+		logs_pushed_count += 1
+		update_player_penalty()
 
+func _on_push_detector_body_exited(body: Node2D):
+	if body.is_in_group("log") and body != self:
+		logs_pushed_count -= 1
+		update_player_penalty()
 
-func _physics_process(delta):
-	if spawn_lock:
-		return
+func update_player_penalty():
+	if is_instance_valid(pull_target) and pull_target.has_method("set_speed_modifier"):
+		var total_mod = clamp(base_multiplier - (logs_pushed_count * stack_penalty), 0.1, 1.0)
+		pull_target.set_speed_modifier(total_mod)
 
-	if attach_grace_timer > 0.0:
-		attach_grace_timer -= delta
-
-	if not is_pulled:
-		return
-
-	if pull_target == null or not is_instance_valid(pull_target):
-		detach()
-		return
-
-	var anchor_world: Vector2 = rope_anchor.global_position
-	var target_pos: Vector2 = pull_target.global_position
-
-	var offset: Vector2 = global_position - anchor_world
-	var dist: float = offset.length()
-
-	if dist == 0:
-		return
-
-	var dir: Vector2 = offset / dist
-
-	# ---------------- SAFETY BREAK ----------------
-	if dist > max_pull_distance:
-		detach()
-		return
-
-	# ---------------- HARD CLAMP (DISABLED DURING GRACE) ----------------
-	if attach_grace_timer <= 0.0:
-		if dist > rope_max_length:
-			linear_velocity += (anchor_world + dir * rope_max_length - global_position) * 0.2
-
-		elif dist < rope_min_length:
-			linear_velocity += (anchor_world + dir * rope_min_length - global_position) * 0.2
-
-	# ---------------- FORCE PULL ----------------
-	var pull_dir: Vector2 = (target_pos - anchor_world).normalized()
-	var force: Vector2 = pull_dir * pull_strength
-
-	apply_central_force(force)
-
-	# ---------------- TORQUE ----------------
-	var r: Vector2 = anchor_world - global_position
-	var torque: float = r.x * force.y - r.y * force.x
-
-	apply_torque(torque * 0.25 * torque_strength / 1000.0)
-
-
-func attach_to_target(target: Node2D):
-	if target == null:
-		return
-
+func attach_to_target(target: Node2D) -> void:
+	if not is_ready or pull_target != null: return
 	pull_target = target
-	is_pulled = true
+	update_player_penalty()
 
-	# IMPORTANT: reset physics state so it doesn't explode
-	linear_velocity = Vector2.ZERO
-	angular_velocity = 0.0
-
-	linear_damp = 5.0
-	angular_damp = 8.0
-
-	# give physics time to settle before enforcing constraints
-	attach_grace_timer = 0.2
-
-	print("[LOG] attached")
-
-
-func detach():
-	if not is_pulled:
-		return
-
-	is_pulled = false
+func detach() -> void:
+	if is_instance_valid(pull_target) and pull_target.has_method("set_speed_modifier"):
+		pull_target.set_speed_modifier(1.0)
 	pull_target = null
+	logs_pushed_count = 0 
 
-	linear_damp = 1.0
-	angular_damp = 1.0
-
-	print("[LOG] detached")
+func get_rope_anchor_global() -> Vector2:
+	return pull_marker.global_position

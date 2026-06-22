@@ -9,10 +9,3 @@ y_sort_enabled = true
 [node name="player" parent="." unique_id=425553129 instance=ExtResource("1_sl2e5")]
 
 [node name="trunks" parent="." unique_id=1850040903 instance=ExtResource("2_1fp7r")]
-position = Vector2(132, -67)
-
-[node name="trunks2" parent="." unique_id=900827978 instance=ExtResource("2_1fp7r")]
-position = Vector2(-134, -58)
-
-[node name="trunks3" parent="." unique_id=1187470157 instance=ExtResource("2_1fp7r")]
-position = Vector2(-107, 5)

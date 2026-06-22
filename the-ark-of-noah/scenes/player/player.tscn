@@ -2137,9 +2137,9 @@ height = 22.0
 size = Vector2(24, 27)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wodrh"]
-radius = 19.0
+radius = 11.0
 
-[node name="player" type="CharacterBody2D" unique_id=425553129]
+[node name="player" type="CharacterBody2D" unique_id=425553129 groups=["Player"]]
 collision_layer = 2
 script = ExtResource("5_p47bc")
 
