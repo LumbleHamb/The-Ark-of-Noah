@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://ba5qhslvdxcx6"]
+
+[node name="player" type="AnimatedSprite2D" unique_id=475524584]
