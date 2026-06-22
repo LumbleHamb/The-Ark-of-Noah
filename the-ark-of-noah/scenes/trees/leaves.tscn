@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://dqhr7im6f0qrd"]
+
+[ext_resource type="Texture2D" uid="uid://cdj1141fhpect" path="res://images/sprites/static/props/props.png" id="1_au8gu"]
+[ext_resource type="Texture2D" uid="uid://ck4nxw6jmo6qr" path="res://images/sprites/static/props/spring_leaf_particle.png" id="2_qsm3n"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_wodrh"]
+lifetime_randomness = 0.19
+particle_flag_disable_z = true
+gravity = Vector3(0, 98, 0)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qsm3n"]
+atlas = ExtResource("1_au8gu")
+region = Rect2(396, 1144, 99, 143)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wodrh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qsm3n")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="leaves" type="Node2D" unique_id=965971728]
+
+[node name="leaves_particles" type="GPUParticles2D" parent="." unique_id=238464008]
+emitting = false
+amount = 12
+texture = ExtResource("2_qsm3n")
+lifetime = 0.8
+one_shot = true
+explosiveness = 1.0
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_wodrh")
+
+[node name="leaves_animation" type="AnimatedSprite2D" parent="." unique_id=1385955121]
+sprite_frames = SubResource("SpriteFrames_wodrh")

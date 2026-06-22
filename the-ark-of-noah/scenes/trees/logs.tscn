@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://mql20hs56okw"]
+
+[ext_resource type="Texture2D" uid="uid://cdj1141fhpect" path="res://images/sprites/static/props/props.png" id="1_d6ki3"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4s4d2"]
+atlas = ExtResource("1_d6ki3")
+region = Rect2(520, 504, 26, 56)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wodrh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4s4d2")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="logs" type="Node2D" unique_id=1822089501]
+
+[node name="logs_animation" type="AnimatedSprite2D" parent="." unique_id=1469910523]
+sprite_frames = SubResource("SpriteFrames_wodrh")
