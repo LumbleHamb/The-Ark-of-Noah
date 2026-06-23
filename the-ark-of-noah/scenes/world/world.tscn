@@ -1,18 +1,22 @@
 [gd_scene format=3 uid="uid://bhpcmyxylc1ra"]
 
+[ext_resource type="PackedScene" uid="uid://t8vxummrnm1u" path="res://scenes/world/map.tscn" id="1_1fp7r"]
 [ext_resource type="PackedScene" uid="uid://ba5qhslvdxcx6" path="res://scenes/player/player.tscn" id="1_sl2e5"]
 [ext_resource type="PackedScene" uid="uid://cdqduyosi688t" path="res://scenes/trees/trunks.tscn" id="2_1fp7r"]
 
 [node name="world" type="Node2D" unique_id=259029940]
 y_sort_enabled = true
 
+[node name="map" parent="." unique_id=835949567 instance=ExtResource("1_1fp7r")]
+
 [node name="player" parent="." unique_id=425553129 instance=ExtResource("1_sl2e5")]
+position = Vector2(1151, 1255)
 
 [node name="trunks" parent="." unique_id=1850040903 instance=ExtResource("2_1fp7r")]
-position = Vector2(132, -67)
+position = Vector2(1193, 1046)
 
 [node name="trunks2" parent="." unique_id=900827978 instance=ExtResource("2_1fp7r")]
-position = Vector2(-134, -58)
+position = Vector2(1049, 1201)
 
 [node name="trunks3" parent="." unique_id=1187470157 instance=ExtResource("2_1fp7r")]
-position = Vector2(-107, 5)
+position = Vector2(1588, 1032)
