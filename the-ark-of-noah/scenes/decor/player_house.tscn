@@ -500,41 +500,84 @@ _data = {
 &"open_house": SubResource("Animation_44lra")
 }
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wodrh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mm860"]
+size = Vector2(7, 182)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3bviv"]
+size = Vector2(22, 57)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gj6bt"]
+size = Vector2(22.5, 57)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wodrh"]
+size = Vector2(7, 182)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0vsdg"]
+size = Vector2(320, 7.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yqocq"]
+size = Vector2(122, 12.75)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_asx5t"]
+size = Vector2(126, 16.75)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r4ct7"]
+size = Vector2(105, 5.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gppc0"]
+size = Vector2(140, 34)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e3mfg"]
+size = Vector2(143, 35)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mgg3s"]
+size = Vector2(102, 3.75)
+
 [node name="player_house" type="Node2D" unique_id=443652541]
 script = ExtResource("1_k5ju1")
 
 [node name="doorway" type="Area2D" parent="." unique_id=598194746]
 collision_layer = 7
 collision_mask = 7
+metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="doorway" unique_id=1116398520]
 position = Vector2(-0.8125, -43.5625)
 shape = SubResource("RectangleShape2D_t5ptc")
+metadata/_edit_lock_ = true
 
 [node name="CabinInterior" type="Sprite2D" parent="." unique_id=1744015674]
-z_index = -1
+y_sort_enabled = true
 position = Vector2(0, -111)
 texture = ExtResource("1_dieq8")
+metadata/_edit_lock_ = true
 
 [node name="front_wall" type="Sprite2D" parent="." unique_id=408525203]
 z_index = 5
 texture = ExtResource("2_k5ju1")
+metadata/_edit_lock_ = true
 
 [node name="porch" type="Sprite2D" parent="." unique_id=913738329]
 z_index = 1
 y_sort_enabled = true
 texture = ExtResource("4_txtq5")
+metadata/_edit_lock_ = true
 
 [node name="door" type="AnimatedSprite2D" parent="." unique_id=872595682]
 sprite_frames = SubResource("SpriteFrames_hk1my")
 animation = &"door_opening"
 frame = 1
+metadata/_edit_lock_ = true
 
 [node name="roof" type="AnimatedSprite2D" parent="." unique_id=1136022037]
+visible = false
 position = Vector2(0, -112)
 sprite_frames = SubResource("SpriteFrames_xpsms")
 animation = &"roof_opening"
 frame = 1
+metadata/_edit_lock_ = true
 
 [node name="chimney_smoke" type="AnimatedSprite2D" parent="." unique_id=871190212]
 position = Vector2(-95, -212)
@@ -542,6 +585,7 @@ sprite_frames = SubResource("SpriteFrames_gmar3")
 animation = &"smoke"
 autoplay = "smoke"
 frame_progress = 0.006272217
+metadata/_edit_lock_ = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=356341816]
 libraries/ = SubResource("AnimationLibrary_o2kqc")
@@ -551,24 +595,88 @@ z_index = 5
 y_sort_enabled = true
 position = Vector2(-125, 33)
 texture = ExtResource("10_2blk4")
+metadata/_edit_lock_ = true
 
 [node name="fence_right" type="Sprite2D" parent="." unique_id=1688986003]
 z_index = 5
 y_sort_enabled = true
 position = Vector2(126, 35)
 texture = ExtResource("11_mm860")
+metadata/_edit_lock_ = true
 
 [node name="grass" type="Sprite2D" parent="." unique_id=1273041425]
 z_index = 2
 y_sort_enabled = true
 position = Vector2(16, 66)
 texture = ExtResource("12_2blk4")
+metadata/_edit_lock_ = true
 
 [node name="rope" type="Sprite2D" parent="." unique_id=92723694]
 z_index = 2
 y_sort_enabled = true
 position = Vector2(-187, -4)
 texture = ExtResource("13_mm860")
+metadata/_edit_lock_ = true
+
+[node name="walls" type="StaticBody2D" parent="." unique_id=153947008]
+collision_layer = 7
+collision_mask = 7
+physics_material_override = SubResource("PhysicsMaterial_wodrh")
+
+[node name="left_wall" type="CollisionShape2D" parent="walls" unique_id=1169270209]
+position = Vector2(-158.5, -60)
+shape = SubResource("RectangleShape2D_mm860")
+metadata/_edit_lock_ = true
+
+[node name="left_front_fence_left" type="CollisionShape2D" parent="walls" unique_id=1101067963]
+position = Vector2(-161, 22.5)
+shape = SubResource("RectangleShape2D_3bviv")
+metadata/_edit_lock_ = true
+
+[node name="right_front_fence_right" type="CollisionShape2D" parent="walls" unique_id=1664430190]
+position = Vector2(162.25, 25)
+shape = SubResource("RectangleShape2D_gj6bt")
+metadata/_edit_lock_ = true
+
+[node name="right_wall" type="CollisionShape2D" parent="walls" unique_id=2040437499]
+position = Vector2(156, -60)
+shape = SubResource("RectangleShape2D_wodrh")
+metadata/_edit_lock_ = true
+
+[node name="back_wall" type="CollisionShape2D" parent="walls" unique_id=307418275]
+position = Vector2(2, -131)
+shape = SubResource("RectangleShape2D_0vsdg")
+metadata/_edit_lock_ = true
+
+[node name="front_wall_left" type="CollisionShape2D" parent="walls" unique_id=728371621]
+position = Vector2(-96, 17.375)
+shape = SubResource("RectangleShape2D_yqocq")
+metadata/_edit_lock_ = true
+
+[node name="front_wall_right" type="CollisionShape2D" parent="walls" unique_id=1482735463]
+position = Vector2(101, 16.375)
+shape = SubResource("RectangleShape2D_asx5t")
+metadata/_edit_lock_ = true
+
+[node name="front_fence_right" type="CollisionShape2D" parent="walls" unique_id=3046293]
+position = Vector2(121.5, 51.75)
+shape = SubResource("RectangleShape2D_r4ct7")
+metadata/_edit_lock_ = true
+
+[node name="front_right_yard" type="CollisionShape2D" parent="walls" unique_id=2124189081]
+position = Vector2(106, 44)
+shape = SubResource("RectangleShape2D_gppc0")
+metadata/_edit_lock_ = true
+
+[node name="front_left_yard" type="CollisionShape2D" parent="walls" unique_id=741700950]
+position = Vector2(-106.5, 43.5)
+shape = SubResource("RectangleShape2D_e3mfg")
+metadata/_edit_lock_ = true
+
+[node name="front_fence_left" type="CollisionShape2D" parent="walls" unique_id=604613359]
+position = Vector2(-120, 48.125)
+shape = SubResource("RectangleShape2D_mgg3s")
+metadata/_edit_lock_ = true
 
 [connection signal="body_entered" from="doorway" to="." method="_on_doorway_body_entered"]
 [connection signal="body_exited" from="doorway" to="." method="_on_doorway_body_exited"]

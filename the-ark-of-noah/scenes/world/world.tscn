@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b0byd7sbi3qa8" path="res://scenes/decor/player_house.tscn" id="1_6m72w"]
 [ext_resource type="PackedScene" uid="uid://ba5qhslvdxcx6" path="res://scenes/player/player.tscn" id="1_sl2e5"]
 [ext_resource type="PackedScene" uid="uid://cdqduyosi688t" path="res://scenes/trees/trunks.tscn" id="2_1fp7r"]
+[ext_resource type="PackedScene" uid="uid://blk0f5n3x3qnj" path="res://scenes/world/pause_menu.tscn" id="5_v5dby"]
 
 [node name="world" type="Node2D" unique_id=259029940]
 y_sort_enabled = true
@@ -26,3 +27,5 @@ position = Vector2(1448, 339)
 
 [node name="trunks3" parent="." unique_id=1187470157 instance=ExtResource("2_1fp7r")]
 position = Vector2(1592, 249)
+
+[node name="PauseMenu" parent="." unique_id=1609854152 instance=ExtResource("5_v5dby")]
