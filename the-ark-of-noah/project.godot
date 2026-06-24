@@ -13,7 +13,7 @@ autoload="\"*res://scripts/ui/virtual_joystick.gd\""
 [application]
 
 config/name="The Ark of Noah"
-run/main_scene="uid://bhpcmyxylc1ra"
+run/main_scene="uid://dckb0uj0ynn5p"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
 
@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 
 save_manager="*res://scripts/world/save_manager.gd"
 virtual_joystick="*res://scripts/ui/virtual_joystick.gd"
+scene_transition="*res://scripts/autoload/scene_transition.gd"
 
 [display]
 
