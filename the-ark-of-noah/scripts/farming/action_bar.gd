@@ -35,9 +35,11 @@ func select_slot(index: int) -> void:
 		# Clear previous selection highlight
 		if _selected_index >= 0 and _selected_index < _slots.size():
 			_slots[_selected_index].modulate = Color.WHITE
-		# Highlight new selection
+			_slots[_selected_index].self_modulate = Color.WHITE
+		# Highlight new selection — bright golden glow
 		_selected_index = index
-		_slots[index].modulate = Color(1.0, 1.0, 0.6, 1.0)
+		_slots[index].modulate = Color.GOLD
+		_slots[index].self_modulate = Color(1.8, 1.6, 0.4, 1.0)
 		tool_selected.emit(index)
 
 ## Called when a slot button is pressed via click/touch.

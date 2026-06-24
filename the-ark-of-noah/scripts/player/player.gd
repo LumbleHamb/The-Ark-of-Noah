@@ -63,7 +63,7 @@ const FARM_COOLDOWN_TIME: float = 0.4
 # LIFECYCLE
 # ============================================================================
 func _ready() -> void:
-	hitbox.monitoring = false
+	hitbox.monitoring = true
 	hitbox.body_entered.connect(_on_hitbox_body_entered)
 	anim.offset = BASE_OFFSET
 	if rope_line:
@@ -228,8 +228,7 @@ func read_input() -> void:
 
 	# Interact (harvest / context action)
 	if Input.is_action_just_pressed("interact"):
-		if farm_manager != null:
-			_try_harvest()
+		_try_harvest()
 
 	if Input.is_action_just_pressed("attach_rope"):
 		if attached_log != null:
@@ -287,14 +286,20 @@ func handle_movement_state() -> void:
 # ============================================================================
 # ATTACK
 # ============================================================================
+var _attack_min_frames: int = 0  # Prevents instant state flip when is_playing() is briefly false
+
 func start_attack() -> void:
 	state = State.ATTACK
 	velocity = Vector2.ZERO
+	_attack_min_frames = 0
+	anim.stop()
+	anim.frame = 0
 	anim.play("attack_" + get_dir(last_dir))
 	hitbox.monitoring = true
 
 func handle_attack_state() -> void:
-	if not anim.is_playing():
+	_attack_min_frames += 1
+	if _attack_min_frames > 2 and not anim.is_playing():
 		state = State.IDLE
 		hitbox.monitoring = false
 
@@ -344,6 +349,14 @@ func _plant_seed(tile_pos: Vector2i, crop: CropData) -> void:
 			return
 
 func _try_harvest() -> void:
+	# Try to hit nearby interactable bodies (trees, rocks, etc.)
+	for body in hitbox.get_overlapping_bodies():
+		if body.has_method("hit"):
+			body.hit()
+			start_attack()
+			return
+	
+	# Then try farm harvesting
 	if farm_manager == null:
 		return
 	if farm_cooldown > 0.0:
@@ -357,6 +370,8 @@ func _try_harvest() -> void:
 func _do_farming_anim() -> void:
 	state = State.FARMING
 	velocity = Vector2.ZERO
+	anim.stop()
+	anim.frame = 0
 	anim.play("attack_" + get_dir(last_dir))
 	await get_tree().create_timer(0.3).timeout
 	if state == State.FARMING:
@@ -397,32 +412,8 @@ func _on_action_bar_selected(slot_index: int) -> void:
 
 func _update_equipped_tool() -> void:
 	"""Show or hide the tool sprite on the player's right hand based on selection."""
-	if tool_sprite == null:
-		return
-	
-	if selected_slot < 0:
-		tool_sprite.visible = false
-		return
-	
-	var tool_count: int = tool_inventory.size()
-	var tex: Texture2D = null
-	
-	if selected_slot < tool_count:
-		# A tool is selected — use its first swing frame as the idle hold sprite
-		var tool: ToolData = tool_inventory[selected_slot]
-		if tool.swing_sprites.size() > 0:
-			tex = tool.swing_sprites[0]
-	else:
-		# A seed is selected — use its seed_sprite
-		var seed_idx: int = selected_slot - tool_count
-		if seed_idx < seed_inventory.size():
-			tex = seed_inventory[seed_idx].seed_sprite
-	
-	if tex != null:
-		tool_sprite.texture = tex
-		tool_sprite.visible = true
-		_update_tool_position()
-	else:
+	# Tool sprite is hidden — the action bar highlight shows the equipped item
+	if tool_sprite != null:
 		tool_sprite.visible = false
 
 
@@ -455,7 +446,6 @@ func update_animation() -> void:
 			anim.play("walk_" + dir)
 		State.RUN:
 			anim.play("run_" + dir)
-	_update_tool_position()
 
 func get_dir(v: Vector2) -> String:
 	if v == Vector2.ZERO:
