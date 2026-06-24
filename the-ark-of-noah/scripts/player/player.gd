@@ -20,7 +20,7 @@ var current_speed_mod: float = 1.0
 
 # Animation Offsets
 var BASE_OFFSET: Vector2 = Vector2(-32, -43)
-var ATTACK_OFFSET: Vector2 = Vector2(-47, -60)
+var ATTACK_OFFSET: Vector2 = Vector2(-48, -59)  # Centers 96x96 attack frame same as 64x64 idle/walk/run
 
 # Tool sprite offsets per facing direction (in local player coords)
 # Positioned at the character's right hand (centered sprite, scaled 0.4)
@@ -443,7 +443,8 @@ func _update_tool_position() -> void:
 # ANIMATION
 # ============================================================================
 func apply_anim_offset() -> void:
-	anim.offset = BASE_OFFSET if state != State.ATTACK else ATTACK_OFFSET
+	# Attack and Farming both use the larger 96x96 spritesheet; idle/walk/run use 64x64.
+	anim.offset = ATTACK_OFFSET if state in [State.ATTACK, State.FARMING] else BASE_OFFSET
 
 func update_animation() -> void:
 	var dir = get_dir(last_dir)
