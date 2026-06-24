@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-carrot.png" id="1_vflll"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_jiq6b"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-carrot.png" id="3_7o5rj"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-carrot_0.png" id="4_jb235"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-carrot_1.png" id="5_5ttd6"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-carrot_2.png" id="6_84xok"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-carrot_3.png" id="7_1ec3i"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-carrot_4.png" id="8_povnq"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-carrot_5.png" id="9_l2nve"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-carrot_6.png" id="10_ludkt"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-carrot_7.png" id="11_qr3rs"]
+
+[resource]
+script = ExtResource("2_jiq6b")
+crop_name = "Carrot"
+growth_time_seconds = 90.0
+max_yield = 2
+stage_sprites = Array[Texture2D]([ExtResource("4_jb235"), ExtResource("5_5ttd6"), ExtResource("6_84xok"), ExtResource("7_1ec3i"), ExtResource("8_povnq"), ExtResource("9_l2nve"), ExtResource("10_ludkt"), ExtResource("11_qr3rs")])
+seed_sprite = ExtResource("3_7o5rj")
+harvest_sprite = ExtResource("1_vflll")
+harvest_item_name = "Carrot"

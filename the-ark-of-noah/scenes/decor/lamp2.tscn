@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://d4lamp2base"]
+
+[ext_resource type="Script" uid="uid://bqjmneuvifaxc" path="res://scripts/world/light_source.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://cbqyx1lk1rdfn" path="res://images/sprites/animated/items/animated lamp posts-only lamp2.png" id="2"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lamp2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2")
+}],
+"loop": true,
+"name": &"lamp_idle",
+"speed": 1.0
+}]
+
+[node name="Lamp2" type="Node2D"]
+y_sort_enabled = true
+
+[node name="LampSprite" type="AnimatedSprite2D" parent="."]
+z_index = 2
+sprite_frames = SubResource("SpriteFrames_lamp2")
+animation = &"lamp_idle"
+centered = false
+visible = false
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(32, -16)
+enabled = false
+color = Color(1, 0.85, 0.55, 1)
+energy = 1.5
+shadow_enabled = true
+shadow_color = Color(0, 0, 0, 0.8)
+shadow_filter = 1
+shadow_filter_smooth = 4.0
+texture_scale = 3.0
+
+[node name="LightSource" type="Node" parent="."]
+script = ExtResource("1")
+flame_sprite = NodePath("../LampSprite")
+lit_animation = "lamp_idle"
+base_energy = 1.5

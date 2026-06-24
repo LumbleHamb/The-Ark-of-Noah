@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-eggplant.png" id="1_f05we"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_fkiwh"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-eggplant.png" id="3_685we"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-eggplant_0.png" id="4_m4ujf"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-eggplant_1.png" id="5_utqbo"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-eggplant_2.png" id="6_s527c"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-eggplant_3.png" id="7_1s0f2"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-eggplant_4.png" id="8_pr22w"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-eggplant_5.png" id="9_ccurn"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-eggplant_6.png" id="10_qetfx"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-eggplant_7.png" id="11_ybfrd"]
+
+[resource]
+script = ExtResource("2_fkiwh")
+crop_name = "Eggplant"
+growth_time_seconds = 150.0
+max_yield = 2
+stage_sprites = Array[Texture2D]([ExtResource("4_m4ujf"), ExtResource("5_utqbo"), ExtResource("6_s527c"), ExtResource("7_1s0f2"), ExtResource("8_pr22w"), ExtResource("9_ccurn"), ExtResource("10_qetfx"), ExtResource("11_ybfrd")])
+seed_sprite = ExtResource("3_685we")
+harvest_sprite = ExtResource("1_f05we")
+harvest_item_name = "Eggplant"

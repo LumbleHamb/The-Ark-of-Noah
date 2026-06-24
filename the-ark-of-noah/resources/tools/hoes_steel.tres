@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ToolData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/hoes-steel_0.png" id="1_8e1jw"]
+[ext_resource type="Script" path="res://scripts/farming/tool_data.gd" id="2_ikx0j"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/hoes-steel_1.png" id="3_ablon"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/hoes-steel_2.png" id="4_jdpwn"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/hoes-steel_3.png" id="5_0ky2n"]
+
+[resource]
+script = ExtResource("2_ikx0j")
+tool_name = "Steel Hoes"
+tier = "steel"
+swing_sprites = Array[Texture2D]([ExtResource("1_8e1jw"), ExtResource("3_ablon"), ExtResource("4_jdpwn"), ExtResource("5_0ky2n")])
+icon = ExtResource("1_8e1jw")
+speed_multiplier = 1.3
+efficiency = 1.2

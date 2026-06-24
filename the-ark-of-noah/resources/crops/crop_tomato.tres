@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-tomato.png" id="1_sv8me"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_slu0p"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-tomato.png" id="3_oc3yx"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-tomato_0.png" id="4_rwr2e"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-tomato_1.png" id="5_o01vr"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-tomato_2.png" id="6_hu8ve"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-tomato_3.png" id="7_en4ao"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-tomato_4.png" id="8_bgfqw"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-tomato_5.png" id="9_pc0mo"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-tomato_6.png" id="10_flvcx"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-tomato_7.png" id="11_6preq"]
+
+[resource]
+script = ExtResource("2_slu0p")
+crop_name = "Tomato"
+growth_time_seconds = 130.0
+max_yield = 3
+regrowable = true
+regrow_time_seconds = 40.0
+stage_sprites = Array[Texture2D]([ExtResource("4_rwr2e"), ExtResource("5_o01vr"), ExtResource("6_hu8ve"), ExtResource("7_en4ao"), ExtResource("8_bgfqw"), ExtResource("9_pc0mo"), ExtResource("10_flvcx"), ExtResource("11_6preq")])
+seed_sprite = ExtResource("3_oc3yx")
+harvest_sprite = ExtResource("1_sv8me")
+harvest_item_name = "Tomato"

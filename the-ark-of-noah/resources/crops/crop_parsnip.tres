@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-parsnip.png" id="1_4dg0i"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_nm32t"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-parsnip.png" id="3_84q4v"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-parsnip_0.png" id="4_3uxoj"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-parsnip_1.png" id="5_hj7s4"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-parsnip_2.png" id="6_txsda"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-parsnip_3.png" id="7_akjq4"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-parsnip_4.png" id="8_fle51"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-parsnip_5.png" id="9_c0xch"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-parsnip_6.png" id="10_o6dwo"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-parsnip_7.png" id="11_7u1bg"]
+
+[resource]
+script = ExtResource("2_nm32t")
+crop_name = "Parsnip"
+growth_time_seconds = 80.0
+max_yield = 2
+stage_sprites = Array[Texture2D]([ExtResource("4_3uxoj"), ExtResource("5_hj7s4"), ExtResource("6_txsda"), ExtResource("7_akjq4"), ExtResource("8_fle51"), ExtResource("9_c0xch"), ExtResource("10_o6dwo"), ExtResource("11_7u1bg")])
+seed_sprite = ExtResource("3_84q4v")
+harvest_sprite = ExtResource("1_4dg0i")
+harvest_item_name = "Parsnip"

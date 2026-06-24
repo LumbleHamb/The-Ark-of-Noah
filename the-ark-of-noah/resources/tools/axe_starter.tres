@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ToolData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/axe-starter_0.png" id="1_6brbu"]
+[ext_resource type="Script" path="res://scripts/farming/tool_data.gd" id="2_60mi3"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/axe-starter_1.png" id="3_7vhpj"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/axe-starter_2.png" id="4_4h8cn"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/axe-starter_3.png" id="5_ooxc8"]
+
+[resource]
+script = ExtResource("2_60mi3")
+tool_name = "Starter Axe"
+tool_type = 2
+swing_sprites = Array[Texture2D]([ExtResource("1_6brbu"), ExtResource("3_7vhpj"), ExtResource("4_4h8cn"), ExtResource("5_ooxc8")])
+icon = ExtResource("1_6brbu")

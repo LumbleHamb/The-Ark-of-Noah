@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-artichoke.png" id="1_je0uw"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_bhjds"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-artichoke.png" id="3_242v8"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-artichoke_0.png" id="4_d01gw"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-artichoke_1.png" id="5_vxffk"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-artichoke_2.png" id="6_4oejb"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-artichoke_3.png" id="7_kl7k2"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-artichoke_4.png" id="8_q1mef"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-artichoke_5.png" id="9_43mkc"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-artichoke_6.png" id="10_xjt85"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-artichoke_7.png" id="11_3ulnk"]
+
+[resource]
+script = ExtResource("2_bhjds")
+crop_name = "Artichoke"
+growth_time_seconds = 150.0
+max_yield = 2
+stage_sprites = Array[Texture2D]([ExtResource("4_d01gw"), ExtResource("5_vxffk"), ExtResource("6_4oejb"), ExtResource("7_kl7k2"), ExtResource("8_q1mef"), ExtResource("9_43mkc"), ExtResource("10_xjt85"), ExtResource("11_3ulnk")])
+seed_sprite = ExtResource("3_242v8")
+harvest_sprite = ExtResource("1_je0uw")
+harvest_item_name = "Artichoke"

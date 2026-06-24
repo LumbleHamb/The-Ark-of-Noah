@@ -5,6 +5,10 @@
 [ext_resource type="PackedScene" uid="uid://ba5qhslvdxcx6" path="res://scenes/player/player.tscn" id="1_sl2e5"]
 [ext_resource type="PackedScene" uid="uid://cdqduyosi688t" path="res://scenes/trees/trunks.tscn" id="2_1fp7r"]
 [ext_resource type="PackedScene" uid="uid://blk0f5n3x3qnj" path="res://scenes/world/pause_menu.tscn" id="5_v5dby"]
+[ext_resource type="PackedScene" uid="uid://e0e6klevtqo0" path="res://scenes/farming/farm_manager.tscn" id="6_farm"]
+[ext_resource type="PackedScene" uid="uid://d4timemgr" path="res://scenes/world/time_manager.tscn" id="7_tm"]
+[ext_resource type="PackedScene" uid="uid://d4lightmgr" path="res://scenes/world/lighting_manager.tscn" id="8_lm"]
+[ext_resource type="PackedScene" uid="uid://d4factionbar" path="res://scenes/farming/action_bar.tscn" id="9_actionbar"]
 
 [node name="world" type="Node2D" unique_id=259029940]
 y_sort_enabled = true
@@ -29,3 +33,15 @@ position = Vector2(1448, 339)
 position = Vector2(1592, 249)
 
 [node name="PauseMenu" parent="." unique_id=1609854152 instance=ExtResource("5_v5dby")]
+
+[node name="TimeManager" parent="." unique_id=1002606171 instance=ExtResource("7_tm")]
+
+[node name="WorldLights" type="Node2D" parent="." unique_id=1511920902]
+y_sort_enabled = true
+
+[node name="LightingManager" parent="." unique_id=1640264858 instance=ExtResource("8_lm")]
+player_light = NodePath("../player/PlayerLight")
+
+[node name="FarmManager" parent="." unique_id=293512700 instance=ExtResource("6_farm")]
+
+[node name="ActionBar" parent="." unique_id=274594542 instance=ExtResource("9_actionbar")]

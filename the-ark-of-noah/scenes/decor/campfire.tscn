@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://d4campfirebase"]
+
+[ext_resource type="Script" uid="uid://bqjmneuvifaxc" path="res://scripts/world/light_source.gd" id="1_source"]
+[ext_resource type="SpriteFrames" uid="uid://d4campfireframes" path="res://resources/campfire_frames.tres" id="2_fireframes"]
+[ext_resource type="SpriteFrames" uid="uid://d4smokeframes" path="res://resources/smoke_frames.tres" id="3_smokeframes"]
+
+[node name="Campfire" type="Node2D"]
+y_sort_enabled = true
+
+[node name="FireSprite" type="AnimatedSprite2D" parent="."]
+z_index = 3
+sprite_frames = ExtResource("2_fireframes")
+animation = &"fire"
+centered = false
+visible = false
+
+[node name="SmokeSprite" type="AnimatedSprite2D" parent="."]
+z_index = 4
+position = Vector2(64, -48)
+sprite_frames = ExtResource("3_smokeframes")
+animation = &"smoke"
+centered = false
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(64, -16)
+enabled = false
+color = Color(1, 0.78, 0.4, 1)
+energy = 2.0
+shadow_enabled = true
+shadow_color = Color(0, 0, 0, 0.8)
+shadow_filter = 1
+shadow_filter_smooth = 4.0
+texture_scale = 4.0
+
+[node name="LightSource" type="Node" parent="."]
+script = ExtResource("1_source")
+flame_sprite = NodePath("../FireSprite")
+lit_animation = "fire"
+base_energy = 2.0

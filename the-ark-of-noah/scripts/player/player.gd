@@ -1,9 +1,15 @@
 extends CharacterBody2D
 
+# ============================================================================
+# PLAYER — WITH FARMING INTEGRATION
+# ============================================================================
+
+const MobileJoystickScript: Script = preload("res://scripts/ui/virtual_joystick.gd")
+
 @onready var anim: AnimatedSprite2D = $player_animation
 @onready var hitbox: Area2D = $hitbox
 @onready var rope_range: Area2D = $rope_range
-@onready var rope_line: Line2D = $rope_line 
+@onready var rope_line: Line2D = $rope_line
 
 @export var walk_speed: float = 80.0
 @export var run_speed: float = 140.0
@@ -15,44 +21,142 @@ var current_speed_mod: float = 1.0
 var BASE_OFFSET: Vector2 = Vector2(-32, -43)
 var ATTACK_OFFSET: Vector2 = Vector2(-47, -60)
 
-enum State { IDLE, WALK, RUN, ATTACK }
+enum State { IDLE, WALK, RUN, ATTACK, FARMING }
 
 var state: State = State.IDLE
 var last_dir: Vector2 = Vector2.DOWN
 var input_dir: Vector2 = Vector2.ZERO
 var attached_log: Node2D = null
 
+# UI pause — disables player control while world continues
+var input_enabled: bool = true
+
+# ---------------------------------------------------------------------------
+# FARMING
+# ---------------------------------------------------------------------------
+@export var farm_manager_path: NodePath = NodePath("")
+
+var farm_manager: FarmManager = null
+var tool_inventory: Array[ToolData] = []
+var seed_inventory: Array[CropData] = []
+var selected_slot: int = -1
+var farm_cooldown: float = 0.0
+const FARM_COOLDOWN_TIME: float = 0.4
+
+@onready var action_bar: ActionBar = %ActionBar if has_node("%ActionBar") else null
+
+# ============================================================================
+# LIFECYCLE
+# ============================================================================
 func _ready() -> void:
 	hitbox.monitoring = false
 	hitbox.body_entered.connect(_on_hitbox_body_entered)
 	anim.offset = BASE_OFFSET
-	if rope_line: rope_line.visible = false
+	if rope_line:
+		rope_line.visible = false
+	
+	_find_farm_manager()
+	_load_starter_equipment()
+	
+	if action_bar:
+		action_bar.tool_selected.connect(_on_action_bar_selected)
 
-func _physics_process(_delta: float) -> void:
+func _find_farm_manager() -> void:
+	if farm_manager_path != NodePath(""):
+		farm_manager = get_node(farm_manager_path)
+	if farm_manager == null:
+		farm_manager = get_tree().get_first_node_in_group(&"farm_manager")
+	if farm_manager == null:
+		var root := get_tree().root
+		farm_manager = root.find_child("FarmManager", true, false)
+
+func _load_starter_equipment() -> void:
+	var hoe: ToolData = ResourceLoader.load("res://resources/tools/hoes_starter.tres")
+	if hoe:
+		tool_inventory.append(hoe)
+	
+	var axe: ToolData = ResourceLoader.load("res://resources/tools/axe_starter.tres")
+	if axe:
+		tool_inventory.append(axe)
+	
+	var pickaxe: ToolData = ResourceLoader.load("res://resources/tools/pickaxe_starter.tres")
+	if pickaxe:
+		tool_inventory.append(pickaxe)
+	
+	var crops_to_load: Array[String] = [
+		"res://resources/crops/crop_carrot.tres",
+		"res://resources/crops/crop_potato.tres",
+		"res://resources/crops/crop_parsnip.tres",
+	]
+	for path in crops_to_load:
+		var crop_entry: CropData = ResourceLoader.load(path)
+		if crop_entry:
+			seed_inventory.append(crop_entry)
+	
+	if tool_inventory.size() > 0:
+		_select_slot(0)
+	_update_action_bar()
+
+func _update_action_bar() -> void:
+	if not action_bar:
+		return
+	var idx: int = 0
+	for tool in tool_inventory:
+		if tool.icon:
+			action_bar.set_slot_texture(idx, tool.icon)
+		idx += 1
+	for entry in seed_inventory:
+		if entry.seed_sprite:
+			action_bar.set_slot_texture(idx, entry.seed_sprite)
+		idx += 1
+
+# ============================================================================
+# PHYSICS PROCESS
+# ============================================================================
+func set_player_paused(paused: bool) -> void:
+	"""Disable only player input and physics movement (world continues running)."""
+	input_enabled = not paused
+	if paused:
+		velocity = Vector2.ZERO
+		state = State.IDLE
+
+func _physics_process(delta: float) -> void:
 	read_input()
+	if not input_enabled:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		return
+	
 	match state:
-		State.ATTACK: handle_attack_state()
-		_: handle_movement_state()
+		State.ATTACK:
+			handle_attack_state()
+		State.FARMING:
+			handle_farming_state()
+		_:
+			handle_movement_state()
 	
 	move_and_slide()
 	update_animation()
 	apply_anim_offset()
 	update_rope_visuals()
+	
+	if farm_cooldown > 0.0:
+		farm_cooldown -= delta
 
-# ---------------- SPEED MODIFIER SYSTEM ----------------
+# ============================================================================
+# SPEED / ROPE
+# ============================================================================
 func set_speed_modifier(mod: float) -> void:
 	current_speed_mod = mod
 
-# ---------------- ROPE SYSTEM ----------------
 func update_rope_visuals() -> void:
 	if not is_instance_valid(attached_log) or not rope_line:
-		if attached_log: detach_rope()
+		if attached_log:
+			detach_rope()
 		return
-	
 	rope_line.visible = true
 	var log_anchor = attached_log.get_rope_anchor_global()
 	rope_line.points = [Vector2.ZERO, to_local(log_anchor)]
-	
 	if global_position.distance_to(attached_log.global_position) > rope_hard_limit:
 		detach_rope()
 
@@ -64,43 +168,108 @@ func try_attach_rope() -> void:
 
 func attach_rope(log_body: Node2D) -> void:
 	attached_log = log_body
-	if log_body.has_method("attach_to_target"): 
+	if log_body.has_method("attach_to_target"):
 		log_body.attach_to_target(self)
 
 func detach_rope() -> void:
-	if attached_log and attached_log.has_method("detach"): 
+	if attached_log and attached_log.has_method("detach"):
 		attached_log.detach()
 	attached_log = null
-	if rope_line: rope_line.visible = false
+	if rope_line:
+		rope_line.visible = false
 
-# ---------------- INPUT & MOVEMENT ----------------
+# ============================================================================
+# INPUT & MOVEMENT
+# ============================================================================
 func read_input() -> void:
-	input_dir = Vector2(
-		Input.get_action_strength("right") - Input.get_action_strength("left"), 
-		Input.get_action_strength("down") - Input.get_action_strength("up")
-	)
-	
+	if not input_enabled:
+		input_dir = Vector2.ZERO
+		return
+
+	# Prefer virtual joystick output (touch + mouse emulation) when active;
+	# fall back to keyboard input action strengths otherwise. The joystick
+	# is a CanvasLayer autoload (MobileJoystick) accessible by name.
+	input_dir = _read_movement_input()
+
 	if input_dir.length() > 1.0:
 		input_dir = input_dir.normalized()
-		
-	if input_dir != Vector2.ZERO: 
+	if input_dir != Vector2.ZERO:
 		last_dir = input_dir.normalized()
-	
-	if state != State.ATTACK and Input.is_action_just_pressed("attack"): 
-		start_attack()
+
+	# Number keys 1-0 for slot selection
+	for i in range(10):
+		if Input.is_key_pressed(KEY_1 + i):
+			if _select_slot(i):
+				return
+
+	# Attack / Use equipped item
+	if state != State.ATTACK and state != State.FARMING and Input.is_action_just_pressed("attack"):
+		if selected_slot >= 0 and farm_manager != null:
+			_do_farming_action()
+		else:
+			start_attack()
+
+	# Interact (harvest / context action)
+	if Input.is_action_just_pressed("interact"):
+		if farm_manager != null:
+			_try_harvest()
+
 	if Input.is_action_just_pressed("attach_rope"):
-		if attached_log != null: detach_rope()
-		else: try_attach_rope()
+		if attached_log != null:
+			detach_rope()
+		else:
+			try_attach_rope()
+
+
+# Reads movement input: virtual joystick when active, otherwise keyboard actions.
+# Player script does NOT handle raw input events; it only consumes the vector
+# output of the joystick system (or the input-map fallback for keyboard).
+func _read_movement_input() -> Vector2:
+	var js: MobileJoystickScript = _get_joystick()
+	if js != null and js.is_active() and js.strength > 0.0:
+		# The joystick outputs (direction, strength) — apply strength here.
+		return js.direction * js.strength
+
+	# Keyboard fallback: compose from the input map
+	var v: Vector2 = Vector2(
+		Input.get_action_strength("right") - Input.get_action_strength("left"),
+		Input.get_action_strength("down") - Input.get_action_strength("up")
+	)
+	if v.length() > 1.0:
+		v = v.normalized()
+	return v
+
+
+# Resolves the joystick autoload. Returns null if not present (e.g. headless tests).
+func _get_joystick() -> MobileJoystickScript:
+	var root: Node = get_tree().root if get_tree() else null
+	if root == null:
+		return null
+	var node: Node = root.get_node_or_null("virtual_joystick")
+	if node == null:
+		return null
+	return node as MobileJoystickScript
+
 
 func handle_movement_state() -> void:
 	if input_dir == Vector2.ZERO:
 		state = State.IDLE
 		velocity = Vector2.ZERO
 		return
-	state = State.RUN if Input.is_action_pressed("run") else State.WALK
-	velocity = input_dir * (run_speed if state == State.RUN else walk_speed) * current_speed_mod
+	# Walk vs run is driven by the joystick's analog strength: 0.6+ runs,
+	# anything below walks. This is also compatible with keyboard via the
+	# existing "run" action.
+	var joystick_running: bool = false
+	var js: MobileJoystickScript = _get_joystick()
+	if js != null and js.is_active():
+		joystick_running = js.strength >= 0.6
+	var running: bool = joystick_running or Input.is_action_pressed("run")
+	state = State.RUN if running else State.WALK
+	velocity = input_dir * (run_speed if running else walk_speed) * current_speed_mod
 
-# ---------------- ATTACK & ANIMATION ----------------
+# ============================================================================
+# ATTACK
+# ============================================================================
 func start_attack() -> void:
 	state = State.ATTACK
 	velocity = Vector2.ZERO
@@ -113,27 +282,131 @@ func handle_attack_state() -> void:
 		hitbox.monitoring = false
 
 func _on_hitbox_body_entered(body: Node) -> void:
-	if state == State.ATTACK and body.has_method("hit"): 
+	if state == State.ATTACK and body.has_method("hit"):
 		body.hit()
 
+# ============================================================================
+# FARMING ACTIONS
+# ============================================================================
+func _do_farming_action() -> void:
+	if farm_cooldown > 0.0:
+		return
+	
+	var target_tile: Vector2i = _get_target_tile()
+	var tool_count: int = tool_inventory.size()
+	
+	if selected_slot < tool_count:
+		var tool: ToolData = tool_inventory[selected_slot]
+		match tool.tool_type:
+			ToolData.ToolType.HOE:
+				_use_hoe(target_tile)
+			_:
+				start_attack()
+	else:
+		var seed_idx: int = selected_slot - tool_count
+		if seed_idx < seed_inventory.size():
+			_plant_seed(target_tile, seed_inventory[seed_idx])
+		else:
+			start_attack()
+
+func _use_hoe(tile_pos: Vector2i) -> void:
+	if farm_manager == null:
+		return
+	if farm_manager.till_tile(tile_pos):
+		farm_cooldown = FARM_COOLDOWN_TIME
+		_do_farming_anim()
+
+func _plant_seed(tile_pos: Vector2i, crop: CropData) -> void:
+	if farm_manager == null:
+		return
+	for crop_id in farm_manager.crop_registry.keys():
+		if farm_manager.crop_registry[crop_id] == crop:
+			if farm_manager.plant_crop(tile_pos, crop_id):
+				farm_cooldown = FARM_COOLDOWN_TIME
+				_do_farming_anim()
+			return
+
+func _try_harvest() -> void:
+	if farm_manager == null:
+		return
+	if farm_cooldown > 0.0:
+		return
+	var target_tile: Vector2i = _get_target_tile()
+	var yield_count: int = farm_manager.harvest_tile(target_tile)
+	if yield_count > 0:
+		farm_cooldown = FARM_COOLDOWN_TIME
+		_do_farming_anim()
+
+func _do_farming_anim() -> void:
+	state = State.FARMING
+	velocity = Vector2.ZERO
+	anim.play("attack_" + get_dir(last_dir))
+	await get_tree().create_timer(0.3).timeout
+	if state == State.FARMING:
+		state = State.IDLE
+
+func handle_farming_state() -> void:
+	pass
+
+func _get_target_tile() -> Vector2i:
+	var offset: Vector2 = last_dir * 32.0
+	var world_pos: Vector2 = global_position + offset
+	if farm_manager:
+		return farm_manager.get_tile_pos(world_pos)
+	return Vector2i(floori(world_pos.x / 32), floori(world_pos.y / 32))
+
+# ============================================================================
+# SLOT SELECTION
+# ============================================================================
+func _select_slot(index: int) -> bool:
+	var total: int = tool_inventory.size() + seed_inventory.size()
+	if index < 0 or index >= total:
+		return false
+	if selected_slot == index:
+		return true
+	selected_slot = index
+	if action_bar:
+		action_bar.select_slot(index)
+	return true
+
+func _on_action_bar_selected(slot_index: int) -> void:
+	selected_slot = slot_index
+
+# ============================================================================
+# ANIMATION
+# ============================================================================
 func apply_anim_offset() -> void:
 	anim.offset = BASE_OFFSET if state != State.ATTACK else ATTACK_OFFSET
 
 func update_animation() -> void:
 	var dir = get_dir(last_dir)
-	if state == State.IDLE: anim.play("idle_" + dir)
-	elif state == State.WALK: anim.play("walk_" + dir)
-	elif state == State.RUN: anim.play("run_" + dir)
+	match state:
+		State.IDLE:
+			anim.play("idle_" + dir)
+		State.WALK:
+			anim.play("walk_" + dir)
+		State.RUN:
+			anim.play("run_" + dir)
 
 func get_dir(v: Vector2) -> String:
-	if v == Vector2.ZERO: return "S"
+	if v == Vector2.ZERO:
+		return "S"
 	var angle: float = rad_to_deg(atan2(v.y, v.x))
-	if angle < 0: angle += 360
-	if angle < 22.5 or angle >= 337.5: return "E"
-	elif angle < 67.5: return "SE"
-	elif angle < 112.5: return "S"
-	elif angle < 157.5: return "SW"
-	elif angle < 202.5: return "W"
-	elif angle < 247.5: return "NW"
-	elif angle < 292.5: return "N"
-	else: return "NE"
+	if angle < 0:
+		angle += 360
+	if angle < 22.5 or angle >= 337.5:
+		return "E"
+	elif angle < 67.5:
+		return "SE"
+	elif angle < 112.5:
+		return "S"
+	elif angle < 157.5:
+		return "SW"
+	elif angle < 202.5:
+		return "W"
+	elif angle < 247.5:
+		return "NW"
+	elif angle < 292.5:
+		return "N"
+	else:
+		return "NE"

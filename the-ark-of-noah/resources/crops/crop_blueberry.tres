@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-blueberry.png" id="1_ja5b4"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_tcs78"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-blueberry.png" id="3_lemmu"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-blueberry_0.png" id="4_g5dt2"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-blueberry_1.png" id="5_n5ghn"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-blueberry_2.png" id="6_14v2y"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-blueberry_3.png" id="7_bp5l8"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-blueberry_4.png" id="8_kh1ep"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-blueberry_5.png" id="9_8jp6h"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-blueberry_6.png" id="10_8sdbx"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-blueberry_7.png" id="11_8ojey"]
+
+[resource]
+script = ExtResource("2_tcs78")
+crop_name = "Blueberry"
+growth_time_seconds = 180.0
+min_yield = 2
+max_yield = 4
+regrowable = true
+stage_sprites = Array[Texture2D]([ExtResource("4_g5dt2"), ExtResource("5_n5ghn"), ExtResource("6_14v2y"), ExtResource("7_bp5l8"), ExtResource("8_kh1ep"), ExtResource("9_8jp6h"), ExtResource("10_8sdbx"), ExtResource("11_8ojey")])
+seed_sprite = ExtResource("3_lemmu")
+harvest_sprite = ExtResource("1_ja5b4")
+harvest_item_name = "Blueberry"

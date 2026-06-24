@@ -572,7 +572,6 @@ frame = 1
 metadata/_edit_lock_ = true
 
 [node name="roof" type="AnimatedSprite2D" parent="." unique_id=1136022037]
-visible = false
 position = Vector2(0, -112)
 sprite_frames = SubResource("SpriteFrames_xpsms")
 animation = &"roof_opening"

@@ -1,0 +1,29 @@
+[gd_scene format=3]
+
+[ext_resource type="SpriteFrames" path="res://resources/lamp_frames.tres" id="1_p4d17"]
+[ext_resource type="Script" path="res://scripts/world/light_source.gd" id="2_8kedl"]
+
+[node name="Lamp" type="Node2D" unique_id=770411211]
+y_sort_enabled = true
+
+[node name="LampSprite" type="AnimatedSprite2D" parent="." unique_id=1649323169]
+visible = false
+z_index = 2
+sprite_frames = ExtResource("1_p4d17")
+animation = &"lamp_idle"
+centered = false
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=265965459]
+position = Vector2(32, -16)
+enabled = false
+color = Color(1, 0.85, 0.55, 1)
+energy = 1.5
+shadow_enabled = true
+shadow_color = Color(0, 0, 0, 0.8)
+texture_scale = 3.0
+
+[node name="LightSource" type="Node" parent="." unique_id=1219695657 node_paths=PackedStringArray("flame_sprite")]
+script = ExtResource("2_8kedl")
+flame_sprite = NodePath("../LampSprite")
+lit_animation = "lamp_idle"
+base_energy = 1.5
