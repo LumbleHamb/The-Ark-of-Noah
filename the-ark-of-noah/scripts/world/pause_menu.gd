@@ -129,7 +129,7 @@ func open_book() -> void:
 	book_root.show()
 	book_sprite.show()
 	book_sprite.modulate.a = 1.0
-	book_sprite.scale = Vector2.ONE
+	book_sprite.scale = Vector2(2.0, 2.0)
 	book_sprite.play("book_opening")
 	page_turn.hide()
 	content_layer.hide()
@@ -187,7 +187,7 @@ func close_book() -> void:
 	# Show the closing animation
 	book_sprite.show()
 	book_sprite.modulate.a = 1.0
-	book_sprite.scale = Vector2.ONE
+	book_sprite.scale = Vector2(2.0, 2.0)
 	book_sprite.play("book_closing")
 
 	# Fade out dimmer
@@ -301,7 +301,8 @@ func _turn_page(direction: int) -> void:
 
 	# Show page-turn overlay
 	page_turn.show()
-	page_turn.scale.x = -1.0 if direction < 0 else 1.0
+	page_turn.scale = Vector2(2.0, 2.0)
+	page_turn.scale.x = -2.0 if direction < 0 else 2.0
 	if direction > 0:
 		page_turn.play("next_page")
 	else:

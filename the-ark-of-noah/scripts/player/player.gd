@@ -10,6 +10,7 @@ const MobileJoystickScript: Script = preload("res://scripts/ui/virtual_joystick.
 @onready var hitbox: Area2D = $hitbox
 @onready var rope_range: Area2D = $rope_range
 @onready var rope_line: Line2D = $rope_line
+@onready var tool_sprite: Sprite2D = $tool_sprite
 
 @export var walk_speed: float = 80.0
 @export var run_speed: float = 140.0
@@ -20,6 +21,19 @@ var current_speed_mod: float = 1.0
 # Animation Offsets
 var BASE_OFFSET: Vector2 = Vector2(-32, -43)
 var ATTACK_OFFSET: Vector2 = Vector2(-47, -60)
+
+# Tool sprite offsets per facing direction (in local player coords)
+# Positioned at the character's right hand (centered sprite, scaled 0.4)
+const TOOL_OFFSETS: Dictionary = {
+	"S":  Vector2(10, -12),
+	"SE": Vector2(12, -13),
+	"E":  Vector2(13, -14),
+	"NE": Vector2(10, -16),
+	"N":  Vector2(8, -16),
+	"NW": Vector2(-10, -16),
+	"W":  Vector2(-13, -14),
+	"SW": Vector2(-12, -13),
+}
 
 enum State { IDLE, WALK, RUN, ATTACK, FARMING }
 
@@ -60,6 +74,9 @@ func _ready() -> void:
 	
 	if action_bar:
 		action_bar.tool_selected.connect(_on_action_bar_selected)
+	
+	# Show equipped tool sprite after loading starter equipment
+	_update_equipped_tool()
 
 func _find_farm_manager() -> void:
 	if farm_manager_path != NodePath(""):
@@ -367,10 +384,60 @@ func _select_slot(index: int) -> bool:
 	selected_slot = index
 	if action_bar:
 		action_bar.select_slot(index)
+	_update_equipped_tool()
 	return true
 
 func _on_action_bar_selected(slot_index: int) -> void:
 	selected_slot = slot_index
+	_update_equipped_tool()
+
+# ============================================================================
+# EQUIPPED TOOL VISUAL (right-hand sprite)
+# ============================================================================
+
+func _update_equipped_tool() -> void:
+	"""Show or hide the tool sprite on the player's right hand based on selection."""
+	if tool_sprite == null:
+		return
+	
+	if selected_slot < 0:
+		tool_sprite.visible = false
+		return
+	
+	var tool_count: int = tool_inventory.size()
+	var tex: Texture2D = null
+	
+	if selected_slot < tool_count:
+		# A tool is selected — use its first swing frame as the idle hold sprite
+		var tool: ToolData = tool_inventory[selected_slot]
+		if tool.swing_sprites.size() > 0:
+			tex = tool.swing_sprites[0]
+	else:
+		# A seed is selected — use its seed_sprite
+		var seed_idx: int = selected_slot - tool_count
+		if seed_idx < seed_inventory.size():
+			tex = seed_inventory[seed_idx].seed_sprite
+	
+	if tex != null:
+		tool_sprite.texture = tex
+		tool_sprite.visible = true
+		_update_tool_position()
+	else:
+		tool_sprite.visible = false
+
+
+func _update_tool_position() -> void:
+	"""Position the tool sprite based on the player's facing direction."""
+	if tool_sprite == null or not tool_sprite.visible:
+		return
+	
+	var dir_key: String = get_dir(last_dir)
+	var offset: Vector2 = TOOL_OFFSETS.get(dir_key, Vector2(18, -14))
+	tool_sprite.position = offset
+	
+	# Flip tool horizontally when facing left (W, NW, SW) so it faces correct way
+	var flip_h: bool = dir_key in ["W", "NW", "SW"]
+	tool_sprite.flip_h = flip_h
 
 # ============================================================================
 # ANIMATION
@@ -387,6 +454,7 @@ func update_animation() -> void:
 			anim.play("walk_" + dir)
 		State.RUN:
 			anim.play("run_" + dir)
+	_update_tool_position()
 
 func get_dir(v: Vector2) -> String:
 	if v == Vector2.ZERO:

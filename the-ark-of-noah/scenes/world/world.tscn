@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://e0e6klevtqo0" path="res://scenes/farming/farm_manager.tscn" id="6_farm"]
 [ext_resource type="PackedScene" uid="uid://d4timemgr" path="res://scenes/world/time_manager.tscn" id="7_tm"]
 [ext_resource type="PackedScene" uid="uid://d4lightmgr" path="res://scenes/world/lighting_manager.tscn" id="8_lm"]
-[ext_resource type="PackedScene" uid="uid://d4factionbar" path="res://scenes/farming/action_bar.tscn" id="9_actionbar"]
 
 [node name="world" type="Node2D" unique_id=259029940]
 y_sort_enabled = true
@@ -43,5 +42,3 @@ y_sort_enabled = true
 player_light = NodePath("../player/PlayerLight")
 
 [node name="FarmManager" parent="." unique_id=293512700 instance=ExtResource("6_farm")]
-
-[node name="ActionBar" parent="." unique_id=274594542 instance=ExtResource("9_actionbar")]

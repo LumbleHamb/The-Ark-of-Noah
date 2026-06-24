@@ -2185,6 +2185,11 @@ y_sort_enabled = true
 width = 2.0
 default_color = Color(0.4402557, 0.232636, 0.13219273, 1)
 
+[node name="tool_sprite" type="Sprite2D" parent="."]
+z_index = 10
+scale = Vector2(0.4, 0.4)
+visible = false
+
 [node name="ActionBar" parent="." unique_id=752253181 instance=ExtResource("6_farm_action_bar")]
 
 [node name="PlayerLight" type="PointLight2D" parent="." unique_id=228434386]
