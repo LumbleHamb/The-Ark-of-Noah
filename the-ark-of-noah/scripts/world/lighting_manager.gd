@@ -89,12 +89,12 @@ func _ready() -> void:
 		# Initial setup.
 		_update_ambient(time_manager.get_day_progress())
 		_last_night = time_manager.is_night()
-		_update_lights(_last_night)
 	else:
 		push_warning("LightingManager: no TimeManager found — lighting will not update.")
 	
-	# Refresh sources whenever the scene tree changes.
+	# Refresh sources first, THEN update lights so they get the correct state.
 	_refresh_light_sources()
+	_update_lights(_last_night)
 	get_tree().node_added.connect(_on_node_added)
 	get_tree().node_removed.connect(_on_node_removed)
 
@@ -224,6 +224,8 @@ func register_light_source(node: Node) -> void:
 	if not node.is_in_group(&"light_source"):
 		node.add_to_group(&"light_source")
 	_refresh_light_sources()
+	# Apply current night state to the newly registered light source.
+	_update_lights(_last_night)
 
 func unregister_light_source(node: Node) -> void:
 	if node.is_in_group(&"light_source"):
@@ -236,17 +238,22 @@ func unregister_light_source(node: Node) -> void:
 func _on_node_added(node: Node) -> void:
 	# Auto-register new light sources when they enter the scene.
 	if node is PointLight2D or node is LightSource:
-		call_deferred(&"_refresh_light_sources")
+		call_deferred(&"_refresh_and_apply_lights")
 	elif node.get_child_count() > 0 and node.is_inside_tree():
 		for child in node.get_children():
 			if child is LightSource:
-				call_deferred(&"_refresh_light_sources")
+				call_deferred(&"_refresh_and_apply_lights")
 				break
 
 func _on_node_removed(node: Node) -> void:
 	# Auto-unregister removed light sources.
 	if node.is_in_group(&"light_source") or node is PointLight2D or node is LightSource:
 		call_deferred(&"_refresh_light_sources")
+
+# Refreshes the light source list then applies the current night/day state.
+func _refresh_and_apply_lights() -> void:
+	_refresh_light_sources()
+	_update_lights(_last_night)
 
 # ============================================================================
 # HELPERS

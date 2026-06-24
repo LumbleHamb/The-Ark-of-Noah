@@ -1,20 +1,21 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dltegagis0l24"]
 
-[ext_resource type="SpriteFrames" path="res://resources/lamp_frames.tres" id="1_p4d17"]
-[ext_resource type="Script" path="res://scripts/world/light_source.gd" id="2_8kedl"]
+[ext_resource type="SpriteFrames" uid="uid://d4lampframes" path="res://resources/lamp_frames.tres" id="1_p4d17"]
+[ext_resource type="Script" uid="uid://bqjmneuvifaxc" path="res://scripts/world/light_source.gd" id="2_8kedl"]
 
 [node name="Lamp" type="Node2D" unique_id=770411211]
 y_sort_enabled = true
 
 [node name="LampSprite" type="AnimatedSprite2D" parent="." unique_id=1649323169]
-visible = false
 z_index = 2
 sprite_frames = ExtResource("1_p4d17")
 animation = &"lamp_idle"
+autoplay = "lamp_idle"
+frame_progress = 0.9593616
 centered = false
 
 [node name="PointLight2D" type="PointLight2D" parent="." unique_id=265965459]
-position = Vector2(32, -16)
+position = Vector2(10, 57)
 enabled = false
 color = Color(1, 0.85, 0.55, 1)
 energy = 1.5

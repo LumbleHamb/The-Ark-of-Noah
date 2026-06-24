@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dckb0uj0ynn5p"]
 
 [ext_resource type="Script" uid="uid://c3s27gbqmdkh1" path="res://scenes/menu/main_menu.gd" id="1_kn5tk"]
-[ext_resource type="Texture2D" uid="uid://bvap3qwa5a141" path="res://images/background/background_main_menu.png" id="2_6r4eb"]
+[ext_resource type="Texture2D" uid="uid://bvap3qwa5a141" path="res://images/backgrounds/background_main_menu.png" id="2_6r4eb"]
 [ext_resource type="Texture2D" uid="uid://bmr6kixvks001" path="res://images/ui/Individual files/ui_images/Buttons/Button_03A_Normal.png" id="3_xaymh"]
 [ext_resource type="Texture2D" uid="uid://d2vs6c6ty5plx" path="res://images/ui/Individual files/ui_images/Buttons/Button_03A_Pressed.png" id="4_pc6sr"]
 [ext_resource type="Texture2D" uid="uid://b075c6qslmcmv" path="res://images/ui/Individual files/ui_images/Buttons/Button_03A_Selected.png" id="5_mrxb8"]
@@ -12,32 +12,50 @@ anchors_preset = 0
 script = ExtResource("1_kn5tk")
 
 [node name="Background" type="TextureRect" parent="." unique_id=1072431673]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 1925.0
+offset_bottom = 1085.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("2_6r4eb")
-stretch_mode = 1
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=112739918]
 
 [node name="NewGameButton" type="TextureButton" parent="UI" unique_id=645622976]
 unique_name_in_owner = true
-offset_left = 50.0
-offset_top = 50.0
-offset_right = 242.0
-offset_bottom = 114.0
+offset_left = 857.0
+offset_top = 722.0
+offset_right = 1118.0
+offset_bottom = 816.0
 texture_normal = ExtResource("3_xaymh")
 texture_pressed = ExtResource("4_pc6sr")
 texture_hover = ExtResource("5_mrxb8")
 stretch_mode = 0
+
+[node name="Label" type="Label" parent="UI/NewGameButton" unique_id=938271605]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "New Game"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="FadeLayer" type="CanvasLayer" parent="." unique_id=968540148]
 layer = 128
 
 [node name="FadeOverlay" type="ColorRect" parent="FadeLayer" unique_id=1692787079]
 unique_name_in_owner = true
+visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0)

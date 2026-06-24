@@ -2164,7 +2164,6 @@ position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 
 [node name="hitbox" type="Area2D" parent="." unique_id=1307241203]
-visible = false
 position = Vector2(-4, 1)
 collision_layer = 4
 metadata/_edit_group_ = true

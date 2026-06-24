@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" format=3 uid="uid://d4smokeframes"]
+[gd_resource type="SpriteFrames" format=3 uid="uid://eq3ig562qm1"]
 
 [ext_resource type="Texture2D" uid="uid://co5k80s7urrue" path="res://images/sprites/animated/items/campfire smoke.png" id="1_smoke"]
 
@@ -117,7 +117,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_15")
 }],
-"loop": true,
+"loop": 1,
 "name": &"smoke",
 "speed": 6.0
 }]
