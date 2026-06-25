@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/npc/bird_ai.gd" id="1_lbay0"]
+[ext_resource type="SpriteFrames" path="res://resources/animals/bird2_frames.tres" id="2_4ctsq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kew8j"]
+size = Vector2(16, 16)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lbay0"]
+radius = 64.0
+
+[node name="bird2" type="CharacterBody2D" unique_id=1596584447]
+collision_layer = 0
+script = ExtResource("1_lbay0")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=112630572]
+sprite_frames = ExtResource("2_4ctsq")
+animation = &"idle"
+offset = Vector2(0, -24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=770146362]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_kew8j")
+
+[node name="DetectionArea" type="Area2D" parent="." unique_id=853644688]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" unique_id=627190857]
+shape = SubResource("CircleShape2D_lbay0")

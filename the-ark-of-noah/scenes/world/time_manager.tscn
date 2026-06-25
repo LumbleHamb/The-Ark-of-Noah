@@ -1,10 +1,7 @@
 [gd_scene format=3 uid="uid://d4timemgr"]
 
-[ext_resource type="Script" path="res://scripts/world/time_manager.gd" id="1_tm"]
+[ext_resource type="Script" uid="uid://7jtn5edaumoo" path="res://scripts/world/time_manager.gd" id="1_tm"]
 
-[node name="TimeManager" type="Node"]
+[node name="TimeManager" type="Node" unique_id=578039893]
 script = ExtResource("1_tm")
-seconds_per_minute = 0.5
-start_hour = 6
-start_minute = 0
-start_day = 1
+seconds_per_minute = 0.01

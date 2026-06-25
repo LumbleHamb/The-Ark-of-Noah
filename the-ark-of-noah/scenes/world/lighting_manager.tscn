@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://d4lightmgr"]
 
-[ext_resource type="Script" path="res://scripts/world/lighting_manager.gd" id="1_lm"]
+[ext_resource type="Script" uid="uid://cs27afs4w0j4i" path="res://scripts/world/lighting_manager.gd" id="1_lm"]
 
-[node name="LightingManager" type="Node"]
+[node name="LightingManager" type="Node" unique_id=170837632]
 script = ExtResource("1_lm")
-flicker_speed = 6.0
-flicker_strength = 0.08
+night_darkness = 0.7
+light_energy_multiplier = 0.8
 
-[node name="CanvasModulate" type="CanvasModulate" parent="."]
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1408765659]

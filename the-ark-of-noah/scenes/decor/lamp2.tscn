@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bqjmneuvifaxc" path="res://scripts/world/light_source.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://cy6smtobrfdoa" path="res://images/sprites/animated/items/animated lamp posts-1.png" id="1_5biu2"]
+[ext_resource type="Texture2D" uid="uid://c85fnvclfqom4" path="res://images/generated/light_glow_256.png" id="2_ltube"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ltube"]
 atlas = ExtResource("1_5biu2")
@@ -164,6 +165,7 @@ shadow_enabled = true
 shadow_color = Color(0, 0, 0, 0.8)
 shadow_filter = 1
 shadow_filter_smooth = 4.0
+texture = ExtResource("2_ltube")
 texture_scale = 3.0
 
 [node name="LightSource" type="Node" parent="." unique_id=1963758344]

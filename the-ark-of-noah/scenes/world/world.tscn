@@ -11,6 +11,11 @@
 [ext_resource type="PackedScene" uid="uid://d4lightmgr" path="res://scenes/world/lighting_manager.tscn" id="8_lm"]
 [ext_resource type="PackedScene" uid="uid://dltegagis0l24" path="res://scenes/decor/lamp.tscn" id="10_dlabj"]
 [ext_resource type="PackedScene" uid="uid://d4lamp2base" path="res://scenes/decor/lamp2.tscn" id="11_srmg5"]
+[ext_resource type="PackedScene" uid="uid://c2l7p0tlbh05d" path="res://scenes/ui/resource_orb_bar.tscn" id="12_ui_orbs"]
+[ext_resource type="PackedScene" uid="uid://bpvbata3kw4tv" path="res://scenes/npc/animals/frog1.tscn" id="13_srmg5"]
+[ext_resource type="PackedScene" uid="uid://cgqyxudv4upxg" path="res://scenes/npc/animals/bird1.tscn" id="14_m114p"]
+[ext_resource type="PackedScene" uid="uid://dfjmnq1gf2d52" path="res://scenes/npc/animals/bird2.tscn" id="15_71ii3"]
+[ext_resource type="PackedScene" uid="uid://c54jwurjb1wlu" path="res://scenes/npc/animals/duck1.tscn" id="16_bt7bg"]
 
 [node name="world" type="Node2D" unique_id=259029940]
 y_sort_enabled = true
@@ -53,3 +58,26 @@ position = Vector2(916, 331)
 
 [node name="Lamp2" parent="." unique_id=82329718 instance=ExtResource("11_srmg5")]
 position = Vector2(638, 330)
+
+[node name="ResourceOrbBar" parent="." unique_id=1228766831 instance=ExtResource("12_ui_orbs")]
+
+[node name="frog1" parent="." unique_id=1896077463 instance=ExtResource("13_srmg5")]
+position = Vector2(1019, 432)
+
+[node name="bird1" parent="." unique_id=370629594 instance=ExtResource("14_m114p")]
+position = Vector2(1282, 476)
+
+[node name="bird2" parent="." unique_id=1596584447 instance=ExtResource("15_71ii3")]
+position = Vector2(1112, 232)
+
+[node name="duck1" parent="." unique_id=1644161076 instance=ExtResource("16_bt7bg")]
+position = Vector2(566, 296)
+
+[node name="duck2" parent="." unique_id=1067383235 instance=ExtResource("16_bt7bg")]
+position = Vector2(1036, 60)
+
+[node name="duck3" parent="." unique_id=748940152 instance=ExtResource("16_bt7bg")]
+position = Vector2(620, 606)
+
+[node name="duck4" parent="." unique_id=1205858414 instance=ExtResource("16_bt7bg")]
+position = Vector2(512, 194)

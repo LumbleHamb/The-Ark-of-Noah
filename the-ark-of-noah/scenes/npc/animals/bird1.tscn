@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://cgqyxudv4upxg"]
+
+[ext_resource type="Script" uid="uid://dgsntg88e717e" path="res://scripts/npc/bird_ai.gd" id="1_cthfa"]
+[ext_resource type="SpriteFrames" uid="uid://dusea7yk24ikw" path="res://resources/animals/bird1_frames.tres" id="2_qxv7k"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_h4rdv"]
+size = Vector2(16, 16)
+
+[node name="bird1" type="CharacterBody2D" unique_id=370629594]
+collision_layer = 0
+script = ExtResource("1_cthfa")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1255909140]
+sprite_frames = ExtResource("2_qxv7k")
+animation = &"flying"
+offset = Vector2(0, -24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=210294819]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_h4rdv")
+
+[node name="DetectionArea" type="Area2D" parent="." unique_id=671567458]

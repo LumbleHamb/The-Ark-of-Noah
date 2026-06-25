@@ -41,6 +41,30 @@ signal ambient_color_changed(color: Color)
 ## How much flicker varies the energy (0.0 = none, 0.3 = strong).
 @export var flicker_strength: float = 0.08
 
+## How dark the night ambient gets.  0.0 = night as bright as day,
+## 1.0 = original curve darkness, >1.0 = extra dark.
+@export_range(0.0, 2.0, 0.01) var night_darkness: float = 1.0:
+	set(v):
+		night_darkness = v
+		if is_inside_tree() and time_manager:
+			_update_ambient(time_manager.get_day_progress())
+
+## Global brightness multiplier for all PointLight2D energy values.
+## Adjust this to make ALL night lights brighter/dimmer at once.
+@export_range(0.0, 5.0, 0.1) var light_energy_multiplier: float = 1.0:
+	set(v):
+		light_energy_multiplier = v
+		if is_inside_tree():
+			_apply_flicker(_last_night)
+
+## Global size multiplier for all PointLight2D texture_scale values.
+## Adjust this to make ALL night lights larger/smaller at once.
+@export_range(0.0, 5.0, 0.1) var light_scale_multiplier: float = 1.0:
+	set(v):
+		light_scale_multiplier = v
+		if is_inside_tree():
+			_apply_size()
+
 # ============================================================================
 # STATE
 # ============================================================================
@@ -52,6 +76,7 @@ var _source_components: Dictionary = {} # Node → LightSource
 var _flicker_offset: float = 0.0
 var _last_night: bool = false
 var _player_light_base_energy: float = 1.2
+var _player_light_base_scale: float = 4.0
 
 # Ambient colour curve: key = day_progress (0.0 – 1.0), value = Color
 # Key points match the time phases.
@@ -77,9 +102,10 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	add_to_group(&"lighting_manager")
 	
-	# Store base energy for player light flicker.
+	# Store base energy and scale for player light.
 	if player_light and is_instance_valid(player_light):
 		_player_light_base_energy = player_light.energy
+		_player_light_base_scale = player_light.texture_scale
 	
 	# Find TimeManager.
 	time_manager = _find_time_manager()
@@ -111,6 +137,7 @@ func _process(delta: float) -> void:
 	if is_night != _last_night:
 		_last_night = is_night
 		_update_lights(is_night)
+		_apply_flicker(is_night)  # Apply energy multiplier immediately
 	else:
 		# Still apply flicker every frame at night.
 		_apply_flicker(is_night)
@@ -140,6 +167,27 @@ func _update_ambient(progress: float) -> void:
 		t = (progress - prev_key) / (next_key - prev_key)
 	
 	var color: Color = prev_color.lerp(next_color, t)
+	
+	# ========================================================================
+	# NIGHT DARKNESS — lets the user control how dark nighttime gets.
+	#   0.0 = night ambient is fully bright (like midday white)
+	#   1.0 = original curve behaviour
+	#  >1.0 = even darker than the curve (extrapolates toward black)
+	#
+	# We only apply this when it's actually dark (luminance < 0.4) so that
+	# daytime and golden-hour colours are untouched.
+	# ========================================================================
+	if night_darkness != 1.0:
+		var lum: float = color.get_luminance()
+		if lum < 0.4:
+			if night_darkness < 1.0:
+				# Brighter nights — blend the dark colour toward white.
+				color = Color.WHITE.lerp(color, night_darkness)
+			else:
+				# Darker nights — push the dark colour further toward black.
+				var extra: float = clampf(night_darkness - 1.0, 0.0, 1.0)
+				color = color.lerp(Color.BLACK, extra)
+	
 	modulate.color = color
 	ambient_color_changed.emit(color)
 
@@ -189,16 +237,24 @@ func _update_lights(is_night: bool) -> void:
 		if comp and is_instance_valid(comp):
 			comp.set_lit(is_night)
 		
-		# Toggle PointLight2D children.
+		# Toggle PointLight2D children and apply scale + energy multipliers.
 		var lights: Array = _source_lights.get(node, [])
 		for light in lights:
 			if not is_instance_valid(light):
 				continue
 			light.enabled = is_night
+			if is_night:
+				var base_scale: float = light.get_meta(&"base_texture_scale", light.texture_scale)
+				light.texture_scale = base_scale * light_scale_multiplier
+				var base_energy: float = light.get_meta(&"base_energy", light.energy)
+				light.energy = base_energy * light_energy_multiplier
 	
 	# Handle player light separately.
 	if player_light and is_instance_valid(player_light):
 		player_light.enabled = is_night
+		if is_night:
+			player_light.texture_scale = _player_light_base_scale * light_scale_multiplier
+			player_light.energy = _player_light_base_energy * light_energy_multiplier
 
 func _apply_flicker(is_night: bool) -> void:
 	# Apply subtle energy flicker to all active lights.
@@ -212,12 +268,26 @@ func _apply_flicker(is_night: bool) -> void:
 				continue
 			var base: float = light.get_meta(&"base_energy", 1.0)
 			var flicker: float = sin(_flicker_offset + light.global_position.length() * 0.1) * flicker_strength
-			light.energy = base + flicker
+			light.energy = (base + flicker) * light_energy_multiplier
 	
 	# Player light flicker.
 	if player_light and is_instance_valid(player_light) and player_light.enabled:
 		var flicker: float = sin(_flicker_offset * 1.5) * (flicker_strength * 1.5)
-		player_light.energy = _player_light_base_energy + flicker
+		player_light.energy = (_player_light_base_energy + flicker) * light_energy_multiplier
+
+## Reapply texture_scale to all active lights using current multiplier.
+## Called when the user tweaks light_scale_multiplier in the inspector.
+func _apply_size() -> void:
+	for node in _light_sources:
+		var lights: Array = _source_lights.get(node, [])
+		for light in lights:
+			if not is_instance_valid(light) or not light.enabled:
+				continue
+			var base_scale: float = light.get_meta(&"base_texture_scale", light.texture_scale)
+			light.texture_scale = base_scale * light_scale_multiplier
+	
+	if player_light and is_instance_valid(player_light) and player_light.enabled:
+		player_light.texture_scale = _player_light_base_scale * light_scale_multiplier
 
 func register_light_source(node: Node) -> void:
 	# Allow runtime registration of new light sources (e.g. placed torches).

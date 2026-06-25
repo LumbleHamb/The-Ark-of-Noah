@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/npc/frog_ai.gd" id="1_5ibbs"]
+[ext_resource type="SpriteFrames" path="res://resources/animals/frog3_frames.tres" id="2_sth18"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1qssn"]
+size = Vector2(16, 16)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5ibbs"]
+radius = 64.0
+
+[node name="frog3" type="CharacterBody2D" unique_id=266287222]
+collision_layer = 0
+script = ExtResource("1_5ibbs")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=563585367]
+sprite_frames = ExtResource("2_sth18")
+animation = &"idle_front"
+offset = Vector2(0, -24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1210860424]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_1qssn")
+
+[node name="DetectionArea" type="Area2D" parent="." unique_id=1231336905]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" unique_id=71331297]
+shape = SubResource("CircleShape2D_5ibbs")

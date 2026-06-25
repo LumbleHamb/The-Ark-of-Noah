@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/npc/duck_ai.gd" id="1_xtprg"]
+[ext_resource type="SpriteFrames" path="res://resources/animals/duck1_frames.tres" id="2_41lwg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wvl1p"]
+size = Vector2(16, 16)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xtprg"]
+radius = 64.0
+
+[node name="duck1" type="CharacterBody2D" unique_id=1644161076]
+collision_layer = 0
+script = ExtResource("1_xtprg")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=270575756]
+sprite_frames = ExtResource("2_41lwg")
+animation = &"idle3"
+frame_progress = 0.51681745
+offset = Vector2(0, -24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=188611637]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_wvl1p")
+
+[node name="DetectionArea" type="Area2D" parent="." unique_id=923512114]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" unique_id=530805]
+shape = SubResource("CircleShape2D_xtprg")
+
+[node name="Ripples" type="AnimatedSprite2D" parent="." unique_id=1985716970]
+z_index = -1
+sprite_frames = ExtResource("2_41lwg")
+animation = &"water"
+offset = Vector2(0, -24)

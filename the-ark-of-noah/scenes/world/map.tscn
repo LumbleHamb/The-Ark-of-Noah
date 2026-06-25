@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://eivp3syerm1y" path="res://images/tilesets/animated_water.png" id="1_51gt8"]
 [ext_resource type="Texture2D" uid="uid://dddvvfetnvhx4" path="res://images/tilesets/water_beach_tileset.png" id="2_rjrkx"]
-[ext_resource type="Texture2D" uid="uid://bdljqku03xipp" path="res://images/tilesets/grass_tileset.png" id="3_rjrkx"]
+[ext_resource type="Texture2D" uid="uid://bdljqku03xipp" path="res://images/tilesets/full_tileset.png" id="3_rjrkx"]
 [ext_resource type="Texture2D" uid="uid://cd0a3k4c1lvxh" path="res://images/tilesets/beach_grass_trans.png" id="4_4vcqx"]
 [ext_resource type="Texture2D" uid="uid://d10wkvfq4t0rt" path="res://images/tilesets/coastline.png" id="5_rexne"]
 
