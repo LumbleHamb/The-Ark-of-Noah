@@ -205,6 +205,12 @@ func _on_phase_changed(_phase: TimeManager.TimePhase) -> void:
 # ============================================================================
 func _refresh_light_sources() -> void:
 	# Scan the tree for nodes in group 'light_source'.
+	# Guard: during scene teardown, get_tree() can be null (e.g. when a
+	# LightSource's _exit_tree calls unregister_light_source after the
+	# LightingManager has already left the tree).
+	if get_tree() == null:
+		_light_sources.clear()
+		return
 	_light_sources = get_tree().get_nodes_in_group(&"light_source")
 	_source_lights.clear()
 	_source_components.clear()
@@ -330,8 +336,8 @@ func _refresh_and_apply_lights() -> void:
 # ============================================================================
 func _find_time_manager() -> TimeManager:
 	var tm: TimeManager = get_node("/root/world/TimeManager") as TimeManager
-	if tm == null:
+	if tm == null and get_tree() != null:
 		tm = get_tree().get_first_node_in_group(&"time_manager")
-	if tm == null:
+	if tm == null and get_tree() != null:
 		tm = get_tree().root.find_child("TimeManager", true, false) as TimeManager
 	return tm
