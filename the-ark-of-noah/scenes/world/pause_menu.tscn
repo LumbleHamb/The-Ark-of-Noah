@@ -1,12 +1,14 @@
 [gd_scene format=3 uid="uid://blk0f5n3x3qnj"]
 
-[ext_resource type="Script" uid="uid://crnt5u0bs4xvj" path="res://scripts/world/pause_menu.gd" id="1_irfem"]
+[ext_resource type="Script" uid="uid://6nj74qik02nv" path="res://scripts/world/pause_menu.gd" id="1_irfem"]
 [ext_resource type="Texture2D" uid="uid://7w4fijgvbuq" path="res://images/ui/Individual files/ui_images/Spellbook & Tabs/Spellbook_Opening.png" id="2_s2r85"]
 [ext_resource type="Texture2D" uid="uid://c1rcjajcn5d3n" path="res://images/ui/Individual files/ui_images/Spellbook & Tabs/Spellbook_Closing.png" id="3_closing"]
 [ext_resource type="Texture2D" uid="uid://dbk1hfv5weg62" path="res://images/ui/Individual files/ui_images/Spellbook & Tabs/Spellbook_NextPage.png" id="4_12pgt"]
 [ext_resource type="Texture2D" uid="uid://s8snipgrxolu" path="res://images/ui/Individual files/ui_images/Spellbook & Tabs/Spellbook_PreviousPage.png" id="5_7gtfw"]
 [ext_resource type="Texture2D" uid="uid://dpg51n8783gnp" path="res://images/ui/Individual files/ui_images/Spellbook & Tabs/PageFold_Left.png" id="6_foldleft"]
 [ext_resource type="Texture2D" uid="uid://bsfa25g585a1i" path="res://images/ui/Individual files/ui_images/Spellbook & Tabs/PageFold_Right.png" id="7_foldright"]
+[ext_resource type="Texture2D" uid="uid://ccqrq7w4ijnyb" path="res://images/ui/Individual files/ui_images/Spellbook & Tabs/Spellbook_WithTabs.png" id="8_withtabs"]
+[ext_resource type="Shader" uid="uid://ccwoyo4xm8rnl" path="res://shaders/gold_glow.gdshader" id="9_shader"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_close_0"]
 atlas = ExtResource("3_closing")
@@ -244,6 +246,18 @@ animations = [{
 "speed": 16.0
 }]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ekebi"]
+shader = ExtResource("9_shader")
+shader_parameter/glow_intensity = 0.0
+shader_parameter/glow_color = Color(1, 0.84, 0, 1)
+shader_parameter/glow_radius = 0.15
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cdlk1"]
+shader = ExtResource("9_shader")
+shader_parameter/glow_intensity = 0.0
+shader_parameter/glow_color = Color(1, 0.84, 0, 1)
+shader_parameter/glow_radius = 0.15
+
 [node name="PauseMenu" type="CanvasLayer" unique_id=607321198]
 process_mode = 3
 script = ExtResource("1_irfem")
@@ -267,26 +281,36 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -384.0
-offset_top = -360.0
-offset_right = 384.0
-offset_bottom = 360.0
+offset_left = -408.0
+offset_top = -280.0
+offset_right = 408.0
+offset_bottom = 280.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(384, 360)
 mouse_filter = 2
 
 [node name="BookSprite" type="AnimatedSprite2D" parent="BookRoot" unique_id=1061182313]
 unique_name_in_owner = true
-position = Vector2(384, 360)
+position = Vector2(408, 280)
+scale = Vector2(2.125, 2.125)
 sprite_frames = SubResource("SpriteFrames_book")
 animation = &"book_opening"
+
+[node name="BookInterior" type="TextureRect" parent="BookRoot" unique_id=1914964653]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_right = 816.0
+offset_bottom = 528.0
+texture = ExtResource("8_withtabs")
+expand_mode = 1
 
 [node name="PageTurn" type="AnimatedSprite2D" parent="BookRoot" unique_id=1574327615]
 unique_name_in_owner = true
 visible = false
 z_index = 10
-position = Vector2(384, 360)
+position = Vector2(408, 280)
+scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_turn")
 animation = &"next_page"
 
@@ -294,50 +318,19 @@ animation = &"next_page"
 unique_name_in_owner = true
 visible = false
 anchors_preset = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_right = 816.0
+offset_bottom = 528.0
 mouse_filter = 2
-
-[node name="LeftPageBg" type="ColorRect" parent="BookRoot/ContentLayer" unique_id=630710680]
-unique_name_in_owner = true
-visible = false
-layout_mode = 0
-offset_right = 380.0
-offset_bottom = 720.0
-mouse_filter = 2
-color = Color(0.96, 0.92, 0.82, 1)
-
-[node name="RightPageBg" type="ColorRect" parent="BookRoot/ContentLayer" unique_id=1618437856]
-unique_name_in_owner = true
-visible = false
-layout_mode = 0
-offset_left = 388.0
-offset_right = 768.0
-offset_bottom = 720.0
-mouse_filter = 2
-color = Color(0.96, 0.92, 0.82, 1)
-
-[node name="BookSpine" type="ColorRect" parent="BookRoot/ContentLayer" unique_id=141221337]
-unique_name_in_owner = true
-visible = false
-layout_mode = 0
-offset_left = 380.0
-offset_right = 388.0
-offset_bottom = 720.0
-mouse_filter = 2
-color = Color(0.25, 0.15, 0.05, 1)
 
 [node name="LeftContent" type="Control" parent="BookRoot/ContentLayer" unique_id=666631178]
 unique_name_in_owner = true
 visible = false
 clip_contents = true
 anchors_preset = 0
-offset_left = 16.0
-offset_top = 32.0
-offset_right = 376.0
-offset_bottom = 688.0
+offset_left = 44.0
+offset_top = 36.0
+offset_right = 350.0
+offset_bottom = 490.0
 mouse_filter = 2
 
 [node name="RightContent" type="Control" parent="BookRoot/ContentLayer" unique_id=925953729]
@@ -345,49 +338,55 @@ unique_name_in_owner = true
 visible = false
 clip_contents = true
 anchors_preset = 0
-offset_left = 392.0
-offset_top = 32.0
-offset_right = 752.0
-offset_bottom = 688.0
+offset_left = 420.0
+offset_top = 36.0
+offset_right = 772.0
+offset_bottom = 490.0
 mouse_filter = 2
 
 [node name="CornerPrev" type="TextureButton" parent="BookRoot/ContentLayer" unique_id=1403457483]
 unique_name_in_owner = true
 visible = false
+material = SubResource("ShaderMaterial_ekebi")
 layout_mode = 0
-offset_right = 80.0
-offset_bottom = 80.0
+offset_right = 52.0
+offset_bottom = 52.0
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("6_foldleft")
 ignore_texture_size = true
+stretch_mode = 3
 
 [node name="CornerNext" type="TextureButton" parent="BookRoot/ContentLayer" unique_id=82443459]
 unique_name_in_owner = true
 visible = false
+material = SubResource("ShaderMaterial_cdlk1")
 layout_mode = 0
-offset_left = 688.0
-offset_right = 768.0
-offset_bottom = 80.0
+offset_left = 764.0
+offset_right = 816.0
+offset_bottom = 52.0
 mouse_default_cursor_shape = 2
 texture_normal = ExtResource("7_foldright")
 ignore_texture_size = true
+stretch_mode = 3
 
 [node name="NavPrev" type="Button" parent="." unique_id=1725918285]
 unique_name_in_owner = true
 visible = false
-offset_left = 24.0
-offset_top = 600.0
-offset_right = 104.0
-offset_bottom = 656.0
+offset_left = 50.0
+offset_top = 570.0
+offset_right = 130.0
+offset_bottom = 610.0
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 14
 text = "◀  Prev"
 
 [node name="NavNext" type="Button" parent="." unique_id=1963861573]
 unique_name_in_owner = true
 visible = false
-offset_left = 1816.0
-offset_top = 600.0
-offset_right = 1896.0
-offset_bottom = 656.0
+offset_left = 686.0
+offset_top = 570.0
+offset_right = 766.0
+offset_bottom = 610.0
 mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 14
 text = "Next  ▶"

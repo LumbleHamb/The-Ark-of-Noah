@@ -6,6 +6,9 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h4rdv"]
 size = Vector2(16, 16)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_67156"]
+radius = 64.0
+
 [node name="bird1" type="CharacterBody2D" unique_id=370629594]
 collision_layer = 0
 script = ExtResource("1_cthfa")
@@ -20,3 +23,7 @@ position = Vector2(0, -8)
 shape = SubResource("RectangleShape2D_h4rdv")
 
 [node name="DetectionArea" type="Area2D" parent="." unique_id=671567458]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" unique_id=671567459]
+shape = SubResource("CircleShape2D_67156")

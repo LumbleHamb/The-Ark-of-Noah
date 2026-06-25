@@ -15,7 +15,7 @@
 [resource]
 script = ExtResource("2_8s17r")
 crop_name = "Bok Choy"
-growth_time_seconds = 90.0
+growth_days = 2
 max_yield = 2
 stage_sprites = Array[Texture2D]([ExtResource("4_ichkn"), ExtResource("5_10tft"), ExtResource("6_fm46a"), ExtResource("7_wmst7"), ExtResource("8_pfta8"), ExtResource("9_ivgxx"), ExtResource("10_n80a3"), ExtResource("11_oj5am")])
 seed_sprite = ExtResource("3_cxhcr")

@@ -23,6 +23,7 @@ position = Vector2(0, -8)
 shape = SubResource("RectangleShape2D_xk5ka")
 
 [node name="DetectionArea" type="Area2D" parent="." unique_id=900165883]
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" unique_id=986348864]
 shape = SubResource("CircleShape2D_gn45x")

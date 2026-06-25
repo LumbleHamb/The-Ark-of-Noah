@@ -15,7 +15,7 @@
 [resource]
 script = ExtResource("2_fkiwh")
 crop_name = "Eggplant"
-growth_time_seconds = 150.0
+growth_days = 4
 max_yield = 2
 stage_sprites = Array[Texture2D]([ExtResource("4_m4ujf"), ExtResource("5_utqbo"), ExtResource("6_s527c"), ExtResource("7_1s0f2"), ExtResource("8_pr22w"), ExtResource("9_ccurn"), ExtResource("10_qetfx"), ExtResource("11_ybfrd")])
 seed_sprite = ExtResource("3_685we")

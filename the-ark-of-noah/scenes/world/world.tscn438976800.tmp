@@ -46,6 +46,10 @@ position = Vector2(1592, 249)
 y_sort_enabled = true
 
 [node name="LightingManager" parent="." unique_id=1640264858 instance=ExtResource("8_lm")]
+player_light = NodePath("../player/PlayerLight")
+flicker_speed = null
+flicker_strength = null
+light_scale_multiplier = null
 
 [node name="ChunkManager" type="Node" parent="." unique_id=1896709879]
 script = ExtResource("17_cm")

@@ -67,5 +67,6 @@ theme_override_colors/font_color = Color(0.4, 0.28, 0.12, 1)
 text = "WASD - Move
 Space - Attack
 E - Interact / Rope
+Q - Inventory
 Shift - Run
 ESC - Pause"

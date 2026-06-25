@@ -10,8 +10,10 @@ extends Resource
 ## How many growth stages this crop has (1 = no visible growth).
 @export var growth_stages: int = 8
 
-## Total real-time seconds from planted to fully mature.
-@export var growth_time_seconds: float = 120.0
+## In-game days from planted to fully mature.
+## Set this per-crop to control each seed's growth rate independently.
+## Example: 3 = crop matures on the 3rd day after planting.
+@export var growth_days: int = 3
 
 ## Minimum harvest yield (per crop).
 @export var min_yield: int = 1
@@ -22,8 +24,8 @@ extends Resource
 ## If true, the crop regrows after harvest (e.g. blueberry, grape, coffee).
 @export var regrowable: bool = false
 
-## If regrowable, how many seconds to regrow after harvest.
-@export var regrow_time_seconds: float = 60.0
+## If regrowable, how many in-game days to regrow after harvest.
+@export var regrow_days: int = 1
 
 ## Sprite for each growth stage (index 0 = seed/just planted).
 @export var stage_sprites: Array[Texture2D] = []

@@ -15,7 +15,7 @@
 [resource]
 script = ExtResource("2_rukgs")
 crop_name = "Corn"
-growth_time_seconds = 180.0
+growth_days = 5
 max_yield = 2
 stage_sprites = Array[Texture2D]([ExtResource("4_deri0"), ExtResource("5_4rwl6"), ExtResource("6_jnv33"), ExtResource("7_bt1q0"), ExtResource("8_osjt0"), ExtResource("9_5ktv8"), ExtResource("10_01h8b"), ExtResource("11_co0v7")])
 seed_sprite = ExtResource("3_arc4c")

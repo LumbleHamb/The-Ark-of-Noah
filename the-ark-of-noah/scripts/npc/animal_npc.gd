@@ -24,9 +24,9 @@ signal fade_complete()                               # emitted after fade-out fi
 @export var flee_safe_distance: float = 200.0       ## Distance from player where fleeing stops.
 @export var walk_speed: float = 30.0
 @export var flee_speed: float = 60.0
-@export var idle_time_min: float = 1.0
-@export var idle_time_max: float = 4.0
-@export var wander_chance: float = 0.6              ## Probability of wandering when idle timer expires.
+@export var idle_time_min: float = 3.0              ## Minimum idle duration before deciding to wander (seconds).
+@export var idle_time_max: float = 8.0              ## Maximum idle duration before deciding to wander (seconds).
+@export var wander_chance: float = 0.4              ## Probability of wandering when idle timer expires.
 
 @export_group("Fade")
 ## Seconds for fade-in when the animal spawns.
@@ -65,6 +65,9 @@ var _fade_tween: Tween = null
 func _ready() -> void:
 	home_position = global_position
 	anim.animation_finished.connect(_on_animation_finished)
+	# Set the detection area to detect the player (collision_layer 2).
+	# Player is on layer 2; default detection_mask is 1 which won't overlap.
+	detection_area.collision_mask = 2
 	detection_area.body_entered.connect(_on_detection_area_body_entered)
 	detection_area.body_exited.connect(_on_detection_area_body_exited)
 
@@ -222,7 +225,13 @@ func _start_fade_out() -> void:
 func _on_fade_out_complete() -> void:
 	fade_complete.emit()
 	# Default: free after fade-out. Subclasses can override to do something else.
+	_unregister_from_chunk_manager()
 	queue_free()
+
+func _unregister_from_chunk_manager() -> void:
+	var chunk_manager: Node = get_tree().current_scene.find_child(&"ChunkManager", false, false)
+	if chunk_manager != null and chunk_manager.has_method(&"unregister_node"):
+		chunk_manager.unregister_node(self)
 
 func _kill_fade_tween() -> void:
 	if _fade_tween and _fade_tween.is_valid():
@@ -256,10 +265,13 @@ func _on_enter_state(_new_state: AnimalState) -> void:
 func _pick_new_idle_time() -> void:
 	idle_timer = randf_range(idle_time_min, idle_time_max)
 
+## Sets flip_h so the walk_side animation (which faces LEFT in source art)
+## is mirrored when moving right and shown as-is when moving left.
 func _facing_from_dir(dir: Vector2) -> void:
 	if abs(dir.x) > 0.01:
 		facing_right = dir.x > 0
-	anim.flip_h = not facing_right
+	# walk_side art faces left → flip when moving right (facing_right = true)
+	anim.flip_h = facing_right
 
 # ============================================================================
 # ANIMATION HELPERS (override in subclasses)

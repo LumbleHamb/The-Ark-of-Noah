@@ -15,7 +15,7 @@
 [resource]
 script = ExtResource("2_xdt65")
 crop_name = "Melon"
-growth_time_seconds = 200.0
+growth_days = 5
 stage_sprites = Array[Texture2D]([ExtResource("4_epw5p"), ExtResource("5_xydla"), ExtResource("6_jsyr5"), ExtResource("7_b31l0"), ExtResource("8_eqqek"), ExtResource("9_1mjvn"), ExtResource("10_ft8bn"), ExtResource("11_r363x")])
 seed_sprite = ExtResource("3_gpgpa")
 harvest_sprite = ExtResource("1_yq130")
