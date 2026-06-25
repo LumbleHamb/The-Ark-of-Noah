@@ -239,10 +239,14 @@ func read_input() -> void:
 		start_attack()
 
 	# ========================================================================
-	# INTERACT (E) — everything else: rope, tilling, planting, harvesting
+	# INTERACT (E / MP orb) — rope, tilling, planting, harvesting
+	# BUT if the axe is equipped and no log is nearby, attack instead
 	# ========================================================================
 	if state != State.ATTACK and state != State.FARMING and Input.is_action_just_pressed("interact"):
-		_do_interact()
+		if _can_attack_with_axe():
+			start_attack()
+		else:
+			_do_interact()
 
 
 # Reads movement input: virtual joystick when active, otherwise keyboard actions.
@@ -316,6 +320,22 @@ func handle_attack_state() -> void:
 func _on_hitbox_body_entered(body: Node) -> void:
 	if state == State.ATTACK and body.has_method("hit"):
 		body.hit()
+
+func _can_attack_with_axe() -> bool:
+	"""Return true if the player has an axe selected and no log is within rope range.
+	This lets the interact button double as attack for axe users, while still
+	letting rope attachment take priority when a log is nearby."""
+	var tool_count: int = tool_inventory.size()
+	if selected_slot < 0 or selected_slot >= tool_count:
+		return false
+	var tool: ToolData = tool_inventory[selected_slot]
+	if tool.tool_type != ToolData.ToolType.AXE:
+		return false
+	# Don't attack if there's a log to interact with (rope priority)
+	for body in rope_range.get_overlapping_bodies():
+		if body.is_in_group("log"):
+			return false
+	return true
 
 # ============================================================================
 # FARMING ACTIONS
