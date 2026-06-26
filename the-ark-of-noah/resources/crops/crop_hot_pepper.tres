@@ -15,7 +15,7 @@
 [resource]
 script = ExtResource("2_e7eag")
 crop_name = "Hot Pepper"
-growth_time_seconds = 130.0
+growth_days = 3
 max_yield = 3
 stage_sprites = Array[Texture2D]([ExtResource("4_0v1a0"), ExtResource("5_n6tgu"), ExtResource("6_1exre"), ExtResource("7_q20e7"), ExtResource("8_sd7na"), ExtResource("9_424j4"), ExtResource("10_u3lfc"), ExtResource("11_0pd14")])
 seed_sprite = ExtResource("3_0bigm")

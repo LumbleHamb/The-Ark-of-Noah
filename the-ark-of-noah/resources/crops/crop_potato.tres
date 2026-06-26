@@ -15,7 +15,7 @@
 [resource]
 script = ExtResource("2_suukk")
 crop_name = "Potato"
-growth_time_seconds = 100.0
+growth_days = 4
 max_yield = 3
 stage_sprites = Array[Texture2D]([ExtResource("4_8pxpd"), ExtResource("5_otog2"), ExtResource("6_bv22v"), ExtResource("7_afwjs"), ExtResource("8_rs2m2"), ExtResource("9_pox8e"), ExtResource("10_ggfae"), ExtResource("11_oaree")])
 seed_sprite = ExtResource("3_frkkp")

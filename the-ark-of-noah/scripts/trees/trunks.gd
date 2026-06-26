@@ -86,4 +86,10 @@ func break_tree():
 				fade_tween.tween_property(child, "modulate:a", 0.0, 1.5)
 	
 	await fade_tween.finished
+	
+	# Unregister from chunk manager before freeing
+	var chunk_manager: Node = get_tree().current_scene.find_child("ChunkManager", false, false)
+	if chunk_manager != null and chunk_manager.has_method(&"unregister_node"):
+		chunk_manager.unregister_node(self)
+	
 	queue_free()

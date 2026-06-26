@@ -15,7 +15,7 @@
 [resource]
 script = ExtResource("2_soyjv")
 crop_name = "Cauliflower"
-growth_time_seconds = 160.0
+growth_days = 4
 stage_sprites = Array[Texture2D]([ExtResource("4_wv5p8"), ExtResource("5_ndvco"), ExtResource("6_3g2ss"), ExtResource("7_sv6wx"), ExtResource("8_f1bo3"), ExtResource("9_ro21l"), ExtResource("10_ocrx2"), ExtResource("11_6awbk")])
 seed_sprite = ExtResource("3_jrng6")
 harvest_sprite = ExtResource("1_no2t3")

@@ -15,7 +15,7 @@
 [resource]
 script = ExtResource("2_8io3g")
 crop_name = "Garlic"
-growth_time_seconds = 100.0
+growth_days = 3
 max_yield = 2
 stage_sprites = Array[Texture2D]([ExtResource("4_1265j"), ExtResource("5_ohcur"), ExtResource("6_eryjv"), ExtResource("7_agrn8"), ExtResource("8_ti1iy"), ExtResource("9_g4v4g"), ExtResource("10_5oge6"), ExtResource("11_gabcq")])
 seed_sprite = ExtResource("3_au8kb")

@@ -1,6 +1,6 @@
-class_name ActionBar
-extends CanvasLayer
 
+extends CanvasLayer
+class_name ActionBar
 ## Simple hotbar overlay for tool/seed selection.
 ## 1-4 = tools, 5+ = seeds.
 ## Shows the current selection visually.

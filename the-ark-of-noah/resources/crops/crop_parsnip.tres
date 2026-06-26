@@ -15,7 +15,7 @@
 [resource]
 script = ExtResource("2_nm32t")
 crop_name = "Parsnip"
-growth_time_seconds = 80.0
+growth_days = 3
 max_yield = 2
 stage_sprites = Array[Texture2D]([ExtResource("4_3uxoj"), ExtResource("5_hj7s4"), ExtResource("6_txsda"), ExtResource("7_akjq4"), ExtResource("8_fle51"), ExtResource("9_c0xch"), ExtResource("10_o6dwo"), ExtResource("11_7u1bg")])
 seed_sprite = ExtResource("3_84q4v")

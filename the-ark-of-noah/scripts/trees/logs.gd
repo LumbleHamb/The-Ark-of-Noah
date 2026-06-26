@@ -61,10 +61,12 @@ func update_player_penalty():
 		var total_mod = clamp(base_multiplier - (logs_pushed_count * stack_penalty), 0.1, 1.0)
 		pull_target.set_speed_modifier(total_mod)
 
-func attach_to_target(target: Node2D) -> void:
-	if not is_ready or pull_target != null: return
+func attach_to_target(target: Node2D) -> bool:
+	if not is_ready or pull_target != null:
+		return false
 	pull_target = target
 	update_player_penalty()
+	return true
 
 func detach() -> void:
 	if is_instance_valid(pull_target) and pull_target.has_method("set_speed_modifier"):

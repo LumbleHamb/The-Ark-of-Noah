@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://5l14mek37061" path="res://images/sprites/animated/player/player_walk.png" id="4_0owmy"]
 [ext_resource type="Script" uid="uid://cvfk6qjhv74dk" path="res://scripts/player/player.gd" id="5_p47bc"]
 [ext_resource type="PackedScene" uid="uid://d4factionbar" path="res://scenes/farming/action_bar.tscn" id="6_farm_action_bar"]
+[ext_resource type="Texture2D" uid="uid://c85fnvclfqom4" path="res://images/generated/light_glow_256.png" id="7_light"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qek5x"]
 atlas = ExtResource("1_lvxji")
@@ -2197,4 +2198,5 @@ color = Color(1, 0.85, 0.6, 1)
 energy = 1.2
 shadow_enabled = true
 shadow_color = Color(0, 0, 0, 0.8)
+texture = ExtResource("7_light")
 texture_scale = 4.0

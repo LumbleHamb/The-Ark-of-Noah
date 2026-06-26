@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bqjmneuvifaxc" path="res://scripts/world/light_source.gd" id="1_source"]
 [ext_resource type="SpriteFrames" uid="uid://cuhu64o0bqix3" path="res://resources/campfire_frames.tres" id="2_fireframes"]
+[ext_resource type="Texture2D" uid="uid://c85fnvclfqom4" path="res://images/generated/light_glow_256.png" id="2_mblim"]
 
 [node name="Campfire" type="Node2D" unique_id=1358236671]
 y_sort_enabled = true
@@ -23,6 +24,7 @@ shadow_enabled = true
 shadow_color = Color(0, 0, 0, 0.8)
 shadow_filter = 1
 shadow_filter_smooth = 4.0
+texture = ExtResource("2_mblim")
 texture_scale = 4.0
 
 [node name="LightSource" type="Node" parent="." unique_id=236167254]

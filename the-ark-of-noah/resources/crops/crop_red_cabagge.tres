@@ -15,7 +15,7 @@
 [resource]
 script = ExtResource("2_una32")
 crop_name = "Red Cabbage"
-growth_time_seconds = 170.0
+growth_days = 4
 stage_sprites = Array[Texture2D]([ExtResource("4_drs1j"), ExtResource("5_11d1n"), ExtResource("6_7fdmu"), ExtResource("7_3x3qy"), ExtResource("8_f0m4h"), ExtResource("9_fcsve"), ExtResource("10_4e841"), ExtResource("11_idqrs")])
 seed_sprite = ExtResource("3_t5ac7")
 harvest_sprite = ExtResource("1_ksdx6")

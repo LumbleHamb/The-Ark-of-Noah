@@ -18,6 +18,18 @@ const MobileJoystickScript: Script = preload("res://scripts/ui/virtual_joystick.
 
 var current_speed_mod: float = 1.0
 
+# Hitbox positions per facing direction (placed in front of the player's swing)
+const HITBOX_OFFSETS: Dictionary = {
+	"S":  Vector2(0, 24),
+	"SE": Vector2(17, 17),
+	"E":  Vector2(24, 0),
+	"NE": Vector2(17, -17),
+	"N":  Vector2(0, -24),
+	"NW": Vector2(-17, -17),
+	"W":  Vector2(-24, 0),
+	"SW": Vector2(-17, 17),
+}
+
 # Animation Offsets
 var BASE_OFFSET: Vector2 = Vector2(-32, -43)
 var ATTACK_OFFSET: Vector2 = Vector2(-48, -59)  # Centers 96x96 attack frame same as 64x64 idle/walk/run
@@ -184,9 +196,10 @@ func try_attach_rope() -> void:
 			return
 
 func attach_rope(log_body: Node2D) -> void:
-	attached_log = log_body
 	if log_body.has_method("attach_to_target"):
-		log_body.attach_to_target(self)
+		if not log_body.attach_to_target(self):
+			return  # Log rejected the attachment (e.g. not ready yet)
+	attached_log = log_body
 
 func detach_rope() -> void:
 	if attached_log and attached_log.has_method("detach"):
@@ -219,22 +232,21 @@ func read_input() -> void:
 			if _select_slot(i):
 				return
 
-	# Attack / Use equipped item
+	# ========================================================================
+	# ATTACK (Space) — ONLY for chopping/attacking trees
+	# ========================================================================
 	if state != State.ATTACK and state != State.FARMING and Input.is_action_just_pressed("attack"):
-		if selected_slot >= 0 and farm_manager != null:
-			_do_farming_action()
-		else:
+		start_attack()
+
+	# ========================================================================
+	# INTERACT (E / MP orb) — rope, tilling, planting, harvesting
+	# BUT if the axe is equipped and no log is nearby, attack instead
+	# ========================================================================
+	if state != State.ATTACK and state != State.FARMING and Input.is_action_just_pressed("interact"):
+		if _can_attack_with_axe():
 			start_attack()
-
-	# Interact (harvest / context action)
-	if Input.is_action_just_pressed("interact"):
-		_try_harvest()
-
-	if Input.is_action_just_pressed("attach_rope"):
-		if attached_log != null:
-			detach_rope()
 		else:
-			try_attach_rope()
+			_do_interact()
 
 
 # Reads movement input: virtual joystick when active, otherwise keyboard actions.
@@ -294,7 +306,9 @@ func start_attack() -> void:
 	_attack_min_frames = 0
 	anim.stop()
 	anim.frame = 0
-	anim.play("attack_" + get_dir(last_dir))
+	var dir_key: String = get_dir(last_dir)
+	anim.play("attack_" + dir_key)
+	hitbox.position = HITBOX_OFFSETS.get(dir_key, Vector2(0, 24))
 	hitbox.monitoring = true
 
 func handle_attack_state() -> void:
@@ -307,12 +321,32 @@ func _on_hitbox_body_entered(body: Node) -> void:
 	if state == State.ATTACK and body.has_method("hit"):
 		body.hit()
 
+func _can_attack_with_axe() -> bool:
+	"""Return true if the player has an axe selected and no log is within rope range.
+	This lets the interact button double as attack for axe users, while still
+	letting rope attachment take priority when a log is nearby."""
+	var tool_count: int = tool_inventory.size()
+	if selected_slot < 0 or selected_slot >= tool_count:
+		return false
+	var tool: ToolData = tool_inventory[selected_slot]
+	if tool.tool_type != ToolData.ToolType.AXE:
+		return false
+	# Don't attack if there's a log to interact with (rope priority)
+	for body in rope_range.get_overlapping_bodies():
+		if body.is_in_group("log"):
+			return false
+	return true
+
 # ============================================================================
 # FARMING ACTIONS
 # ============================================================================
-func _do_farming_action() -> void:
-	if farm_cooldown > 0.0:
-		return
+func _do_farming_action() -> bool:
+	"""Perform a farming action based on the selected slot.
+	Returns true if a farming action was actually performed.
+	Only handles tilling (hoe) and planting (seeds).
+	Axe/pickaxe are attack-only — this skips them."""
+	if farm_cooldown > 0.0 or farm_manager == null:
+		return false
 	
 	var target_tile: Vector2i = _get_target_tile()
 	var tool_count: int = tool_inventory.size()
@@ -321,42 +355,70 @@ func _do_farming_action() -> void:
 		var tool: ToolData = tool_inventory[selected_slot]
 		match tool.tool_type:
 			ToolData.ToolType.HOE:
-				_use_hoe(target_tile)
-			_:
-				start_attack()
+				if farm_manager.till_tile(target_tile):
+					farm_cooldown = FARM_COOLDOWN_TIME
+					_do_farming_anim()
+					return true
+		# Axe, pickaxe etc. are attack-only — do nothing on interact
+		return false
 	else:
 		var seed_idx: int = selected_slot - tool_count
 		if seed_idx < seed_inventory.size():
-			_plant_seed(target_tile, seed_inventory[seed_idx])
-		else:
-			start_attack()
+			return _plant_seed(target_tile, seed_inventory[seed_idx])
+		return false
 
-func _use_hoe(tile_pos: Vector2i) -> void:
+func _plant_seed(tile_pos: Vector2i, crop: CropData) -> bool:
+	"""Plant a seed at the given tile. Auto-tills grass if needed.
+	Returns true if planting actually succeeded."""
 	if farm_manager == null:
-		return
-	if farm_manager.till_tile(tile_pos):
-		farm_cooldown = FARM_COOLDOWN_TIME
-		_do_farming_anim()
+		return false
 
-func _plant_seed(tile_pos: Vector2i, crop: CropData) -> void:
-	if farm_manager == null:
-		return
+	# Auto-till if the tile is grass but not yet tilled.
+	if farm_manager.is_grass_tile(tile_pos) and not farm_manager.get_tile_data(tile_pos)["tilled"]:
+		farm_manager.till_tile(tile_pos)
+
+	var planted: bool = false
+
+	# Find the crop_id by matching the CropData reference, then plant.
 	for crop_id in farm_manager.crop_registry.keys():
 		if farm_manager.crop_registry[crop_id] == crop:
 			if farm_manager.plant_crop(tile_pos, crop_id):
-				farm_cooldown = FARM_COOLDOWN_TIME
-				_do_farming_anim()
-			return
+				planted = true
+			break
+
+	# Fallback: try matching by crop_name if direct reference failed.
+	if not planted:
+		var crop_name_key: String = crop.crop_name.to_lower().replace(" ", "_")
+		if farm_manager.crop_registry.has(crop_name_key):
+			if farm_manager.plant_crop(tile_pos, crop_name_key):
+				planted = true
+
+	if planted:
+		farm_cooldown = FARM_COOLDOWN_TIME
+		_do_farming_anim()
+
+	return planted
+
+func _do_interact() -> void:
+	"""Interact button (E) handler: rope → farming → harvest."""
+	# 1. Try rope attach/detach
+	if attached_log != null:
+		detach_rope()
+		return
+	try_attach_rope()
+	if attached_log != null:
+		return  # Successfully attached rope
+	
+	# 2. Try farming action (till soil / plant seed)
+	if selected_slot >= 0 and _do_farming_action():
+		return
+	
+	# 3. Try harvest crops
+	_try_harvest()
 
 func _try_harvest() -> void:
-	# Try to hit nearby interactable bodies (trees, rocks, etc.)
-	for body in hitbox.get_overlapping_bodies():
-		if body.has_method("hit"):
-			body.hit()
-			start_attack()
-			return
-	
-	# Then try farm harvesting
+	"""Harvest mature crops at the tile in front of the player.
+	Tree chopping is handled by Space → attack instead."""
 	if farm_manager == null:
 		return
 	if farm_cooldown > 0.0:

@@ -148,6 +148,10 @@ func _exit_tree() -> void:
 # INPUT HANDLING
 # ---------------------------------------------------------------------------
 func _unhandled_input(event: InputEvent) -> void:
+	# Ignore input when the game is paused — only the book UI should respond
+	if get_tree() != null and get_tree().paused:
+		return
+
 	# --- Mobile touch ---
 	if event is InputEventScreenTouch:
 		_handle_touch(event)
