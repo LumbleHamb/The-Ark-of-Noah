@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ToolData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-diamond-reinforced_0.png" id="1_1rxhu"]
+[ext_resource type="Script" path="res://scripts/farming/tool_data.gd" id="2_fwc7s"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-diamond-reinforced_1.png" id="3_6tsnx"]
+
+[resource]
+script = ExtResource("2_fwc7s")
+tool_name = "Reinforced Diamond Pickaxe"
+tool_type = 3
+tier = "diamond-reinforced"
+swing_sprites = Array[Texture2D]([ExtResource("1_1rxhu"), ExtResource("3_6tsnx")])
+icon = ExtResource("1_1rxhu")
+speed_multiplier = 1.75
+efficiency = 1.5

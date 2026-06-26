@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-grape.png" id="1_bmmhs"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_nxi24"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-grape_0.png" id="3_x2mxq"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-grape_1.png" id="4_tvyfa"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-grape_2.png" id="5_yjso3"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-grape_3.png" id="6_g600f"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-grape_4.png" id="7_h0yug"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-grape_5.png" id="8_rfhyc"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-grape_6.png" id="9_npw36"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-grape_7.png" id="10_myfsf"]
+
+[resource]
+script = ExtResource("2_nxi24")
+crop_name = "Grape"
+growth_days = 5
+min_yield = 2
+max_yield = 3
+regrowable = true
+regrow_days = 1
+stage_sprites = Array[Texture2D]([ExtResource("3_x2mxq"), ExtResource("4_tvyfa"), ExtResource("5_yjso3"), ExtResource("6_g600f"), ExtResource("7_h0yug"), ExtResource("8_rfhyc"), ExtResource("9_npw36"), ExtResource("10_myfsf")])
+harvest_sprite = ExtResource("1_bmmhs")
+harvest_item_name = "Grape"

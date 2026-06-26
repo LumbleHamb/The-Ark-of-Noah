@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ToolData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/hoes-starter_0.png" id="1_y48gw"]
+[ext_resource type="Script" path="res://scripts/farming/tool_data.gd" id="2_sey1h"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/hoes-starter_1.png" id="3_dudhl"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/hoes-starter_2.png" id="4_pnvcj"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/hoes-starter_3.png" id="5_t63f2"]
+
+[resource]
+script = ExtResource("2_sey1h")
+tool_name = "Starter Hoes"
+swing_sprites = Array[Texture2D]([ExtResource("1_y48gw"), ExtResource("3_dudhl"), ExtResource("4_pnvcj"), ExtResource("5_t63f2")])
+icon = ExtResource("1_y48gw")

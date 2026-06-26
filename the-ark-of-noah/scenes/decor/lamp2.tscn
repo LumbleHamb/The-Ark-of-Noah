@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d4lamp2base"]
 
-[ext_resource type="Script" uid="uid://bqjmneuvifaxc" path="res://scripts/world/light_source.gd" id="1"]
+[ext_resource type="PackedScene" path="res://components/light_source/light_source_component.tscn" id="light_scene"]
 [ext_resource type="Texture2D" uid="uid://cy6smtobrfdoa" path="res://images/sprites/animated/items/animated lamp posts-1.png" id="1_5biu2"]
 [ext_resource type="Texture2D" uid="uid://c85fnvclfqom4" path="res://images/generated/light_glow_256.png" id="2_ltube"]
 
@@ -168,8 +168,7 @@ shadow_filter_smooth = 4.0
 texture = ExtResource("2_ltube")
 texture_scale = 3.0
 
-[node name="LightSource" type="Node" parent="." unique_id=1963758344]
-script = ExtResource("1")
+[node name="LightSource" parent="." instance=ExtResource("light_scene")]
 flame_sprite = NodePath("../LampSprite")
 lit_animation = "lamp_idle"
 base_energy = 1.5

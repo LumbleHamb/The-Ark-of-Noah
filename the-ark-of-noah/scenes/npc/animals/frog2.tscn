@@ -1,29 +1,55 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/npc/frog_ai.gd" id="1_7p1mk"]
-[ext_resource type="SpriteFrames" path="res://resources/animals/frog2_frames.tres" id="2_jtqqj"]
+[ext_resource type="Script" path="res://scripts/npc/frog_ai.gd" id="1_ai"]
+[ext_resource type="SpriteFrames" path="res://resources/animals/frog2_frames.tres" id="2_frames"]
+[ext_resource type="PackedScene" path="res://components/animation/animal_animation_component.tscn" id="anim_scene"]
+[ext_resource type="PackedScene" path="res://components/fade/fade_component.tscn" id="fade_scene"]
+[ext_resource type="PackedScene" path="res://components/detection/detection_component.tscn" id="det_scene"]
+[ext_resource type="PackedScene" path="res://components/wander/wander_component.tscn" id="wander_scene"]
+[ext_resource type="PackedScene" path="res://components/flee/flee_component.tscn" id="flee_scene"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_eeom0"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(16, 16)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_7p1mk"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_detect"]
 radius = 64.0
 
-[node name="frog2" type="CharacterBody2D" unique_id=1821001782]
+[node name="frog2" type="CharacterBody2D"]
 collision_layer = 0
-script = ExtResource("1_7p1mk")
+collision_mask = 1
+script = ExtResource("1_ai")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=585896617]
-sprite_frames = ExtResource("2_jtqqj")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = ExtResource("2_frames")
 animation = &"idle_front"
 offset = Vector2(0, -24)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=489897383]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -8)
-shape = SubResource("RectangleShape2D_eeom0")
+shape = SubResource("RectangleShape2D_body")
 
-[node name="DetectionArea" type="Area2D" parent="." unique_id=1103775243]
-collision_mask = 2
+[node name="AnimalAnimationComponent" parent="." instance=ExtResource("anim_scene")]
+animated_sprite = NodePath("../AnimatedSprite2D")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" unique_id=1557232492]
-shape = SubResource("CircleShape2D_7p1mk")
+[node name="DetectionComponent" parent="." instance=ExtResource("det_scene")]
+detection_radius = 64.0
+target_group = "Player"
+
+[node name="WanderComponent" parent="." instance=ExtResource("wander_scene")]
+wander_radius = 128.0
+walk_speed = 30.0
+idle_time_min = 3.0
+idle_time_max = 8.0
+wander_chance = 0.4
+detection_component_path = NodePath("../DetectionComponent")
+
+[node name="FleeComponent" parent="." instance=ExtResource("flee_scene")]
+flee_distance = 48.0
+flee_safe_distance = 200.0
+flee_speed = 80.0
+detection_component_path = NodePath("../DetectionComponent")
+
+[node name="FadeComponent" parent="." instance=ExtResource("fade_scene")]
+fade_in_duration = 0.5
+fade_out_duration = 0.8
+auto_fade_in = true

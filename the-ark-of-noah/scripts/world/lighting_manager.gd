@@ -41,6 +41,17 @@ signal ambient_color_changed(color: Color)
 ## How much flicker varies the energy (0.0 = none, 0.3 = strong).
 @export var flicker_strength: float = 0.08
 
+## Phase at which light sources first switch ON.
+## Default SUNSET = lights come on at dusk (19:00) so lamps/campfires glow
+## as the sun sets — not only once it is fully dark.
+@export var light_start_phase: TimeManager.TimePhase = TimeManager.TimePhase.SUNSET
+
+## Extra energy applied to light sources during the darkest phases
+## (NIGHT + LATE_NIGHT).  0.0 = uniform brightness from dusk to dawn,
+## 0.3 = lights get 30% brighter in the dead of night.  Lets designers
+## make lamps "come alive" after midnight without affecting dusk glow.
+@export_range(0.0, 2.0, 0.01) var night_light_boost: float = 0.25
+
 ## How dark the night ambient gets.  0.0 = night as bright as day,
 ## 1.0 = original curve darkness, >1.0 = extra dark.
 @export_range(0.0, 2.0, 0.01) var night_darkness: float = 1.0:
@@ -72,11 +83,17 @@ var time_manager: TimeManager = null
 
 var _light_sources: Array[Node] = []
 var _source_lights: Dictionary = {}   # Node → Array[PointLight2D]
-var _source_components: Dictionary = {} # Node → LightSource
+var _source_components: Dictionary = {} # Node → LightSourceComponent
 var _flicker_offset: float = 0.0
-var _last_night: bool = false
+var _last_night: bool = false          # lights-on state (dusk → dawn)
+var _last_deep_night: bool = false     # full-night boost state
 var _player_light_base_energy: float = 1.2
 var _player_light_base_scale: float = 4.0
+## Current rain intensity (0..1), fed by the WeatherManager. Rain darkens
+## the ambient colour and cools its tint.
+var _rain_intensity: float = 0.0
+## Whether we have successfully connected to the WeatherManager.
+var _weather_connected: bool = false
 
 # Ambient colour curve: key = day_progress (0.0 – 1.0), value = Color
 # Key points match the time phases.
@@ -114,7 +131,10 @@ func _ready() -> void:
 		time_manager.phase_changed.connect(_on_phase_changed)
 		# Initial setup.
 		_update_ambient(time_manager.get_day_progress())
-		_last_night = time_manager.is_night()
+		# Use the lamp-on check (dusk → dawn) for initial state so lights
+		# are immediately lit if the game starts in the evening.
+		_last_night = _lamps_should_be_on()
+		_last_deep_night = time_manager.get_phase() in [TimeManager.TimePhase.NIGHT, TimeManager.TimePhase.LATE_NIGHT]
 	else:
 		push_warning("LightingManager: no TimeManager found — lighting will not update.")
 	
@@ -123,6 +143,9 @@ func _ready() -> void:
 	_update_lights(_last_night)
 	get_tree().node_added.connect(_on_node_added)
 	get_tree().node_removed.connect(_on_node_removed)
+	# Hook into the weather system for rain darkening. Deferred so the
+	# WeatherManager autoload is ready before we connect.
+	call_deferred(&"_connect_weather")
 
 func _process(delta: float) -> void:
 	_flicker_offset += delta * flicker_speed
@@ -133,14 +156,39 @@ func _process(delta: float) -> void:
 	var progress: float = time_manager.get_day_progress()
 	_update_ambient(progress)
 	
-	var is_night: bool = time_manager.is_night()
-	if is_night != _last_night:
-		_last_night = is_night
-		_update_lights(is_night)
-		_apply_flicker(is_night)  # Apply energy multiplier immediately
+	# "Lamps on" = from the configured start phase (default dusk/SUNSET)
+	# through to sunrise.  This is broader than is_night() so lamps glow
+	# during the golden-hour/dusk transition rather than snapping on at 21:00.
+	var lamps_on: bool = _lamps_should_be_on()
+	if lamps_on != _last_night:
+		_last_night = lamps_on
+		_update_lights(lamps_on)
+		_apply_flicker(lamps_on)  # Apply energy multiplier immediately
+	
+	# Deep-night energy boost: lights get slightly brighter in the dead of
+	# night (NIGHT + LATE_NIGHT) vs early dusk/dawn.  Toggled reactively.
+	var deep_night: bool = time_manager.get_phase() in [TimeManager.TimePhase.NIGHT, TimeManager.TimePhase.LATE_NIGHT]
+	if deep_night != _last_deep_night:
+		_last_deep_night = deep_night
+		_apply_flicker(_last_night)  # re-apply with or without boost
 	else:
-		# Still apply flicker every frame at night.
-		_apply_flicker(is_night)
+		# Still apply flicker every frame while lamps are on.
+		_apply_flicker(_last_night)
+	
+	# Lazy-connect to the weather system if it wasn't ready at _ready time.
+	if not _weather_connected:
+		_connect_weather()
+
+## Returns true when light sources should be enabled.
+## Spans from the configured light_start_phase through pre-dawn / sunrise.
+func _lamps_should_be_on() -> bool:
+	if time_manager == null:
+		return false
+	var phase: TimeManager.TimePhase = time_manager.get_phase()
+	# Everything from the start phase through late-night and pre-dawn is "on".
+	# Sunrise (06:00–08:00) is the fade-off boundary; treat as off so lamps
+	# extinguish as the sun comes up.
+	return phase >= light_start_phase or phase == TimeManager.TimePhase.PRE_DAWN
 
 # ============================================================================
 # AMBIENT COLOUR
@@ -188,6 +236,15 @@ func _update_ambient(progress: float) -> void:
 				var extra: float = clampf(night_darkness - 1.0, 0.0, 1.0)
 				color = color.lerp(Color.BLACK, extra)
 	
+	# ========================================================================
+	# RAIN DARKENING — rain cools and dims the ambient colour. The WeatherManager
+	# pushes rain intensity (0..1) here; we blend toward a cool grey-blue so the
+	# world feels overcast during rain and stormy during full storms.
+	# ========================================================================
+	if _rain_intensity > 0.01:
+		var rain_tint: Color = Color(0.45, 0.5, 0.6, 1.0)  # cool overcast grey-blue
+		color = color.lerp(rain_tint, _rain_intensity * 0.5)
+	
 	modulate.color = color
 	ambient_color_changed.emit(color)
 
@@ -199,6 +256,24 @@ func _on_phase_changed(_phase: TimeManager.TimePhase) -> void:
 	# but we use this for any future event-driven logic (e.g. playing
 	# a brief transition animation). Subclasses can override.
 	pass
+
+# ============================================================================
+# WEATHER INTEGRATION — rain darkens ambient, driven by WeatherManager
+# ============================================================================
+func _connect_weather() -> void:
+	if _weather_connected:
+		return
+	if get_tree() == null:
+		return
+	var wm: WeatherManager = get_tree().get_first_node_in_group(&"weather_manager") as WeatherManager
+	if wm == null:
+		return  # No weather system in this scene — that's fine, rain stays 0.
+	_weather_connected = true
+	wm.rain_intensity_changed.connect(_on_rain_intensity_changed)
+
+## Called by WeatherManager with the smoothed rain intensity (0..1).
+func _on_rain_intensity_changed(intensity: float) -> void:
+	_rain_intensity = intensity
 
 # ============================================================================
 # LIGHT SOURCE MANAGEMENT
@@ -216,8 +291,8 @@ func _refresh_light_sources() -> void:
 	_source_components.clear()
 	
 	for node in _light_sources:
-		# Look for a LightSource component on this node.
-		var comp: LightSource = node.get_node_or_null("LightSource") as LightSource
+		# Look for a LightSourceComponent on this node.
+		var comp: LightSourceComponent = node.get_node_or_null("LightSource") as LightSourceComponent
 		if comp and is_instance_valid(comp):
 			_source_components[node] = comp
 		
@@ -239,7 +314,7 @@ func _update_lights(is_night: bool) -> void:
 	# Enable/disable lights and toggle LightSource animations.
 	for node in _light_sources:
 		# Toggle LightSource component animations.
-		var comp: LightSource = _source_components.get(node)
+		var comp: LightSourceComponent = _source_components.get(node)
 		if comp and is_instance_valid(comp):
 			comp.set_lit(is_night)
 		
@@ -267,6 +342,10 @@ func _apply_flicker(is_night: bool) -> void:
 	if not is_night:
 		return
 	
+	# Deep-night boost multiplier (1.0 at dusk/dawn, 1.0+night_light_boost in
+	# the dead of night).  Computed once per frame for all lights.
+	var boost: float = 1.0 + (night_light_boost if _last_deep_night else 0.0)
+	
 	for node in _light_sources:
 		var lights: Array = _source_lights.get(node, [])
 		for light in lights:
@@ -274,12 +353,12 @@ func _apply_flicker(is_night: bool) -> void:
 				continue
 			var base: float = light.get_meta(&"base_energy", 1.0)
 			var flicker: float = sin(_flicker_offset + light.global_position.length() * 0.1) * flicker_strength
-			light.energy = (base + flicker) * light_energy_multiplier
+			light.energy = (base + flicker) * light_energy_multiplier * boost
 	
 	# Player light flicker.
 	if player_light and is_instance_valid(player_light) and player_light.enabled:
 		var flicker: float = sin(_flicker_offset * 1.5) * (flicker_strength * 1.5)
-		player_light.energy = (_player_light_base_energy + flicker) * light_energy_multiplier
+		player_light.energy = (_player_light_base_energy + flicker) * light_energy_multiplier * boost
 
 ## Reapply texture_scale to all active lights using current multiplier.
 ## Called when the user tweaks light_scale_multiplier in the inspector.
@@ -313,17 +392,17 @@ func unregister_light_source(node: Node) -> void:
 # ============================================================================
 func _on_node_added(node: Node) -> void:
 	# Auto-register new light sources when they enter the scene.
-	if node is PointLight2D or node is LightSource:
+	if node is PointLight2D or node is LightSourceComponent:
 		call_deferred(&"_refresh_and_apply_lights")
 	elif node.get_child_count() > 0 and node.is_inside_tree():
 		for child in node.get_children():
-			if child is LightSource:
+			if child is LightSourceComponent:
 				call_deferred(&"_refresh_and_apply_lights")
 				break
 
 func _on_node_removed(node: Node) -> void:
 	# Auto-unregister removed light sources.
-	if node.is_in_group(&"light_source") or node is PointLight2D or node is LightSource:
+	if node.is_in_group(&"light_source") or node is PointLight2D or node is LightSourceComponent:
 		call_deferred(&"_refresh_light_sources")
 
 # Refreshes the light source list then applies the current night/day state.

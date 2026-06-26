@@ -2,63 +2,31 @@ class_name FarmManager
 extends Node2D
 
 ## Core farming system manager.
-##
-## Architecture:
-## - References the `ground` TileMapLayer (map_backup) for grass-tile validation.
-## - References the `garden` TileMapLayer (map_backup) for tilled-soil visuals.
-##   The garden layer has a terrain set "fertilized_soil" that auto-picks the
-##   correct 47-blob edge-transition tile when painting via terrain mode.
-## - Node2D container for per-crop Sprite2D visuals (lightweight, no nodes per tile for logic).
-## - Dictionary<Vector2i, Dictionary> for all tile state (data-driven, zero node overhead).
-## - In-game-day-based growth — each crop's `growth_days` configures maturity speed.
-## - Tilled soil reverts to grass after 1 in-game day if no crop is planted.
-##
-## Adding a crop: create a CropData .tres in resources/crops/, assign sprites.
-## Adding a tool: create a ToolData .tres in resources/tools/.
-## No code changes needed.
+
+## Manages tilling, planting, growth, and harvesting on tile-based garden layers.
+## Growth is driven by in-game day changes from TimeManager.
 
 const _CropDataClass = preload("res://scripts/farming/crop_data.gd")
 
-# ============================================================================
-# SIGNALS
-# ============================================================================
 signal tile_tilled(tile_pos: Vector2i)
 signal crop_planted(tile_pos: Vector2i, crop_name: String)
 signal crop_grew(tile_pos: Vector2i, stage: int)
 signal crop_harvestable(tile_pos: Vector2i, crop_name: String)
 signal crop_harvested(tile_pos: Vector2i, crop_name: String, yield_count: int)
 
-# ============================================================================
-# NODE REFERENCES
-# ============================================================================
 @onready var crop_container: Node2D = $Crops
 
-# These are found at runtime by walking up to the world node and finding the map.
-var ground_layer: TileMapLayer = null   # green-grass validation
-var garden_layer: TileMapLayer = null   # fertilized-soil terrain painting
-
-# TimeManager reference for in-game day tracking.
+var ground_layer: TileMapLayer = null
+var garden_layer: TileMapLayer = null
 var time_manager: TimeManager = null
 
-# ============================================================================
-# STATE
-# ============================================================================
 var _tiles: Dictionary = {}
 var _crop_sprites: Dictionary = {}
 var _last_checked_day: int = -1
-
-## Crop registry: crop_id -> CropData (loaded from resources/crops/*.tres)
 var crop_registry: Dictionary = {}
-
-## Seed-to-crop mapping: seed_id -> crop_id
 var seed_to_crop: Dictionary = {}
-
-## Map offset to align crop sprites with garden tilemap.
 var _map_offset: Vector2 = Vector2.ZERO
 
-# ============================================================================
-# LIFECYCLE
-# ============================================================================
 func _ready() -> void:
 	add_to_group(&"farm_manager")
 	_find_map_layers()
@@ -84,33 +52,23 @@ func _find_map_layers() -> void:
 	var world: Node = get_parent()
 	if world == null:
 		return
-
 	var map_node: Node = world.get_node_or_null("map")
 	if map_node == null:
 		push_warning("FarmManager: no 'map' node found under world")
 		return
-
 	ground_layer = map_node.get_node_or_null("ground") as TileMapLayer
 	garden_layer = map_node.get_node_or_null("garden") as TileMapLayer
-
-	# Store map offset so crop sprites align with garden tiles.
 	if map_node is Node2D:
 		_map_offset = (map_node as Node2D).position
-
 	if ground_layer == null:
 		push_warning("FarmManager: no 'ground' TileMapLayer found in map")
 	if garden_layer == null:
 		push_warning("FarmManager: no 'garden' TileMapLayer found in map")
 
 func _process(_delta: float) -> void:
-	# Growth is now driven by in-game day changes from TimeManager.
 	pass
 
-# ============================================================================
-# GRASS VALIDATION (green-grass tiles on the ground layer)
-# ============================================================================
-
-## Returns true if the tile position contains a grass tile on the ground layer.
+## Returns true if the tile contains a grass tile on the ground layer.
 func is_grass_tile(tile_pos: Vector2i) -> bool:
 	if ground_layer == null:
 		return false
@@ -121,27 +79,16 @@ func is_tillable(tile_pos: Vector2i) -> bool:
 		return false
 	return not get_tile_data(tile_pos)["tilled"]
 
-# ============================================================================
-# TILLING (terrain-based, uses garden node's fertilized_soil terrain set)
-# ============================================================================
-
+## Tills the tile. Uses terrain connect on the garden layer for automatic edge transitions.
 func till_tile(tile_pos: Vector2i) -> bool:
 	if not is_tillable(tile_pos):
 		return false
 	if garden_layer == null:
 		return false
-
 	var d = get_tile_data(tile_pos)
 	d["tilled"] = true
 	d["tilled_at_day"] = time_manager.current_day if time_manager else 0
-
-	# Paint terrain on the garden layer — Godot's terrain system auto-selects
-	# the correct 47-blob tile based on neighbors.
-	# NOTE: ignore_existing=false is required! With the default true, Godot
-	# fails to place a tile when tilling a single isolated cell on an empty
-	# layer (all neighbors are empty, so there's nothing to "connect" to).
 	garden_layer.set_cells_terrain_connect([tile_pos], 0, 0, false)
-
 	tile_tilled.emit(tile_pos)
 	return true
 
@@ -150,16 +97,12 @@ func clear_soil_tile(tile_pos: Vector2i) -> void:
 		return
 	garden_layer.set_cell(tile_pos, -1)
 
-# ============================================================================
-# CROP REGISTRY
-# ============================================================================
 func _load_crop_registry() -> void:
 	var crop_dir: String = "res://resources/crops/"
 	var dir := DirAccess.open(crop_dir)
 	if dir == null:
 		push_warning("FarmManager: no crop resources at " + crop_dir)
 		return
-
 	dir.list_dir_begin()
 	var file_name := dir.get_next()
 	while file_name != "":
@@ -172,12 +115,8 @@ func _load_crop_registry() -> void:
 				seed_to_crop[crop_id] = crop_id
 		file_name = dir.get_next()
 	dir.list_dir_end()
-
 	print("FarmManager: loaded %d crops" % crop_registry.size())
 
-# ============================================================================
-# TILE STATE
-# ============================================================================
 func get_tile_data(tile_pos: Vector2i) -> Dictionary:
 	if not _tiles.has(tile_pos):
 		_tiles[tile_pos] = {
@@ -195,19 +134,14 @@ func is_plantable(tile_pos: Vector2i) -> bool:
 func is_harvestable(tile_pos: Vector2i) -> bool:
 	return get_tile_data(tile_pos)["harvestable"]
 
-# ============================================================================
-# ACTIONS
-# ============================================================================
-
+## Plants a crop at the tile position. Returns true if successful.
 func plant_crop(tile_pos: Vector2i, crop_id: String) -> bool:
 	if not is_plantable(tile_pos):
 		return false
-
 	var crop = crop_registry.get(crop_id)
 	if crop == null:
 		push_warning("FarmManager: unknown crop '%s'" % crop_id)
 		return false
-
 	var d = get_tile_data(tile_pos)
 	d["crop"] = crop
 	d["crop_id"] = crop_id
@@ -215,23 +149,20 @@ func plant_crop(tile_pos: Vector2i, crop_id: String) -> bool:
 	d["growth_stage"] = 0
 	d["harvestable"] = false
 	d["regrow_count"] = 0
-
 	_create_crop_sprite(tile_pos, crop.get_stage_sprite(0))
 	crop_planted.emit(tile_pos, crop.crop_name)
 	return true
 
+## Harvests a crop at the tile position. Returns the yield count.
 func harvest_tile(tile_pos: Vector2i) -> int:
 	if not is_harvestable(tile_pos):
 		return 0
-
 	var d = get_tile_data(tile_pos)
 	var crop = d["crop"]
 	if crop == null:
 		return 0
-
 	var yield_count = crop.get_yield()
 	var crop_name = crop.crop_name
-
 	if crop.regrowable:
 		d["planted_at_day"] = time_manager.current_day if time_manager else 0
 		d["growth_stage"] = crop.growth_stages - 2
@@ -245,13 +176,8 @@ func harvest_tile(tile_pos: Vector2i) -> int:
 		d["planted_at_day"] = -1
 		d["growth_stage"] = 0
 		d["harvestable"] = false
-
 	crop_harvested.emit(tile_pos, crop_name, yield_count)
 	return yield_count
-
-# ============================================================================
-# GROWTH SYSTEM (in-game-day-based)
-# ============================================================================
 
 ## Called once per in-game day to advance all planted crops.
 func _process_daily_growth(day: int) -> void:
@@ -259,22 +185,18 @@ func _process_daily_growth(day: int) -> void:
 		var d = _tiles[tile_pos]
 		if d["crop"] == null or d["harvestable"]:
 			continue
-
 		var crop = d["crop"]
 		var days_elapsed: int = day - d["planted_at_day"]
 		if days_elapsed <= 0:
 			continue
-
 		var expected_stage: int = mini(
 			days_elapsed * crop.growth_stages / crop.growth_days,
 			crop.growth_stages - 1
 		)
-
 		if expected_stage > d["growth_stage"]:
 			d["growth_stage"] = expected_stage
 			_update_crop_sprite(tile_pos, crop.get_stage_sprite(expected_stage))
 			crop_grew.emit(tile_pos, expected_stage)
-
 		if expected_stage >= crop.growth_stages - 1:
 			d["harvestable"] = true
 			crop_harvestable.emit(tile_pos, crop.crop_name)
@@ -290,9 +212,6 @@ func _process_soil_reversion(day: int) -> void:
 			d["tilled_at_day"] = -1
 			clear_soil_tile(tile_pos)
 
-# ============================================================================
-# CROP VISUALS
-# ============================================================================
 func _create_crop_sprite(tile_pos: Vector2i, texture: Texture2D) -> void:
 	if _crop_sprites.has(tile_pos):
 		_update_crop_sprite(tile_pos, texture)
@@ -315,9 +234,6 @@ func _remove_crop_sprite(tile_pos: Vector2i) -> void:
 		sprite.queue_free()
 		_crop_sprites.erase(tile_pos)
 
-# ============================================================================
-# SAVE / LOAD
-# ============================================================================
 func get_save_data() -> Dictionary:
 	var farm_data: Dictionary = {}
 	for tile_pos in _tiles.keys():
@@ -339,7 +255,6 @@ func load_from_save(farm_data: Dictionary) -> void:
 		clear_soil_tile(tile_pos)
 		_remove_crop_sprite(tile_pos)
 	_tiles.clear()
-
 	for key in farm_data.keys():
 		var tile_pos: Vector2i = str_to_var(key)
 		var saved = farm_data[key]
@@ -351,24 +266,22 @@ func load_from_save(farm_data: Dictionary) -> void:
 		d["growth_stage"] = saved["growth_stage"]
 		d["harvestable"] = saved["harvestable"]
 		d["regrow_count"] = saved.get("regrow_count", 0)
-
 		if saved["tilled"]:
 			till_tile(tile_pos)
-
 		if saved["crop_id"] != "":
 			var crop = crop_registry.get(saved["crop_id"])
 			if crop:
 				d["crop"] = crop
 				_create_crop_sprite(tile_pos, crop.get_stage_sprite(saved["growth_stage"]))
 
-# ============================================================================
-# UTILITY
-# ============================================================================
+## Converts tile coordinates to world pixel position (center of tile).
 func get_world_pos(tile_pos: Vector2i) -> Vector2:
 	return Vector2(tile_pos) * 32 + Vector2(16, 16)
 
+## Converts world pixel position to tile coordinates.
 func get_tile_pos(world_pos: Vector2) -> Vector2i:
 	return Vector2i(floori(world_pos.x / 32), floori(world_pos.y / 32))
 
+## Returns a list of all registered crop IDs.
 func get_crop_names() -> Array[String]:
 	return crop_registry.keys()

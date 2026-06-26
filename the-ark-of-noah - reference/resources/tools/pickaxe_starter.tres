@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ToolData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-starter_0.png" id="1_qsmuo"]
+[ext_resource type="Script" path="res://scripts/farming/tool_data.gd" id="2_eyoq1"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-starter_1.png" id="3_g67k6"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-starter_2.png" id="4_ou5xh"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-starter_3.png" id="5_cqmv6"]
+
+[resource]
+script = ExtResource("2_eyoq1")
+tool_name = "Starter Pickaxe"
+tool_type = 3
+swing_sprites = Array[Texture2D]([ExtResource("1_qsmuo"), ExtResource("3_g67k6"), ExtResource("4_ou5xh"), ExtResource("5_cqmv6")])
+icon = ExtResource("1_qsmuo")

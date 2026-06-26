@@ -4,7 +4,9 @@
 
 [node name="LightingManager" type="Node" unique_id=170837632]
 script = ExtResource("1_lm")
-night_darkness = 0.7
-light_energy_multiplier = 0.8
+night_darkness = 0.45
+light_energy_multiplier = 1.2
+light_start_phase = 5
+night_light_boost = 0.25
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1408765659]

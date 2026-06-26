@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://bhpcmyxylc1ra"]
+
+[ext_resource type="PackedScene" uid="uid://t8vxummrnm1u" path="res://scenes/world/map.tscn" id="1_1fp7r"]
+[ext_resource type="PackedScene" uid="uid://b0byd7sbi3qa8" path="res://scenes/decor/player_house.tscn" id="1_6m72w"]
+[ext_resource type="PackedScene" uid="uid://ba5qhslvdxcx6" path="res://scenes/player/player.tscn" id="1_sl2e5"]
+[ext_resource type="PackedScene" uid="uid://cdqduyosi688t" path="res://scenes/trees/trunks.tscn" id="2_1fp7r"]
+[ext_resource type="PackedScene" uid="uid://drsv8j6gqmer5" path="res://scenes/decor/campfire.tscn" id="3_5qq27"]
+[ext_resource type="PackedScene" uid="uid://blk0f5n3x3qnj" path="res://scenes/world/pause_menu.tscn" id="5_v5dby"]
+[ext_resource type="PackedScene" uid="uid://e0e6klevtqo0" path="res://scenes/farming/farm_manager.tscn" id="6_farm"]
+[ext_resource type="PackedScene" uid="uid://d4timemgr" path="res://scenes/world/time_manager.tscn" id="7_tm"]
+[ext_resource type="PackedScene" uid="uid://d4lightmgr" path="res://scenes/world/lighting_manager.tscn" id="8_lm"]
+[ext_resource type="PackedScene" uid="uid://dltegagis0l24" path="res://scenes/decor/lamp.tscn" id="10_dlabj"]
+[ext_resource type="PackedScene" uid="uid://d4lamp2base" path="res://scenes/decor/lamp2.tscn" id="11_srmg5"]
+[ext_resource type="PackedScene" uid="uid://c2l7p0tlbh05d" path="res://scenes/ui/resource_orb_bar.tscn" id="12_ui_orbs"]
+[ext_resource type="PackedScene" uid="uid://bpvbata3kw4tv" path="res://scenes/npc/animals/frog1.tscn" id="13_srmg5"]
+
+[node name="world" type="Node2D" unique_id=259029940]
+y_sort_enabled = true
+
+[node name="map" parent="." unique_id=1697167695 instance=ExtResource("1_1fp7r")]
+position = Vector2(1, -2)
+
+[node name="player" parent="." unique_id=425553129 instance=ExtResource("1_sl2e5")]
+position = Vector2(875, 488)
+
+[node name="Campfire" parent="." unique_id=1358236671 instance=ExtResource("3_5qq27")]
+position = Vector2(1116, 126)
+
+[node name="player_house" parent="." unique_id=443652541 instance=ExtResource("1_6m72w")]
+position = Vector2(859, 287)
+
+[node name="trunks" parent="." unique_id=1850040903 instance=ExtResource("2_1fp7r")]
+position = Vector2(1439, 199)
+
+[node name="trunks2" parent="." unique_id=900827978 instance=ExtResource("2_1fp7r")]
+position = Vector2(1448, 339)
+
+[node name="trunks3" parent="." unique_id=1187470157 instance=ExtResource("2_1fp7r")]
+position = Vector2(1592, 249)
+
+[node name="PauseMenu" parent="." unique_id=1609854152 instance=ExtResource("5_v5dby")]
+
+[node name="TimeManager" parent="." unique_id=1002606171 instance=ExtResource("7_tm")]
+
+[node name="WorldLights" type="Node2D" parent="." unique_id=1511920902]
+y_sort_enabled = true
+
+[node name="LightingManager" parent="." unique_id=1640264858 instance=ExtResource("8_lm")]
+player_light = NodePath("../player/PlayerLight")
+
+[node name="FarmManager" parent="." unique_id=293512700 instance=ExtResource("6_farm")]
+
+[node name="Lamp" parent="." unique_id=770411211 instance=ExtResource("10_dlabj")]
+position = Vector2(916, 331)
+
+[node name="Lamp2" parent="." unique_id=82329718 instance=ExtResource("11_srmg5")]
+position = Vector2(638, 330)
+
+[node name="ResourceOrbBar" parent="." unique_id=1228766831 instance=ExtResource("12_ui_orbs")]
+
+[node name="frog1" parent="." unique_id=1896077463 instance=ExtResource("13_srmg5")]
+position = Vector2(1019, 432)

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dltegagis0l24"]
 
 [ext_resource type="SpriteFrames" uid="uid://d4lampframes" path="res://resources/lamp_frames.tres" id="1_p4d17"]
-[ext_resource type="Script" uid="uid://bqjmneuvifaxc" path="res://scripts/world/light_source.gd" id="2_8kedl"]
+[ext_resource type="PackedScene" path="res://components/light_source/light_source_component.tscn" id="light_scene"]
 [ext_resource type="Texture2D" uid="uid://c85fnvclfqom4" path="res://images/generated/light_glow_256.png" id="2_pveee"]
 
 [node name="Lamp" type="Node2D" unique_id=770411211]
@@ -25,8 +25,7 @@ shadow_color = Color(0, 0, 0, 0.8)
 texture = ExtResource("2_pveee")
 texture_scale = 3.0
 
-[node name="LightSource" type="Node" parent="." unique_id=1219695657 node_paths=PackedStringArray("flame_sprite")]
-script = ExtResource("2_8kedl")
+[node name="LightSource" parent="."  node_paths=PackedStringArray("flame_sprite") instance=ExtResource("light_scene")]
 flame_sprite = NodePath("../LampSprite")
 lit_animation = "lamp_idle"
 base_energy = 1.5

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-wheat.png" id="1_2q6wc"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_sry2m"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-wheat.png" id="3_xhfet"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-wheat_0.png" id="4_urgw4"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-wheat_1.png" id="5_qrc8p"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-wheat_2.png" id="6_5bjuw"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-wheat_3.png" id="7_e1vo0"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-wheat_4.png" id="8_cawot"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-wheat_5.png" id="9_0bs0m"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-wheat_6.png" id="10_vquqg"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-wheat_7.png" id="11_wpreh"]
+
+[resource]
+script = ExtResource("2_sry2m")
+crop_name = "Wheat"
+growth_days = 2
+max_yield = 2
+stage_sprites = Array[Texture2D]([ExtResource("4_urgw4"), ExtResource("5_qrc8p"), ExtResource("6_5bjuw"), ExtResource("7_e1vo0"), ExtResource("8_cawot"), ExtResource("9_0bs0m"), ExtResource("10_vquqg"), ExtResource("11_wpreh")])
+seed_sprite = ExtResource("3_xhfet")
+harvest_sprite = ExtResource("1_2q6wc")
+harvest_item_name = "Wheat"

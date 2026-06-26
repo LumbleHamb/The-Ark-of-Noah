@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://mql20hs56okw"]
 
-[ext_resource type="Script" uid="uid://bmgtvefv2ydmh" path="res://scripts/trees/logs.gd" id="1_4s4d2"]
+[ext_resource type="Script" uid="uid://5f8g637vflak" path="res://scripts/trees/logs.gd" id="1_4s4d2"]
 [ext_resource type="Texture2D" uid="uid://cdj1141fhpect" path="res://images/sprites/static/props/props.png" id="1_d6ki3"]
+[ext_resource type="PackedScene" path="res://components/rope/rope_component.tscn" id="rope_scene"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4s4d2"]
 
@@ -40,3 +41,5 @@ metadata/_edit_group_ = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="push_detector" unique_id=172584403]
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_mgg3s")
+
+[node name="RopeComponent" parent="." instance=ExtResource("rope_scene")]

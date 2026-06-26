@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://components/weather/lightning_component.gd" id="1_lgt"]
+[ext_resource type="Texture2D" path="res://assets/generated/lightning_bolt_frame_0.png" id="2_bolt"]
+
+[node name="LightningComponent" type="Node"]
+script = ExtResource("1_lgt")
+bolt_texture = ExtResource("2_bolt")

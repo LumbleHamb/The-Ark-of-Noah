@@ -1,86 +1,78 @@
 extends CharacterBody2D
-## Modular base NPC for animals.  Handles shared movement, proximity detection,
-## fade-in/fade-out transitions, and automatic memory cleanup.
-##
-## Subclasses (Bird, Duck, Frog) override virtual methods to supply
-## species-specific animations and state transitions.
-
 class_name AnimalNPC
 
-# ============================================================================
-# SIGNALS
-# ============================================================================
+## Modular base NPC for animals using the component architecture.
+##
+## Entity (this CharacterBody2D) owns the physics body + sprite.
+## Behaviour is delegated to child components:
+##   - AnimalAnimationComponent: sprite play / facing
+##   - DetectionComponent: proximity sensing of the Player group
+##   - WanderComponent: random idle-to-wander cycling
+##   - FleeComponent: flee movement + safe-distance detection
+##   - FadeComponent: spawn/despawn fade transitions
+##
+## Subclasses (BirdAI, DuckAI, FrogAI) override the virtual _play_* hooks
+## and _on_* hooks for species-specific animation selection.
+
 signal started_wandering()
 signal stopped_wandering()
 signal started_fleeing()
 signal finished_fleeing()
-signal fade_complete()                               # emitted after fade-out finishes
+signal fade_complete()
 
-# ============================================================================
-# EXPORTS
-# ============================================================================
-@export var wander_radius: float = 128.0            ## How far the animal wanders from its origin.
-@export var flee_distance: float = 48.0             ## Distance to player that triggers flee.
-@export var flee_safe_distance: float = 200.0       ## Distance from player where fleeing stops.
+# --- Tunables ---------------------------------------------------------------
+@export var wander_radius: float = 128.0
+@export var flee_distance: float = 48.0
+@export var flee_safe_distance: float = 200.0
 @export var walk_speed: float = 30.0
 @export var flee_speed: float = 60.0
-@export var idle_time_min: float = 3.0              ## Minimum idle duration before deciding to wander (seconds).
-@export var idle_time_max: float = 8.0              ## Maximum idle duration before deciding to wander (seconds).
-@export var wander_chance: float = 0.4              ## Probability of wandering when idle timer expires.
+@export var idle_time_min: float = 3.0
+@export var idle_time_max: float = 8.0
+@export var wander_chance: float = 0.4
 
 @export_group("Fade")
-## Seconds for fade-in when the animal spawns.
-@export var fade_in_duration: float = 0.5
-## Seconds for fade-out before the animal despawns (e.g. after fleeing off-screen).
-@export var fade_out_duration: float = 0.8
-## If true, fade in on _ready automatically.
 @export var auto_fade_in: bool = true
 
-# ============================================================================
-# NODE REFERENCES
-# ============================================================================
-@onready var anim: AnimatedSprite2D = $AnimatedSprite2D
-@onready var detection_area: Area2D = $DetectionArea
-
-# ============================================================================
-# STATE
-# ============================================================================
+# --- State machine ---------------------------------------------------------
 enum AnimalState { IDLE, WANDERING, FLEEING, FLEEING_FINISHED, FADING_OUT }
-
 var state: AnimalState = AnimalState.IDLE
-var home_position: Vector2
-var target_position: Vector2
+
+var home_position: Vector2 = Vector2.ZERO
+var target_position: Vector2 = Vector2.ZERO
 var idle_timer: float = 0.0
-var rest_time: float = 0.0
-var player_ref: CharacterBody2D = null
 var flee_direction: Vector2 = Vector2.ZERO
-var facing_right: bool = true
 
-# Fade tween running during fade-in / fade-out.
-var _fade_tween: Tween = null
+# --- Component refs (resolved in _ready) -----------------------------------
+var animator: AnimalAnimationComponent = null
+var fade_component: FadeComponent = null
+var detection: DetectionComponent = null
+var wander: WanderComponent = null
+var flee: FleeComponent = null
 
-# ============================================================================
-# LIFECYCLE
-# ============================================================================
+# ---------------------------------------------------------------------------
+# Lifecycle
+# ---------------------------------------------------------------------------
 func _ready() -> void:
 	home_position = global_position
-	anim.animation_finished.connect(_on_animation_finished)
-	# Set the detection area to detect the player (collision_layer 2).
-	# Player is on layer 2; default detection_mask is 1 which won't overlap.
-	detection_area.collision_mask = 2
-	detection_area.body_entered.connect(_on_detection_area_body_entered)
-	detection_area.body_exited.connect(_on_detection_area_body_exited)
-
+	_resolve_components()
 	_pick_new_idle_time()
 	_on_enter_state(AnimalState.IDLE)
-
-	if auto_fade_in:
+	if fade_component:
+		fade_component.fade_in()
+		fade_component.fade_completed.connect(_on_fade_completed)
+	elif auto_fade_in:
 		_start_fade_in()
 	else:
 		modulate.a = 1.0
 
+func _resolve_components() -> void:
+	animator = get_node_or_null("AnimalAnimationComponent") as AnimalAnimationComponent
+	fade_component = get_node_or_null("FadeComponent") as FadeComponent
+	detection = get_node_or_null("DetectionComponent") as DetectionComponent
+	wander = get_node_or_null("WanderComponent") as WanderComponent
+	flee = get_node_or_null("FleeComponent") as FleeComponent
+
 func _process(_delta: float) -> void:
-	# Override in subclasses for per-frame updates (e.g. ripples sync).
 	pass
 
 func _physics_process(delta: float) -> void:
@@ -94,55 +86,64 @@ func _physics_process(delta: float) -> void:
 		AnimalState.FLEEING_FINISHED:
 			_process_flee_finished(delta)
 		AnimalState.FADING_OUT:
-			# No movement while fading out.
 			velocity = Vector2.ZERO
 
-# ============================================================================
-# IDLE
-# ============================================================================
+# ---------------------------------------------------------------------------
+# Idle
+# ---------------------------------------------------------------------------
 func _process_idle(delta: float) -> void:
+	if _should_flee():
+		_start_fleeing()
+		return
 	idle_timer -= delta
 	if idle_timer <= 0.0:
-		if player_ref != null and _player_is_too_close():
-			_start_fleeing()
-		elif randf() < wander_chance:
+		if randf() < wander_chance:
 			_start_wandering()
 		else:
 			_pick_new_idle_time()
+	_handle_idle(delta)
 
-	_handle_idle_animation(delta)
+func _pick_new_idle_time() -> void:
+	idle_timer = randf_range(idle_time_min, idle_time_max)
 
-## Override in subclasses for species-specific idle animation cycling.
-## @delta: time since last physics frame (set by _physics_process).
-func _handle_idle_animation(_delta: float = 0.0) -> void:
-	pass
-
-# ============================================================================
-# WANDERING
-# ============================================================================
+# ---------------------------------------------------------------------------
+# Wandering
+# ---------------------------------------------------------------------------
 func _start_wandering() -> void:
 	_change_state(AnimalState.WANDERING)
-	target_position = _pick_wander_target()
+	if wander:
+		wander.start_wandering()
+	else:
+		target_position = _pick_wander_target()
 	started_wandering.emit()
 
-func _process_wandering(_delta: float) -> void:
-	if player_ref != null and _player_is_too_close():
+func _process_wandering(delta: float) -> void:
+	if _should_flee():
 		_start_fleeing()
 		return
-
-	var dist := global_position.distance_squared_to(target_position)
-	if dist < 16.0:
-		_pick_new_idle_time()
-		_change_state(AnimalState.IDLE)
-		stopped_wandering.emit()
+	if wander:
+		if wander.process_wander(delta, self):
+			_end_wandering()
+			return
+		var wdir: Vector2 = wander.get_move_direction()
+		if wdir != Vector2.ZERO:
+			_face(wdir)
+			_play_walk(wdir)
 		return
-
-	var dir := global_position.direction_to(target_position)
-	velocity = dir * walk_speed
+	var dist: float = global_position.distance_squared_to(target_position)
+	if dist < 16.0:
+		_end_wandering()
+		return
+	var tdir: Vector2 = global_position.direction_to(target_position)
+	velocity = tdir * walk_speed
 	move_and_slide()
+	_face(tdir)
+	_play_walk(tdir)
 
-	_facing_from_dir(dir)
-	_play_walk_animation(dir)
+func _end_wandering() -> void:
+	_pick_new_idle_time()
+	_change_state(AnimalState.IDLE)
+	stopped_wandering.emit()
 
 func _pick_wander_target() -> Vector2:
 	var offset := Vector2(
@@ -151,147 +152,115 @@ func _pick_wander_target() -> Vector2:
 	)
 	return home_position + offset
 
-# ============================================================================
-# FLEEING
-# ============================================================================
-func _player_is_too_close() -> bool:
-	if player_ref == null:
-		return false
-	var d := global_position.distance_squared_to(player_ref.global_position)
-	return d < flee_distance * flee_distance
-
-func _player_is_safe() -> bool:
-	if player_ref == null:
-		return true
-	var d := global_position.distance_squared_to(player_ref.global_position)
-	return d > flee_safe_distance * flee_safe_distance
+# ---------------------------------------------------------------------------
+# Fleeing
+# ---------------------------------------------------------------------------
+func _should_flee() -> bool:
+	if flee:
+		return flee.should_start_fleeing()
+	if detection:
+		return detection.is_target_too_close(flee_distance)
+	return false
 
 func _start_fleeing() -> void:
 	_change_state(AnimalState.FLEEING)
-	flee_direction = _get_flee_direction()
+	if flee:
+		flee.start_fleeing()
+		flee_direction = flee.get_flee_direction()
+	else:
+		flee_direction = _get_flee_direction()
 	started_fleeing.emit()
 	_on_start_flee()
 
-## Override in subclasses for flee-specific setup (e.g. bird plays lift_off anim).
-func _on_start_flee() -> void:
-	pass
-
 func _process_fleeing(_delta: float) -> void:
-	if player_ref != null:
-		flee_direction = _get_flee_direction()
-
+	if flee:
+		if flee.process_flee(self):
+			flee_direction = flee.get_flee_direction()
+			_face(flee_direction)
+			_play_flee(flee_direction)
+			_end_flee()
+		else:
+			flee_direction = flee.get_flee_direction()
+			_face(flee_direction)
+			_play_flee(flee_direction)
+		return
+	flee_direction = _get_flee_direction()
 	velocity = flee_direction * flee_speed
 	move_and_slide()
-
-	_facing_from_dir(flee_direction)
-	_play_flee_animation(flee_direction)
-
+	_face(flee_direction)
+	_play_flee(flee_direction)
 	if _player_is_safe():
-		_change_state(AnimalState.FLEEING_FINISHED)
-		_on_flee_safe()
-		finished_fleeing.emit()
+		_end_flee()
 
-## Override for behaviour when the animal has reached a safe distance.
-func _on_flee_safe() -> void:
-	pass
-
-func _process_flee_finished(_delta: float) -> void:
-	# Subclass can override to handle return / fade-out.
-	pass
+func _end_flee() -> void:
+	_change_state(AnimalState.IDLE)
+	_pick_new_idle_time()
+	finished_fleeing.emit()
+	_on_flee_safe()
 
 func _get_flee_direction() -> Vector2:
-	if player_ref == null:
+	if detection == null or not detection.has_target():
 		return Vector2.RIGHT
-	var away := global_position - player_ref.global_position
+	var target: Node2D = detection.get_closest_target()
+	var away: Vector2 = global_position - target.global_position
 	if away.length_squared() < 1.0:
 		away = Vector2.RIGHT
 	return away.normalized()
 
-# ============================================================================
-# FADE SYSTEM
-# ============================================================================
-func _start_fade_in() -> void:
-	modulate.a = 0.0
-	_kill_fade_tween()
-	_fade_tween = create_tween()
-	_fade_tween.tween_property(self, ^"modulate:a", 1.0, fade_in_duration)
+func _player_is_safe() -> bool:
+	if detection == null or not detection.has_target():
+		return true
+	return detection.is_target_safe(flee_safe_distance)
 
-func _start_fade_out() -> void:
-	_kill_fade_tween()
-	_fade_tween = create_tween()
-	_fade_tween.tween_property(self, ^"modulate:a", 0.0, fade_out_duration)
-	_fade_tween.finished.connect(_on_fade_out_complete)
+func _process_flee_finished(_delta: float) -> void:
+	_change_state(AnimalState.IDLE)
 
-func _on_fade_out_complete() -> void:
-	fade_complete.emit()
-	# Default: free after fade-out. Subclasses can override to do something else.
-	_unregister_from_chunk_manager()
-	queue_free()
+# ---------------------------------------------------------------------------
+# Facing / animation (overridable hooks)
+# ---------------------------------------------------------------------------
+func _face(dir: Vector2) -> void:
+	if animator:
+		animator.face_from_direction(dir)
 
-func _unregister_from_chunk_manager() -> void:
-	var chunk_manager: Node = get_tree().current_scene.find_child(&"ChunkManager", false, false)
-	if chunk_manager != null and chunk_manager.has_method(&"unregister_node"):
-		chunk_manager.unregister_node(self)
-
-func _kill_fade_tween() -> void:
-	if _fade_tween and _fade_tween.is_valid():
-		_fade_tween.kill()
-	_fade_tween = null
-
-# ============================================================================
-# MEMORY CLEANUP — remove if far from home and off-screen
-# ============================================================================
-func _on_viewport_exited(_viewport: Viewport) -> void:
-	# Only auto-cleanup if we're not in the middle of player interaction.
-	if state == AnimalState.IDLE or state == AnimalState.WANDERING:
-		if home_position.distance_squared_to(global_position) > 4096.0:
-			_start_fade_out()
-
-# ============================================================================
-# HELPERS
-# ============================================================================
-func _change_state(new_state: AnimalState) -> void:
-	var old_state := state
-	state = new_state
-	_on_exit_state(old_state)
-	_on_enter_state(new_state)
-
-func _on_exit_state(_old_state: AnimalState) -> void:
+func _handle_idle(_delta: float) -> void:
 	pass
 
-func _on_enter_state(_new_state: AnimalState) -> void:
+func _play_walk(_dir: Vector2) -> void:
 	pass
 
-func _pick_new_idle_time() -> void:
-	idle_timer = randf_range(idle_time_min, idle_time_max)
-
-## Sets flip_h so the walk_side animation (which faces LEFT in source art)
-## is mirrored when moving right and shown as-is when moving left.
-func _facing_from_dir(dir: Vector2) -> void:
-	if abs(dir.x) > 0.01:
-		facing_right = dir.x > 0
-	# walk_side art faces left → flip when moving right (facing_right = true)
-	anim.flip_h = facing_right
-
-# ============================================================================
-# ANIMATION HELPERS (override in subclasses)
-# ============================================================================
-func _play_walk_animation(_dir: Vector2) -> void:
+func _play_flee(_dir: Vector2) -> void:
 	pass
 
-func _play_flee_animation(_dir: Vector2) -> void:
+func _on_start_flee() -> void:
+	pass
+
+func _on_flee_safe() -> void:
 	pass
 
 func _on_animation_finished() -> void:
 	pass
 
-# ============================================================================
-# DETECTION
-# ============================================================================
-func _on_detection_area_body_entered(body: Node) -> void:
-	if body.is_in_group(&"Player"):
-		player_ref = body as CharacterBody2D
+# ---------------------------------------------------------------------------
+# State transitions
+# ---------------------------------------------------------------------------
+func _change_state(new_state: AnimalState) -> void:
+	state = new_state
+	_on_enter_state(new_state)
 
-func _on_detection_area_body_exited(body: Node) -> void:
-	if body == player_ref:
-		player_ref = null
+func _on_enter_state(_new_state: AnimalState) -> void:
+	pass
+
+# ---------------------------------------------------------------------------
+# Fade
+# ---------------------------------------------------------------------------
+func _on_fade_completed(_direction: String) -> void:
+	fade_complete.emit()
+
+func _start_fade_in() -> void:
+	var tween := create_tween()
+	tween.tween_property(self, "modulate:a", 1.0, 0.5)
+	await tween.finished
+	fade_complete.emit()
+
+func _on_fade_out_complete() -> void:
+	queue_free()

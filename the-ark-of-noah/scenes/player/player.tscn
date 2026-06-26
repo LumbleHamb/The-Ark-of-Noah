@@ -4,9 +4,14 @@
 [ext_resource type="Texture2D" uid="uid://du0nakt4337al" path="res://images/sprites/animated/player/player_idle.png" id="2_p47bc"]
 [ext_resource type="Texture2D" uid="uid://colr3ftbov88m" path="res://images/sprites/animated/player/player_run.png" id="3_75vfm"]
 [ext_resource type="Texture2D" uid="uid://5l14mek37061" path="res://images/sprites/animated/player/player_walk.png" id="4_0owmy"]
-[ext_resource type="Script" uid="uid://cvfk6qjhv74dk" path="res://scripts/player/player.gd" id="5_p47bc"]
+[ext_resource type="Script" uid="uid://c0gwmwmvm6gds" path="res://scripts/player/player.gd" id="5_p47bc"]
 [ext_resource type="PackedScene" uid="uid://d4factionbar" path="res://scenes/farming/action_bar.tscn" id="6_farm_action_bar"]
 [ext_resource type="Texture2D" uid="uid://c85fnvclfqom4" path="res://images/generated/light_glow_256.png" id="7_light"]
+[ext_resource type="PackedScene" path="res://components/movement/movement_component.tscn" id="8_mov_scene"]
+[ext_resource type="PackedScene" path="res://components/animation/player_animation_component.tscn" id="9_anim_scene"]
+[ext_resource type="PackedScene" path="res://components/attack/attack_component.tscn" id="10_att_scene"]
+[ext_resource type="PackedScene" path="res://components/inventory/inventory_component.tscn" id="11_inv_scene"]
+[ext_resource type="PackedScene" path="res://components/farming/farming_component.tscn" id="12_farm_scene"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qek5x"]
 atlas = ExtResource("1_lvxji")
@@ -2141,7 +2146,7 @@ size = Vector2(24, 27)
 [sub_resource type="CircleShape2D" id="CircleShape2D_wodrh"]
 radius = 11.0
 
-[node name="player" type="CharacterBody2D" unique_id=425553129 groups=["Player"]]
+[node name="player" type="CharacterBody2D"  groups=["Player"]]
 scale = Vector2(1.5, 1.5)
 collision_layer = 2
 collision_mask = 2
@@ -2190,7 +2195,7 @@ visible = false
 z_index = 10
 scale = Vector2(0.4, 0.4)
 
-[node name="ActionBar" parent="." unique_id=752253181 instance=ExtResource("6_farm_action_bar")]
+[node name="ActionBar" parent="." instance=ExtResource("6_farm_action_bar")]
 
 [node name="PlayerLight" type="PointLight2D" parent="." unique_id=228434386]
 enabled = false
@@ -2200,3 +2205,13 @@ shadow_enabled = true
 shadow_color = Color(0, 0, 0, 0.8)
 texture = ExtResource("7_light")
 texture_scale = 4.0
+
+[node name="MovementComponent" parent="." instance=ExtResource("8_mov_scene")]
+
+[node name="PlayerAnimationComponent" parent="." instance=ExtResource("9_anim_scene")]
+
+[node name="AttackComponent" parent="." instance=ExtResource("10_att_scene")]
+
+[node name="InventoryComponent" parent="." instance=ExtResource("11_inv_scene")]
+
+[node name="FarmingComponent" parent="." instance=ExtResource("12_farm_scene")]

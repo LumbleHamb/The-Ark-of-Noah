@@ -1,12 +1,12 @@
-[gd_resource type="SpriteFrames" format=3]
+[gd_resource type="SpriteFrames" format=3 uid="uid://cwx4by5b732h2"]
 
-[ext_resource type="Texture2D" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-duck - idle - sideview.png" id="1_ikp6k"]
-[ext_resource type="Texture2D" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-duck - idle 2 - sideview.png" id="2_4yxs2"]
-[ext_resource type="Texture2D" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-duck - idle 3 - sideview.png" id="3_bxx03"]
-[ext_resource type="Texture2D" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-duck - walk - backview.png" id="4_sfvxr"]
-[ext_resource type="Texture2D" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-duck - walk - frontview.png" id="5_yw7ov"]
-[ext_resource type="Texture2D" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-duck - walk - sideview.png" id="6_0bthr"]
-[ext_resource type="Texture2D" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-water - ripples.png" id="7_t14pt"]
+[ext_resource type="Texture2D" uid="uid://botc8g06qj3wq" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-duck - idle - sideview.png" id="1_ikp6k"]
+[ext_resource type="Texture2D" uid="uid://cn6p1ga3gfe4l" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-duck - idle 2 - sideview.png" id="2_4yxs2"]
+[ext_resource type="Texture2D" uid="uid://dg8pt02mialki" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-duck - idle 3 - sideview.png" id="3_bxx03"]
+[ext_resource type="Texture2D" uid="uid://bfw3e3juxww8n" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-duck - walk - backview.png" id="4_sfvxr"]
+[ext_resource type="Texture2D" uid="uid://ciw7pms22b3r7" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-duck - walk - frontview.png" id="5_yw7ov"]
+[ext_resource type="Texture2D" uid="uid://cdckf2axqirmx" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-duck - walk - sideview.png" id="6_0bthr"]
+[ext_resource type="Texture2D" uid="uid://dwajki2754rq5" path="res://images/sprites/animated/npc/small animals/ducks/duck3/small animals - duck-water - ripples.png" id="7_t14pt"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6mcmp"]
 atlas = ExtResource("1_ikp6k")

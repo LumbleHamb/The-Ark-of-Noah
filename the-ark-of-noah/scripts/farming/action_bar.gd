@@ -1,10 +1,9 @@
-
 extends CanvasLayer
 class_name ActionBar
+
 ## Simple hotbar overlay for tool/seed selection.
-## 1-4 = tools, 5+ = seeds.
-## Shows the current selection visually.
-## Slots are clickable via mouse or touch.
+
+## Slots 1-4 = tools, 5+ = seeds. Clickable via mouse or touch.
 
 signal tool_selected(slot_index: int)
 
@@ -12,11 +11,9 @@ signal tool_selected(slot_index: int)
 
 var _slots: Array[TextureButton] = []
 var _selected_index: int = -1
-
 const SLOT_SIZE: Vector2 = Vector2(52, 52)
 
 func _ready() -> void:
-	# Create clickable slots
 	for i in range(10):
 		var slot := TextureButton.new()
 		slot.custom_minimum_size = SLOT_SIZE
@@ -32,17 +29,15 @@ func set_slot_texture(index: int, texture: Texture2D) -> void:
 
 func select_slot(index: int) -> void:
 	if index >= 0 and index < _slots.size():
-		# Clear previous selection highlight
 		if _selected_index >= 0 and _selected_index < _slots.size():
 			_slots[_selected_index].modulate = Color.WHITE
 			_slots[_selected_index].self_modulate = Color.WHITE
-		# Highlight new selection — bright golden glow
 		_selected_index = index
 		_slots[index].modulate = Color.GOLD
 		_slots[index].self_modulate = Color(1.8, 1.6, 0.4, 1.0)
 		tool_selected.emit(index)
 
-## Called when a slot button is pressed via click/touch.
+## Called when a slot button is pressed via click or touch.
 func _on_slot_pressed(index: int) -> void:
 	select_slot(index)
 

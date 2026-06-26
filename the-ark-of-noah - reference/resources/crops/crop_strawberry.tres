@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-strawberry.png" id="1_7ogxq"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_nhl4u"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-strawberry.png" id="3_0nu6f"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-strawberry_0.png" id="4_h6r62"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-strawberry_1.png" id="5_u8rub"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-strawberry_2.png" id="6_alvgf"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-strawberry_3.png" id="7_4mjfk"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-strawberry_4.png" id="8_7f06v"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-strawberry_5.png" id="9_gn0i2"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-strawberry_6.png" id="10_f46v8"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-strawberry_7.png" id="11_egwvt"]
+
+[resource]
+script = ExtResource("2_nhl4u")
+crop_name = "Strawberry"
+growth_days = 3
+max_yield = 2
+regrowable = true
+regrow_days = 1
+stage_sprites = Array[Texture2D]([ExtResource("4_h6r62"), ExtResource("5_u8rub"), ExtResource("6_alvgf"), ExtResource("7_4mjfk"), ExtResource("8_7f06v"), ExtResource("9_gn0i2"), ExtResource("10_f46v8"), ExtResource("11_egwvt")])
+seed_sprite = ExtResource("3_0nu6f")
+harvest_sprite = ExtResource("1_7ogxq")
+harvest_item_name = "Strawberry"

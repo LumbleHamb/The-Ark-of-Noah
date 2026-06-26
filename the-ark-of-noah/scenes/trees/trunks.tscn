@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://cdqduyosi688t"]
 
-[ext_resource type="Script" uid="uid://b440fpufrjoab" path="res://scripts/trees/trunks.gd" id="1_y3rrg"]
+[ext_resource type="Script" uid="uid://bnvvh3r6qtutf" path="res://scripts/trees/trunks.gd" id="1_y3rrg"]
 [ext_resource type="Texture2D" uid="uid://cdj1141fhpect" path="res://images/sprites/static/props/props.png" id="2_7pnf0"]
 [ext_resource type="PackedScene" uid="uid://dqhr7im6f0qrd" path="res://scenes/trees/leaves.tscn" id="3_estat"]
+[ext_resource type="PackedScene" path="res://components/health/health_component.tscn" id="health_scene"]
+[ext_resource type="PackedScene" path="res://components/fade/fade_component.tscn" id="fade_scene"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_estat"]
 atlas = ExtResource("2_7pnf0")
@@ -39,3 +41,12 @@ shape = SubResource("CapsuleShape2D_p47bc")
 
 [node name="leaves" parent="." unique_id=965971728 instance=ExtResource("3_estat")]
 position = Vector2(-5, -69)
+
+[node name="HealthComponent" parent="." instance=ExtResource("health_scene")]
+min_hp = 1
+max_hp = 2
+start_hp = 0
+
+[node name="FadeComponent" parent="." instance=ExtResource("fade_scene")]
+fade_out_duration = 1.5
+auto_fade_in = false

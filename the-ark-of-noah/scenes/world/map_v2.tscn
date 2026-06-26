@@ -1,0 +1,174 @@
+[gd_scene format=3 uid="uid://bmapv2c0ntr0l"]
+
+[ext_resource type="Script" uid="uid://ducwkni71h828" path="res://scripts/world/map_controller.gd" id="1_mapctrl"]
+[ext_resource type="TileSet" uid="uid://bug65gboq4q8p" path="res://images/tilesets/terrains/beach.tres" id="beach_ts"]
+[ext_resource type="PackedScene" path="res://components/biome/biome_component.tscn" id="biome_scene"]
+[ext_resource type="PackedScene" path="res://components/biome/buildings_component.tscn" id="bld_scene"]
+[ext_resource type="PackedScene" path="res://components/biome/bridge_component.tscn" id="bridge_scene"]
+[ext_resource type="TileSet" uid="uid://cff4vd8nud8m1" path="res://images/tilesets/terrains/coastline.tres" id="coast_ts"]
+[ext_resource type="PackedScene" path="res://components/biome/elevation_component.tscn" id="elev_scene"]
+[ext_resource type="TileSet" uid="uid://cq62r0w2aqtjh" path="res://images/tilesets/terrains/grass_tileset.tres" id="grass_ts"]
+[ext_resource type="PackedScene" path="res://components/biome/props_component.tscn" id="props_scene"]
+[ext_resource type="PackedScene" path="res://components/biome/tree_top_layer_component.tscn" id="top_scene"]
+[ext_resource type="PackedScene" path="res://components/biome/tree_trunk_layer_component.tscn" id="trunk_scene"]
+
+[node name="map_v2" type="Node2D" unique_id=1611272313]
+y_sort_enabled = true
+
+[node name="MapController" type="Node" parent="." unique_id=905223548]
+script = ExtResource("1_mapctrl")
+
+[node name="Biomes" type="Node2D" parent="." unique_id=1629908211]
+
+[node name="BeachBiome" type="Node2D" parent="Biomes" unique_id=279824303]
+
+[node name="BiomeComponent" parent="Biomes/BeachBiome" unique_id=1365290736 instance=ExtResource("biome_scene")]
+biome_id = "beach"
+biome_color = Color(0.96, 0.88, 0.65, 1)
+
+[node name="Water" type="TileMapLayer" parent="Biomes/BeachBiome" unique_id=1183570577]
+tile_set = ExtResource("beach_ts")
+
+[node name="BeachSand" type="TileMapLayer" parent="Biomes/BeachBiome" unique_id=901053513]
+tile_set = ExtResource("beach_ts")
+
+[node name="Elevation" type="TileMapLayer" parent="Biomes/BeachBiome" unique_id=731452767]
+tile_set = ExtResource("coast_ts")
+
+[node name="Props" type="TileMapLayer" parent="Biomes/BeachBiome" unique_id=1810994626]
+y_sort_enabled = true
+tile_set = ExtResource("beach_ts")
+
+[node name="Buildings" type="TileMapLayer" parent="Biomes/BeachBiome" unique_id=2024714418]
+y_sort_enabled = true
+tile_set = ExtResource("beach_ts")
+
+[node name="TreeTrunks" type="TileMapLayer" parent="Biomes/BeachBiome" unique_id=115695296]
+y_sort_enabled = true
+tile_set = ExtResource("grass_ts")
+
+[node name="TreeTops" type="TileMapLayer" parent="Biomes/BeachBiome" unique_id=547238127]
+y_sort_enabled = true
+tile_set = ExtResource("grass_ts")
+
+[node name="Bridges" type="TileMapLayer" parent="Biomes/BeachBiome" unique_id=1593040256]
+y_sort_enabled = true
+tile_set = ExtResource("coast_ts")
+
+[node name="ElevationComponent" parent="Biomes/BeachBiome" unique_id=1748074414 instance=ExtResource("elev_scene")]
+elevation_layer_path = NodePath("../Elevation")
+
+[node name="PropsComponent" parent="Biomes/BeachBiome" unique_id=367267850 instance=ExtResource("props_scene")]
+props_layer_path = NodePath("../Props")
+
+[node name="BuildingsComponent" parent="Biomes/BeachBiome" unique_id=1653507377 instance=ExtResource("bld_scene")]
+buildings_layer_path = NodePath("../Buildings")
+
+[node name="TreeTrunkLayerComponent" parent="Biomes/BeachBiome" unique_id=474001415 instance=ExtResource("trunk_scene")]
+trunk_layer_path = NodePath("../TreeTrunks")
+
+[node name="TreeTopLayerComponent" parent="Biomes/BeachBiome" unique_id=34086069 instance=ExtResource("top_scene")]
+treetop_layer_path = NodePath("../TreeTops")
+
+[node name="BridgeComponent" parent="Biomes/BeachBiome" unique_id=1744926884 instance=ExtResource("bridge_scene")]
+bridge_layer_path = NodePath("../Bridges")
+
+[node name="MeadowsBiome" type="Node2D" parent="Biomes" unique_id=687821176]
+
+[node name="BiomeComponent" parent="Biomes/MeadowsBiome" unique_id=1942932572 instance=ExtResource("biome_scene")]
+biome_id = "meadows"
+biome_color = Color(0.55, 0.78, 0.35, 1)
+
+[node name="MeadowsGround" type="TileMapLayer" parent="Biomes/MeadowsBiome" unique_id=6216547]
+tile_set = ExtResource("grass_ts")
+
+[node name="Elevation" type="TileMapLayer" parent="Biomes/MeadowsBiome" unique_id=1532356259]
+tile_set = ExtResource("coast_ts")
+
+[node name="Props" type="TileMapLayer" parent="Biomes/MeadowsBiome" unique_id=1080651533]
+y_sort_enabled = true
+tile_set = ExtResource("grass_ts")
+
+[node name="Buildings" type="TileMapLayer" parent="Biomes/MeadowsBiome" unique_id=624744537]
+y_sort_enabled = true
+tile_set = ExtResource("grass_ts")
+
+[node name="TreeTrunks" type="TileMapLayer" parent="Biomes/MeadowsBiome" unique_id=1632396056]
+y_sort_enabled = true
+tile_set = ExtResource("grass_ts")
+
+[node name="TreeTops" type="TileMapLayer" parent="Biomes/MeadowsBiome" unique_id=1773536137]
+y_sort_enabled = true
+tile_set = ExtResource("grass_ts")
+
+[node name="Bridges" type="TileMapLayer" parent="Biomes/MeadowsBiome" unique_id=1333787029]
+y_sort_enabled = true
+tile_set = ExtResource("coast_ts")
+
+[node name="ElevationComponent" parent="Biomes/MeadowsBiome" unique_id=1326458905 instance=ExtResource("elev_scene")]
+elevation_layer_path = NodePath("../Elevation")
+
+[node name="PropsComponent" parent="Biomes/MeadowsBiome" unique_id=112115467 instance=ExtResource("props_scene")]
+props_layer_path = NodePath("../Props")
+
+[node name="BuildingsComponent" parent="Biomes/MeadowsBiome" unique_id=560376526 instance=ExtResource("bld_scene")]
+buildings_layer_path = NodePath("../Buildings")
+
+[node name="TreeTrunkLayerComponent" parent="Biomes/MeadowsBiome" unique_id=1115255357 instance=ExtResource("trunk_scene")]
+trunk_layer_path = NodePath("../TreeTrunks")
+
+[node name="TreeTopLayerComponent" parent="Biomes/MeadowsBiome" unique_id=1459671018 instance=ExtResource("top_scene")]
+treetop_layer_path = NodePath("../TreeTops")
+
+[node name="BridgeComponent" parent="Biomes/MeadowsBiome" unique_id=548016637 instance=ExtResource("bridge_scene")]
+bridge_layer_path = NodePath("../Bridges")
+
+[node name="ForestBiome" type="Node2D" parent="Biomes" unique_id=1929310482]
+
+[node name="BiomeComponent" parent="Biomes/ForestBiome" unique_id=1594591041 instance=ExtResource("biome_scene")]
+biome_id = "forest"
+biome_color = Color(0.25, 0.5, 0.2, 1)
+
+[node name="ForestGround" type="TileMapLayer" parent="Biomes/ForestBiome" unique_id=2111670830]
+tile_set = ExtResource("grass_ts")
+
+[node name="Elevation" type="TileMapLayer" parent="Biomes/ForestBiome" unique_id=1994968414]
+tile_set = ExtResource("coast_ts")
+
+[node name="Props" type="TileMapLayer" parent="Biomes/ForestBiome" unique_id=114854700]
+y_sort_enabled = true
+tile_set = ExtResource("grass_ts")
+
+[node name="Buildings" type="TileMapLayer" parent="Biomes/ForestBiome" unique_id=1835066751]
+y_sort_enabled = true
+tile_set = ExtResource("grass_ts")
+
+[node name="TreeTrunks" type="TileMapLayer" parent="Biomes/ForestBiome" unique_id=516219054]
+y_sort_enabled = true
+tile_set = ExtResource("grass_ts")
+
+[node name="TreeTops" type="TileMapLayer" parent="Biomes/ForestBiome" unique_id=1859014704]
+y_sort_enabled = true
+tile_set = ExtResource("grass_ts")
+
+[node name="Bridges" type="TileMapLayer" parent="Biomes/ForestBiome" unique_id=992244539]
+y_sort_enabled = true
+tile_set = ExtResource("coast_ts")
+
+[node name="ElevationComponent" parent="Biomes/ForestBiome" unique_id=1368462018 instance=ExtResource("elev_scene")]
+elevation_layer_path = NodePath("../Elevation")
+
+[node name="PropsComponent" parent="Biomes/ForestBiome" unique_id=877214599 instance=ExtResource("props_scene")]
+props_layer_path = NodePath("../Props")
+
+[node name="BuildingsComponent" parent="Biomes/ForestBiome" unique_id=1920355932 instance=ExtResource("bld_scene")]
+buildings_layer_path = NodePath("../Buildings")
+
+[node name="TreeTrunkLayerComponent" parent="Biomes/ForestBiome" unique_id=1735363511 instance=ExtResource("trunk_scene")]
+trunk_layer_path = NodePath("../TreeTrunks")
+
+[node name="TreeTopLayerComponent" parent="Biomes/ForestBiome" unique_id=1335846960 instance=ExtResource("top_scene")]
+treetop_layer_path = NodePath("../TreeTops")
+
+[node name="BridgeComponent" parent="Biomes/ForestBiome" unique_id=946165664 instance=ExtResource("bridge_scene")]
+bridge_layer_path = NodePath("../Bridges")

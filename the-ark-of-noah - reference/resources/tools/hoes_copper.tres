@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ToolData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/hoes-copper_0.png" id="1_dnf5d"]
+[ext_resource type="Script" path="res://scripts/farming/tool_data.gd" id="2_hhh4n"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/hoes-copper_1.png" id="3_msiro"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/hoes-copper_2.png" id="4_pqi3a"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/hoes-copper_3.png" id="5_o0yam"]
+
+[resource]
+script = ExtResource("2_hhh4n")
+tool_name = "Copper Hoes"
+tier = "copper"
+swing_sprites = Array[Texture2D]([ExtResource("1_dnf5d"), ExtResource("3_msiro"), ExtResource("4_pqi3a"), ExtResource("5_o0yam")])
+icon = ExtResource("1_dnf5d")
+speed_multiplier = 1.15
+efficiency = 1.1

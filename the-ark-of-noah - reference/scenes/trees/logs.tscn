@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://mql20hs56okw"]
+
+[ext_resource type="Script" uid="uid://bmgtvefv2ydmh" path="res://scripts/trees/logs.gd" id="1_4s4d2"]
+[ext_resource type="Texture2D" uid="uid://cdj1141fhpect" path="res://images/sprites/static/props/props.png" id="1_d6ki3"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4s4d2"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wodrh"]
+radius = 6.0
+height = 42.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mgg3s"]
+radius = 5.0
+height = 40.0
+
+[node name="logs" type="RigidBody2D" unique_id=1694807621 groups=["log"]]
+collision_mask = 3
+physics_material_override = SubResource("PhysicsMaterial_4s4d2")
+gravity_scale = 0.0
+script = ExtResource("1_4s4d2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1086589753]
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_wodrh")
+
+[node name="logs_sprite" type="Sprite2D" parent="." unique_id=1746196670]
+rotation = 4.712389
+texture = ExtResource("1_d6ki3")
+region_enabled = true
+region_rect = Rect2(523, 514, 11, 40)
+
+[node name="pull_marker" type="Marker2D" parent="." unique_id=1944301565]
+position = Vector2(16, 0)
+
+[node name="push_detector" type="Area2D" parent="." unique_id=802210105]
+collision_layer = 0
+monitorable = false
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="push_detector" unique_id=172584403]
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_mgg3s")

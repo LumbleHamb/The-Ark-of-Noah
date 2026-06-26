@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-melon.png" id="1_yq130"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_xdt65"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-melon.png" id="3_gpgpa"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-melon_0.png" id="4_epw5p"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-melon_1.png" id="5_xydla"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-melon_2.png" id="6_jsyr5"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-melon_3.png" id="7_b31l0"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-melon_4.png" id="8_eqqek"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-melon_5.png" id="9_1mjvn"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-melon_6.png" id="10_ft8bn"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-melon_7.png" id="11_r363x"]
+
+[resource]
+script = ExtResource("2_xdt65")
+crop_name = "Melon"
+growth_days = 5
+stage_sprites = Array[Texture2D]([ExtResource("4_epw5p"), ExtResource("5_xydla"), ExtResource("6_jsyr5"), ExtResource("7_b31l0"), ExtResource("8_eqqek"), ExtResource("9_1mjvn"), ExtResource("10_ft8bn"), ExtResource("11_r363x")])
+seed_sprite = ExtResource("3_gpgpa")
+harvest_sprite = ExtResource("1_yq130")
+harvest_item_name = "Melon"
