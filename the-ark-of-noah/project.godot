@@ -29,6 +29,7 @@ virtual_joystick="*res://scripts/ui/virtual_joystick.gd"
 scene_transition="*res://scripts/autoload/scene_transition.gd"
 PauseMenu="*res://scenes/book/book_menu.tscn"
 WeatherManager="*res://scripts/world/weather_manager.gd"
+ChestUI="*res://scenes/ui/chest_ui.tscn"
 
 [display]
 

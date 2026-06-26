@@ -4,17 +4,11 @@ extends Node
 ## ============================================================================
 ## PAGE TURN COMPONENT — Drives realistic page-turn animations.
 ##
-## Uses an AnimationPlayer to animate the page-curl shader parameter plus the
-## turning page's position/rotation, producing a physical page-flip feel — not
-## a simple slide.  The shader (page_curl.gdshader) handles the curl itself;
-## this component drives the curl_amount uniform and any sprite transforms.
-##
 ## Forward turn:  page curls from right edge → flips left  (next_page anim).
-## Backward turn: page curls from left edge  → flips right (prev_page anim).
+## Backward turn: page curls from left edge  → flips right (previous_page anim).
 ##
-## Emits page_turn_forward / page_turn_backward when each completes so the
-## controller can swap page content at the midpoint (when the page is edge-on
-## and the swap is invisible).
+## Emits turn_completed when each turn finishes so the controller can swap page
+## content at the midpoint (when the page is edge-on and the swap is invisible).
 ## ============================================================================
 
 signal turn_completed(direction: int)  # +1 forward, -1 backward

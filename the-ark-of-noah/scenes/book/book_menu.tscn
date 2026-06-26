@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" path="res://assets/generated/book_cover_frame_0.png" id="6_clbse"]
 [ext_resource type="Script" path="res://components/book/settings_page_component.gd" id="7_mu1x4"]
 [ext_resource type="Script" path="res://components/book/book_inventory_component.gd" id="8_euw55"]
+[ext_resource type="Script" path="res://components/book/home_page_component.gd" id="13_home"]
 [ext_resource type="Shader" path="res://shaders/gold_glow.gdshader" id="9_iog1a"]
 [ext_resource type="Texture2D" path="res://images/ui/Individual files/ui_images/Spellbook & Tabs/PageFold_Left.png" id="10_2ggxb"]
 [ext_resource type="Texture2D" path="res://images/ui/Individual files/ui_images/Spellbook & Tabs/PageFold_Right.png" id="11_h13ue"]
@@ -277,6 +278,77 @@ offset_right = 160.0
 offset_bottom = 160.0
 color = Color(0.95, 0.88, 0.75, 1)
 
+[node name="HomePageContainer" type="Control" parent="BookRoot" unique_id=2100000001]
+unique_name_in_owner = true
+visible = false
+clip_contents = true
+anchors_preset = 0
+offset_left = 44.0
+offset_top = 36.0
+offset_right = 600.0
+offset_bottom = 380.0
+mouse_filter = 0
+
+[node name="HomePage" type="Control" parent="BookRoot/HomePageContainer" unique_id=2100000002]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("13_home")
+
+[node name="Title" type="Label" parent="BookRoot/HomePageContainer/HomePage" unique_id=2100000003]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 24.0
+offset_right = 120.0
+offset_bottom = 64.0
+theme_override_colors/font_color = Color(0.31, 0.19, 0.08, 1)
+theme_override_font_sizes/font_size = 28
+text = "Paused"
+horizontal_alignment = 1
+
+[node name="ButtonBox" type="VBoxContainer" parent="BookRoot/HomePageContainer/HomePage" unique_id=2100000004]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -110.0
+offset_top = -40.0
+offset_right = 110.0
+offset_bottom = 140.0
+theme_override_constants/separation = 12
+
+[node name="ResumeButton" type="Button" parent="BookRoot/HomePageContainer/HomePage/ButtonBox" unique_id=2100000005]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 44)
+theme_override_colors/font_color = Color(0.31, 0.19, 0.08, 1)
+theme_override_colors/font_hover_color = Color(0.5, 0.3, 0.1, 1)
+theme_override_font_sizes/font_size = 20
+text = "▶  Resume Game"
+
+[node name="SaveButton" type="Button" parent="BookRoot/HomePageContainer/HomePage/ButtonBox" unique_id=2100000006]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 44)
+theme_override_colors/font_color = Color(0.31, 0.19, 0.08, 1)
+theme_override_colors/font_hover_color = Color(0.5, 0.3, 0.1, 1)
+theme_override_font_sizes/font_size = 20
+text = "💾  Save Game"
+
+[node name="ExitButton" type="Button" parent="BookRoot/HomePageContainer/HomePage/ButtonBox" unique_id=2100000007]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 44)
+theme_override_colors/font_color = Color(0.6, 0.15, 0.1, 1)
+theme_override_colors/font_hover_color = Color(0.8, 0.2, 0.15, 1)
+theme_override_font_sizes/font_size = 20
+text = "✕  Exit Game"
+
 [node name="SettingsPageContainer" type="Control" parent="BookRoot" unique_id=1532742524]
 unique_name_in_owner = true
 visible = false
@@ -370,4 +442,5 @@ theme_override_font_sizes/font_size = 14
 text = "Next  ▶"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="BookRoot" unique_id=602765679]
+unique_name_in_owner = true
 libraries/ = SubResource("AnimationLibrary_6w7u3")

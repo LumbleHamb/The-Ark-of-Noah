@@ -15,11 +15,6 @@ class_name Player
 ## to components for specific behaviors.
 
 # ============================================================================
-# CONSTANTS
-# ============================================================================
-const MobileJoystickScript: Script = preload("res://scripts/ui/virtual_joystick.gd")
-
-# ============================================================================
 # NODE REFERENCES
 # ============================================================================
 @onready var anim: AnimatedSprite2D = $player_animation

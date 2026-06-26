@@ -1,33 +1,48 @@
 extends CanvasLayer
 
 ## ============================================================================
-## BOOK UI CONTROLLER — Orchestrates the rebuilt book pause menu.
+## BOOK UI CONTROLLER — Orchestrates the book-style pause / inventory menu.
 ##
-## Wires together the reusable components:
-##   - PauseComponent        (pauses/resumes the world)
-##   - BookAnimationComponent (cover open/close)
-##   - PageTurnComponent     (page-flip animation)
-##   - SettingsPageComponent (first visible page)
-##   - BookInventoryComponent (inventory page, reuses InventoryComponent)
+## This is the single autoload (project setting: PauseMenu) that owns the
+## "spellbook" overlay.  It is a thin state machine that wires together several
+## reusable components and pages:
 ##
-## State machine (gatekeeps all input):
-##   CLOSED → OPENING → OPEN(settings) → (page turn) → OPEN(inventory) → CLOSING → CLOSED
+##   Components (children of this node):
+##     - PauseComponent          → pauses / resumes the game world.
+##     - BookAnimationComponent  → plays the cover open / close animation.
+##     - PageTurnComponent       → plays the page-flip animation between pages.
+##
+##   Pages (children of BookRoot, each a Control with a Page*Component script):
+##     - Page 0: Home       (HomePageComponent)      — Resume / Save / Exit
+##     - Page 1: Settings   (SettingsPageComponent)  — settings categories
+##     - Page 2: Inventory   (BookInventoryComponent) — player inventory grid
+##
+## The controller is data-driven: pages are discovered at runtime by scanning
+## BookRoot for children whose script implements the BookPage interface
+## (on_page_opened / on_page_closed).  Add a new page by dropping another
+## Control under BookRoot with a *PageComponent script — no controller edits.
+##
+## State machine (gatekeeps ALL input so animations never overlap):
+##   CLOSED → OPENING → OPEN(current) → (turn) → OPEN(next) → CLOSING → CLOSED
 ##
 ## Input:
-##   - "pause"     toggles the book open/close (opens to Settings by default).
-##   - "inventory" from CLOSED opens directly to the Inventory page (auto-turns
-##     past Settings); from OPEN it closes the book.
+##   - "pause"     toggles the book open / close (opens to the Home page).
+##   - "inventory" opens directly to the Inventory page (auto-turns past Home
+##                 and Settings); from OPEN it closes the book.
 ##
-## The controller does NOT own gameplay logic — it delegates to components.
+## The controller runs in PROCESS_MODE_ALWAYS so it still receives input while
+## the world is paused.  It owns NO gameplay logic — it delegates to components
+## and the SaveManager autoload.
 ## ============================================================================
 
 signal book_opened(page_index: int)
 signal book_closed()
 
-enum BookState { CLOSED, OPENING, SETTINGS, INVENTORY, TURNING, CLOSING }
+enum BookState { CLOSED, OPENING, OPEN, TURNING, CLOSING }
 
-const PAGE_SETTINGS: int = 0
-const PAGE_INVENTORY: int = 1
+const PAGE_HOME: int = 0
+const PAGE_SETTINGS: int = 1
+const PAGE_INVENTORY: int = 2
 
 @export var dimmer_fade_duration: float = 0.3
 @export var dimmer_alpha: float = 0.45
@@ -38,16 +53,21 @@ const PAGE_INVENTORY: int = 1
 @onready var corner_next: TextureButton = %CornerNext
 @onready var nav_prev: Button = %NavPrev
 @onready var nav_next: Button = %NavNext
-# Pages are untyped to avoid parse-time class_name ordering issues; we
-# duck-type via has_method("on_page_opened").
-@onready var settings_page: Control = %SettingsPage
-@onready var inventory_page: Control = %InventoryPage
-# Page containers (the clip_contents parents) resolved via unique names.
-@onready var settings_container: Control = %SettingsPageContainer
-@onready var inventory_container: Control = %InventoryPageContainer
+# The AnimationPlayer that owns the book_open / book_close / page-turn anims.
+@onready var animation_player: AnimationPlayer = %AnimationPlayer
+
+# Pages are discovered at runtime (duck-typed via on_page_opened/on_page_closed).
+# _pages[i] is the Control for page index i (the node that carries the
+# *PageComponent script).  It may be a direct child of BookRoot OR a single
+# child of a "container" Control that provides clip/positioning — in that case
+# we also toggle the container's visibility alongside the page.
+# Page order = order of discovery among children that implement BookPage.
+var _pages: Array[Control] = []
 
 var _state: int = BookState.CLOSED
-var _current_page: int = PAGE_SETTINGS
+var _current_page: int = PAGE_HOME
+var _target_page: int = PAGE_HOME
+var _pending_page: int = PAGE_HOME
 # Components found at runtime (untyped — duck-typed via has_method/has_signal).
 var _pause: Node = null
 var _animation: Node = null
@@ -61,6 +81,10 @@ func _ready() -> void:
 	_pause = _find_component_by_script("res://components/book/pause_component.gd")
 	_animation = _find_component_by_script("res://components/book/book_animation_component.gd")
 	_turn = _find_component_by_script("res://components/book/page_turn_component.gd")
+
+	# Wire the animation component's AnimationPlayer export if it has none.
+	if _animation and _animation.get("animation_player") == null:
+		_animation.set("animation_player", animation_player)
 
 	# Wire component signals.
 	if _animation:
@@ -76,13 +100,16 @@ func _ready() -> void:
 	nav_prev.pressed.connect(_on_corner_prev)
 	nav_next.pressed.connect(_on_corner_next)
 
+	# Discover pages (Home, Settings, Inventory) under BookRoot and wire signals.
+	_discover_pages()
+	_wire_page_signals()
+
 	# Start hidden.
 	hide()
 	book_root.hide()
 	dimmer.color.a = 0.0
-	_show_page(PAGE_SETTINGS, false)
-
-	# Hide nav initially.
+	for page: Control in _pages:
+		page.hide()
 	_hide_nav()
 
 func _process(_delta: float) -> void:
@@ -92,26 +119,68 @@ func _process(_delta: float) -> void:
 		_on_inventory_input()
 
 # ============================================================================
+# PAGE DISCOVERY
+# ============================================================================
+func _discover_pages() -> void:
+	_pages.clear()
+	for child: Node in book_root.get_children():
+		# A page may be a direct child of BookRoot (has on_page_opened itself)…
+		if child is Control and child.has_method("on_page_opened"):
+			_pages.append(child as Control)
+			continue
+		# …or a single script-bearing child of a plain "container" Control.
+		if child is Control:
+			for grandchild: Node in child.get_children():
+				if grandchild is Control and grandchild.has_method("on_page_opened"):
+					_pages.append(grandchild as Control)
+					break
+
+func _wire_page_signals() -> void:
+	for page: Control in _pages:
+		if page.has_signal("resume_requested"):
+			page.resume_requested.connect(close_book)
+		if page.has_signal("save_requested"):
+			page.save_requested.connect(_on_save_requested)
+		if page.has_signal("exit_requested"):
+			page.exit_requested.connect(_on_exit_requested)
+
+func _show_page(page_index: int, show_it: bool) -> void:
+	if page_index < 0 or page_index >= _pages.size():
+		return
+	var page: Control = _pages[page_index]
+	if not is_instance_valid(page):
+		return
+	# Toggle the page and, if it lives inside a container, the container too.
+	page.visible = show_it
+	var container: Node = page.get_parent()
+	if container is Control and container != book_root:
+		container.visible = show_it
+	if show_it and page.has_method("on_page_opened"):
+		page.on_page_opened()
+	elif not show_it and page.has_method("on_page_closed"):
+		page.on_page_closed()
+
+# ============================================================================
 # INPUT
 # ============================================================================
 func _on_pause_input() -> void:
 	match _state:
 		BookState.CLOSED:
-			open_book(PAGE_SETTINGS)
-		BookState.SETTINGS, BookState.INVENTORY:
+			open_book(PAGE_HOME)
+		BookState.OPEN:
 			close_book()
 		_:
-			pass  # Ignore during OPENING/CLOSING/TURNING.
+			pass  # Ignore during OPENING / CLOSING / TURNING.
 
 func _on_inventory_input() -> void:
 	match _state:
 		BookState.CLOSED:
-			# Open directly to the inventory page (auto-turns past settings).
 			open_book(PAGE_INVENTORY)
-		BookState.INVENTORY:
-			close_book()
-		BookState.SETTINGS:
-			turn_to_page(PAGE_INVENTORY)
+		BookState.OPEN:
+			if _current_page != PAGE_INVENTORY:
+				turn_to_page(PAGE_INVENTORY)
+			else:
+				close_book()
 		_:
 			pass
 
@@ -121,59 +190,51 @@ func _on_inventory_input() -> void:
 func open_book(target_page: int) -> void:
 	if _state != BookState.CLOSED:
 		return
-	_target_page = target_page
-	_current_page = PAGE_SETTINGS  # always start at settings, then maybe turn
+	_target_page = clampi(target_page, 0, _pages.size() - 1)
+	# Always animate from the Home page, then auto-turn to the requested page.
+	_current_page = PAGE_HOME
 	_state = BookState.OPENING
 	if _pause:
 		_pause.pause_world()
 
-	# Reset visuals.
+	# Show the book, reveal the Home page, hide every other page, hide nav.
 	book_root.show()
-	_show_page(PAGE_SETTINGS, true)
+	for i in range(_pages.size()):
+		_show_page(i, i == PAGE_HOME)
 	_hide_nav()
-	corner_prev.hide()
-	corner_next.hide()
-	nav_prev.hide()
-	nav_next.hide()
 
-	# Fade in dimmer.
+	# Fade in the dimmer overlay.
 	_tween_dimmer(dimmer_alpha)
 
-	# Play the opening animation (cover lifts, pages fan).
+	# Play the cover-open animation (falls back to instant if none).
 	if _animation:
 		_animation.play_open()
 	else:
-		_on_book_opened()  # Fallback if no animation component.
+		_on_book_opened()
 
 func close_book() -> void:
-	if _state not in [BookState.SETTINGS, BookState.INVENTORY]:
+	if _state != BookState.OPEN:
 		return
 	_state = BookState.CLOSING
 	_hide_nav()
-	corner_prev.hide()
-	corner_next.hide()
-	nav_prev.hide()
-	nav_next.hide()
-	# Hide page content so the closing animation shows just the book.
-	_show_page(PAGE_SETTINGS, false)
-	_show_page(PAGE_INVENTORY, false)
+	for i in range(_pages.size()):
+		_show_page(i, false)
 	_tween_dimmer(0.0)
 	if _animation:
 		_animation.play_close()
 	else:
 		_on_book_closed()
 
-var _target_page: int = PAGE_SETTINGS
-
 func _on_book_opened() -> void:
-	# After opening, show the settings page, then auto-turn if requested.
-	_state = BookState.SETTINGS
-	_show_page(PAGE_SETTINGS, true)
+	# After opening, show the Home page, then auto-turn if a different page was
+	# requested (e.g. the Inventory key opens straight to the inventory page).
+	_state = BookState.OPEN
+	_current_page = PAGE_HOME
+	_show_page(PAGE_HOME, true)
 	_show_nav()
 	book_opened.emit(_current_page)
-	if _target_page == PAGE_INVENTORY:
-		# Auto-turn to the inventory page.
-		turn_to_page(PAGE_INVENTORY)
+	if _target_page != PAGE_HOME:
+		turn_to_page(_target_page)
 
 func _on_book_closed() -> void:
 	book_root.hide()
@@ -188,21 +249,16 @@ func _on_book_closed() -> void:
 # PAGE TURNING
 # ============================================================================
 func turn_to_page(target: int) -> void:
-	if _state not in [BookState.SETTINGS, BookState.INVENTORY]:
+	if _state != BookState.OPEN:
 		return
 	if target == _current_page:
 		return
-	if target < PAGE_SETTINGS or target > PAGE_INVENTORY:
+	if target < 0 or target >= _pages.size():
 		return
 	var direction: int = 1 if target > _current_page else -1
 	_state = BookState.TURNING
 	_hide_nav()
-	corner_prev.hide()
-	corner_next.hide()
-	nav_prev.hide()
-	nav_next.hide()
 	_pending_page = target
-	_pending_direction = direction
 	if _turn:
 		if direction > 0:
 			_turn.turn_forward()
@@ -210,13 +266,11 @@ func turn_to_page(target: int) -> void:
 			_turn.turn_backward()
 	else:
 		# No turn animation — swap immediately.
+		_show_page(_current_page, false)
 		_current_page = target
-		_state = _open_state_for_page(target)
 		_show_page(target, true)
+		_state = BookState.OPEN
 		_show_nav()
-
-var _pending_page: int = PAGE_SETTINGS
-var _pending_direction: int = 1
 
 func _on_turn_midpoint() -> void:
 	# Best moment (page edge-on) to swap content invisibly.
@@ -227,54 +281,46 @@ func _on_turn_midpoint() -> void:
 func _on_turn_completed(_direction: int) -> void:
 	if _state != BookState.TURNING:
 		return
-	_state = _open_state_for_page(_current_page)
+	_state = BookState.OPEN
 	_show_nav()
-
-func _open_state_for_page(page: int) -> int:
-	if page == PAGE_INVENTORY:
-		return BookState.INVENTORY
-	return BookState.SETTINGS
-
-# ============================================================================
-# PAGE VISIBILITY
-# ============================================================================
-func _show_page(page: int, show_it: bool) -> void:
-	var container: Control = null
-	if page == PAGE_SETTINGS:
-		container = settings_container
-	elif page == PAGE_INVENTORY:
-		container = inventory_container
-	if container and is_instance_valid(container):
-		container.visible = show_it
-	if page == PAGE_INVENTORY and inventory_page:
-		if show_it:
-			inventory_page.on_page_opened()
-		else:
-			inventory_page.on_page_closed()
 
 # ============================================================================
 # NAV BUTTONS
 # ============================================================================
 func _on_corner_prev() -> void:
-	turn_to_page(PAGE_SETTINGS)
+	turn_to_page(_current_page - 1)
 
 func _on_corner_next() -> void:
-	turn_to_page(PAGE_INVENTORY)
+	turn_to_page(_current_page + 1)
 
 func _show_nav() -> void:
 	nav_prev.show()
 	nav_next.show()
 	corner_prev.show()
 	corner_next.show()
-	# Prev disabled on settings; Next disabled on inventory.
-	nav_prev.disabled = _current_page <= PAGE_SETTINGS
-	nav_next.disabled = _current_page >= PAGE_INVENTORY
+	# Prev disabled on the first page; Next disabled on the last page.
+	nav_prev.disabled = _current_page <= 0
+	nav_next.disabled = _current_page >= _pages.size() - 1
 
 func _hide_nav() -> void:
 	nav_prev.hide()
 	nav_next.hide()
 	corner_prev.hide()
 	corner_next.hide()
+
+# ============================================================================
+# HOME PAGE ACTIONS
+# ============================================================================
+func _on_save_requested() -> void:
+	# Delegate to the save_manager autoload — the controller owns no save logic.
+	# The autoload singleton is named "save_manager" in project.godot.
+	if save_manager:
+		save_manager.save_game()
+		print("[BookUI] Game saved from the Home page.")
+
+func _on_exit_requested() -> void:
+	# Quit the application.  (Swap for a confirmation dialog if desired later.)
+	get_tree().quit()
 
 # ============================================================================
 # HELPERS

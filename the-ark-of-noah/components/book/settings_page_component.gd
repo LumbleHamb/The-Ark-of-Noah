@@ -36,6 +36,14 @@ var _detail_panel: VBoxContainer = null
 func _ready() -> void:
 	_build_ui()
 
+## Called by the BookUIController when this page becomes visible.
+func on_page_opened() -> void:
+	page_opened.emit()
+
+## Called by the BookUIController when navigating away from this page.
+func on_page_closed() -> void:
+	page_closed.emit()
+
 func _build_ui() -> void:
 	# Full-rect margins.
 	var margin: MarginContainer = MarginContainer.new()

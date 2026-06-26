@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://bmapv2c0ntr0l"]
+[gd_scene format=3 uid="uid://bkb245tf5q6ta"]
 
-[ext_resource type="Script" uid="uid://ducwkni71h828" path="res://scripts/world/map_controller.gd" id="1_mapctrl"]
+[ext_resource type="Script" path="res://scripts/world/map_controller.gd" id="1_mapctrl"]
 [ext_resource type="TileSet" uid="uid://bug65gboq4q8p" path="res://images/tilesets/terrains/beach.tres" id="beach_ts"]
 [ext_resource type="PackedScene" path="res://components/biome/biome_component.tscn" id="biome_scene"]
 [ext_resource type="PackedScene" path="res://components/biome/buildings_component.tscn" id="bld_scene"]

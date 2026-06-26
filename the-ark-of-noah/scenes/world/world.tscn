@@ -28,6 +28,7 @@
 [ext_resource type="PackedScene" path="res://components/weather/rain_component.tscn" id="21_rain"]
 [ext_resource type="PackedScene" path="res://components/weather/lightning_component.tscn" id="22_lgt"]
 [ext_resource type="PackedScene" path="res://components/weather/thunder_component.tscn" id="23_thunder"]
+[ext_resource type="PackedScene" path="res://scenes/decor/storage_chest.tscn" id="24_chest"]
 
 [node name="world" type="Node2D" unique_id=259029940]
 y_sort_enabled = true
@@ -59,16 +60,16 @@ position = Vector2(1592, 249)
 [node name="ChunkManager" type="Node" parent="." unique_id=1896709879]
 script = ExtResource("17_cm")
 
-[node name="WeatherController" parent="." instance=ExtResource("20_wc")]
+[node name="WeatherController" parent="." unique_id=1179450645 instance=ExtResource("20_wc")]
 
-[node name="Rain" type="Node" parent="." instance=ExtResource("21_rain")]
+[node name="Rain" parent="." unique_id=864188678 instance=ExtResource("21_rain")]
 
-[node name="WeatherFX" type="CanvasLayer" parent="."]
+[node name="WeatherFX" type="CanvasLayer" parent="." unique_id=956888538]
 layer = 10
 
-[node name="Lightning" type="Node" parent="WeatherFX" instance=ExtResource("22_lgt")]
+[node name="Lightning" parent="WeatherFX" unique_id=1407275035 instance=ExtResource("22_lgt")]
 
-[node name="Thunder" type="Node" parent="WeatherFX" instance=ExtResource("23_thunder")]
+[node name="Thunder" parent="WeatherFX" unique_id=571994076 instance=ExtResource("23_thunder")]
 
 [node name="FarmManager" parent="." unique_id=293512700 instance=ExtResource("6_farm")]
 
@@ -122,3 +123,6 @@ near_water = true
 [node name="duck4" parent="." unique_id=1205858414 groups=["chunked"] instance=ExtResource("16_duck1")]
 position = Vector2(512, 194)
 near_water = true
+
+[node name="StorageChest" parent="." unique_id=2400000001 groups=["chunked"] instance=ExtResource("24_chest")]
+position = Vector2(940, 360)

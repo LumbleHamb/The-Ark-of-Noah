@@ -154,6 +154,7 @@ func plant_crop(tile_pos: Vector2i, crop_id: String) -> bool:
 	return true
 
 ## Harvests a crop at the tile position. Returns the yield count.
+## Spawns a floating HarvestPickup for each unit of yield at the tile.
 func harvest_tile(tile_pos: Vector2i) -> int:
 	if not is_harvestable(tile_pos):
 		return 0
@@ -176,8 +177,34 @@ func harvest_tile(tile_pos: Vector2i) -> int:
 		d["planted_at_day"] = -1
 		d["growth_stage"] = 0
 		d["harvestable"] = false
+	# Soil resets after harvest (cleared) so it can be re-tilled.
+	if not crop.regrowable:
+		clear_soil_tile(tile_pos)
+		d["tilled"] = false
+		d["tilled_at_day"] = -1
+	# Spawn a harvest pickup carrying the whole yield as one stack.
+	_spawn_harvest_pickup(crop, tile_pos, yield_count)
 	crop_harvested.emit(tile_pos, crop_name, yield_count)
 	return yield_count
+
+## Spawns a floating, bobbing HarvestPickup at the tile that auto-collects into
+## the player's inventory when they walk close.
+func _spawn_harvest_pickup(crop: CropData, tile_pos: Vector2i, yield_count: int) -> void:
+	if crop == null or yield_count <= 0:
+		return
+	var item_id: String = crop.harvest_item_name.to_lower().replace(" ", "_") if crop.harvest_item_name != "" else crop.crop_name.to_lower().replace(" ", "_")
+	var display_name: String = crop.harvest_item_name if crop.harvest_item_name != "" else crop.crop_name
+	var stack: ItemStack = ItemStack.new()
+	stack.item_id = item_id
+	stack.item_name = display_name
+	stack.icon = crop.harvest_sprite if crop.harvest_sprite else crop.seed_sprite
+	stack.count = yield_count
+	stack.max_stack = 99
+	stack.stackable = true
+	stack.crop_ref = crop
+	var world_pos: Vector2 = get_world_pos(tile_pos)
+	# Spawn slightly above the tile centre so the bob reads well.
+	HarvestPickup.spawn(stack, get_parent(), world_pos - Vector2(0, 8))
 
 ## Called once per in-game day to advance all planted crops.
 func _process_daily_growth(day: int) -> void:

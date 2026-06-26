@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d4factionbar"]
 
-[ext_resource type="Script" path="res://scripts/farming/action_bar.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/ui/hotbar.gd" id="1_script"]
 
 [node name="ActionBar" type="CanvasLayer"]
 unique_name_in_owner = true

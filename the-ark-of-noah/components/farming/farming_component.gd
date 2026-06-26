@@ -43,9 +43,16 @@ func do_farming_action(entity_pos: Vector2, last_dir: Vector2) -> bool:
 		return _plant_seed(target_tile)
 	return false
 
-## Attempts to harvest at the targeted tile. Returns true if successful.
+## Attempts to harvest at the targeted tile. A hoe must be equipped to harvest
+## (the hoe is swung to harvest, like tilling). Returns true if successful.
 func try_harvest(entity_pos: Vector2, last_dir: Vector2) -> bool:
 	if farm_manager == null or _cooldown > 0.0:
+		return false
+	# Harvesting uses the hoe — require a hoe to be the selected tool.
+	if inventory == null or not inventory.is_tool_selected():
+		return false
+	var tool: ToolData = inventory.get_selected_tool()
+	if tool == null or tool.tool_type != ToolData.ToolType.HOE:
 		return false
 	var target_tile: Vector2i = _get_target_tile(entity_pos, last_dir)
 	var yield_count: int = farm_manager.harvest_tile(target_tile)
