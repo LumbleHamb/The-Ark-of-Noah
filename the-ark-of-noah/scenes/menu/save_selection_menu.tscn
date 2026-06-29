@@ -1,0 +1,106 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/menu/save_selection_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://images/ui/Individual files/ui_images/Background boxes/BGbox_04A.png" id="2_panel"]
+[ext_resource type="Texture2D" path="res://images/ui/Individual files/ui_images/Buttons/Button_03A_Normal.png" id="3_btn_n"]
+[ext_resource type="Texture2D" path="res://images/ui/Individual files/ui_images/Buttons/Button_03A_Pressed.png" id="4_btn_p"]
+[ext_resource type="Texture2D" path="res://images/ui/Individual files/ui_images/Buttons/Button_03A_Selected.png" id="5_btn_h"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_savepanel"]
+texture = ExtResource("2_panel")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
+
+[node name="SaveSelectionMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_script")
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -210.0
+offset_right = 240.0
+offset_bottom = 210.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_savepanel")
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "Select Save Slot"
+horizontal_alignment = 1
+
+[node name="Slot1Button" type="TextureButton" parent="Panel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 84)
+layout_mode = 2
+texture_normal = ExtResource("3_btn_n")
+texture_pressed = ExtResource("4_btn_p")
+texture_hover = ExtResource("5_btn_h")
+
+[node name="Label" type="Label" parent="Panel/VBox/Slot1Button"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "Slot 1"
+
+[node name="Slot2Button" type="TextureButton" parent="Panel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 84)
+layout_mode = 2
+texture_normal = ExtResource("3_btn_n")
+texture_pressed = ExtResource("4_btn_p")
+texture_hover = ExtResource("5_btn_h")
+
+[node name="Label" type="Label" parent="Panel/VBox/Slot2Button"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "Slot 2"
+
+[node name="Slot3Button" type="TextureButton" parent="Panel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 84)
+layout_mode = 2
+texture_normal = ExtResource("3_btn_n")
+texture_pressed = ExtResource("4_btn_p")
+texture_hover = ExtResource("5_btn_h")
+
+[node name="Label" type="Label" parent="Panel/VBox/Slot3Button"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "Slot 3"
+
+[node name="CancelButton" type="TextureButton" parent="Panel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 84)
+layout_mode = 2
+texture_normal = ExtResource("3_btn_n")
+texture_pressed = ExtResource("4_btn_p")
+texture_hover = ExtResource("5_btn_h")
+
+[node name="Label" type="Label" parent="Panel/VBox/CancelButton"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "Back"

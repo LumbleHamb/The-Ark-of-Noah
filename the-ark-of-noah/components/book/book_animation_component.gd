@@ -32,6 +32,10 @@ signal book_closed()
 
 ## Name of the closing animation in the player.
 @export var close_animation: String = "book_close"
+@export var animation_failsafe_seconds: float = 0.9
+
+var _open_token: int = 0
+var _close_token: int = 0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -40,17 +44,29 @@ func _ready() -> void:
 
 ## Plays the book-opening animation. Returns immediately; listen for book_opened.
 func play_open() -> void:
+	_open_token += 1
+	var token: int = _open_token
 	if animation_player == null or not is_instance_valid(animation_player):
 		book_opened.emit()  # Fallback: no animation, just signal.
 		return
+	if not animation_player.has_animation(open_animation):
+		book_opened.emit()
+		return
 	animation_player.play(open_animation)
+	_start_open_failsafe(token)
 
 ## Plays the book-closing animation.
 func play_close() -> void:
+	_close_token += 1
+	var token: int = _close_token
 	if animation_player == null or not is_instance_valid(animation_player):
 		book_closed.emit()  # Fallback.
 		return
+	if not animation_player.has_animation(close_animation):
+		book_closed.emit()
+		return
 	animation_player.play(close_animation)
+	_start_close_failsafe(token)
 
 ## Returns true if an animation is currently playing.
 func is_animating() -> bool:
@@ -62,4 +78,26 @@ func _on_animation_finished(anim_name: String) -> void:
 	if anim_name == open_animation:
 		book_opened.emit()
 	elif anim_name == close_animation:
+		book_closed.emit()
+
+func _start_open_failsafe(token: int) -> void:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return
+	await tree.create_timer(animation_failsafe_seconds).timeout
+	if token != _open_token:
+		return
+	if animation_player != null and animation_player.is_playing() and animation_player.current_animation == open_animation:
+		animation_player.stop()
+		book_opened.emit()
+
+func _start_close_failsafe(token: int) -> void:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return
+	await tree.create_timer(animation_failsafe_seconds).timeout
+	if token != _close_token:
+		return
+	if animation_player != null and animation_player.is_playing() and animation_player.current_animation == close_animation:
+		animation_player.stop()
 		book_closed.emit()

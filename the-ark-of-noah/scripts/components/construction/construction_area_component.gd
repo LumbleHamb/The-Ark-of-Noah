@@ -7,6 +7,7 @@ signal construction_completed(construction_name: String)
 
 @export var construction_name: String = "Construction"
 @export var stages: Array[ConstructionStageResource] = []
+@export var construction_plan: ConstructionPlanResource = null
 @export var current_stage: int = 0
 @export var blueprint_sprite: Texture2D = null
 @export var completed_scene: PackedScene = null
@@ -21,8 +22,13 @@ var _is_finished: bool = false
 
 func _component_ready() -> void:
 	add_to_group(&"construction_area")
+	_apply_plan_if_present()
 	_build_interact_zone()
 	_refresh_visuals()
+
+func _apply_plan_if_present() -> void:
+	if construction_plan != null and construction_plan.stages.size() > 0:
+		stages = construction_plan.stages.duplicate()
 
 func is_player_in_zone() -> bool:
 	if _interact_area == null:

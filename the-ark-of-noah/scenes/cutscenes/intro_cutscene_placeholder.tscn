@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://cml6ybyqoanqu"]
+
+[ext_resource type="Script" uid="uid://1sdj3itu2vha" path="res://scripts/cutscenes/intro_video_cutscene.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://stinb6q18c3p" path="res://images/ui/Individual files/ui_images/Background boxes/BGbox_04A.png" id="2_bgbox"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_panel"]
+texture = ExtResource("2_bgbox")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
+
+[node name="IntroCutscenePlaceholder" type="Control" unique_id=783616407]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="." unique_id=978682155]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 1)
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="." unique_id=1102061124]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+ratio = 1.77778
+
+[node name="VideoPlayer" type="VideoStreamPlayer" parent="AspectRatioContainer" unique_id=1107718390]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+expand = true
+
+[node name="FallbackPanel" type="PanelContainer" parent="." unique_id=1408430740]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = 220.0
+offset_right = 360.0
+offset_bottom = 320.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_panel")
+
+[node name="FallbackLabel" type="Label" parent="FallbackPanel" unique_id=484403299]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

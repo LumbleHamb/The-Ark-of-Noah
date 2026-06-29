@@ -94,6 +94,9 @@ func _do_impact_effect() -> void:
 
 	# 3. Spawn Log
 	_spawn_log()
+	var stats_node: Node = get_node_or_null("/root/game_stats")
+	if stats_node != null and stats_node.has_method("increment_stat"):
+		stats_node.call("increment_stat", "trees_cut", 1)
 
 	# 4. Fade out using FadeComponent
 	if fade:

@@ -6,8 +6,11 @@ extends Component
 
 @export var walk_speed: float = 80.0
 @export var run_speed: float = 140.0
+@export var analog_walk_threshold: float = 0.18
+@export var analog_run_threshold: float = 0.72
 
 var current_speed_mod: float = 1.0
+var input_strength: float = 0.0
 var input_dir: Vector2 = Vector2.ZERO
 var last_dir: Vector2 = Vector2.DOWN
 var input_enabled: bool = true
@@ -28,6 +31,7 @@ func read_input() -> void:
 	input_dir = _read_movement_input()
 	if input_dir.length() > 1.0:
 		input_dir = input_dir.normalized()
+	input_strength = clampf(input_dir.length(), 0.0, 1.0)
 	if input_dir != Vector2.ZERO:
 		last_dir = input_dir.normalized()
 
@@ -36,6 +40,17 @@ func calculate_velocity() -> Vector2:
 	if input_dir == Vector2.ZERO or not input_enabled:
 		move_state = MoveState.IDLE
 		return Vector2.ZERO
+	var js: MobileJoystick = _get_joystick()
+	var has_analog_joystick: bool = js != null and js.is_active() and js.strength > 0.0
+	if has_analog_joystick:
+		if input_strength >= analog_run_threshold:
+			move_state = MoveState.RUN
+		elif input_strength >= analog_walk_threshold:
+			move_state = MoveState.WALK
+		else:
+			move_state = MoveState.WALK
+		var analog_speed: float = lerpf(walk_speed * 0.35, run_speed, input_strength)
+		return input_dir.normalized() * analog_speed * current_speed_mod
 	var running: bool = Input.is_action_pressed("run")
 	move_state = MoveState.RUN if running else MoveState.WALK
 	var speed: float = run_speed if running else walk_speed

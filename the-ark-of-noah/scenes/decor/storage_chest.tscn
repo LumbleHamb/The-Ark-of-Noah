@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b234vaedf8y10"]
 
 [ext_resource type="Texture2D" uid="uid://8ql811l2nuf6" path="res://images/sprites/animated/items/chests-opening-no horns.png" id="1_ertxk"]
-[ext_resource type="Script" path="res://components/chest/chest_component.gd" id="2_chest"]
+[ext_resource type="PackedScene" path="res://components/chest/chest_component.tscn" id="2_chest"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6xpcp"]
 atlas = ExtResource("1_ertxk")
@@ -69,9 +69,9 @@ animations = [{
 
 [node name="StorageChest" type="Node2D" unique_id=460688515]
 
-[node name="ChestComponent" type="Node" parent="." unique_id=460688516]
-script = ExtResource("2_chest")
-chest_capacity = 12
+[node name="ChestComponent" parent="." unique_id=460688516 instance=ExtResource("2_chest")]
+interact_radius = 150.0
+interact_distance = 220.0
 
 [node name="ChestAnimation" type="AnimatedSprite2D" parent="." unique_id=755073503]
 sprite_frames = SubResource("SpriteFrames_wodrh")

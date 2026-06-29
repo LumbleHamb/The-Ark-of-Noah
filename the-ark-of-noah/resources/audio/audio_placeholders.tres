@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="AudioPlaceholderLibrary" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/audio/audio_placeholder_library.gd" id="1_audio"]
+
+[resource]
+script = ExtResource("1_audio")
+cues = {
+"player.walk.grass": "res://assets/placeholders/audio/player_walk_grass_placeholder.ogg",
+"player.walk.dirt": "res://assets/placeholders/audio/player_walk_dirt_placeholder.ogg",
+"player.walk.stone": "res://assets/placeholders/audio/player_walk_stone_placeholder.ogg",
+"player.walk.wood": "res://assets/placeholders/audio/player_walk_wood_placeholder.ogg",
+"player.swing.hoe": "res://assets/placeholders/audio/player_swing_hoe_placeholder.ogg",
+"player.swing.axe": "res://assets/placeholders/audio/player_swing_axe_placeholder.ogg",
+"player.swing.pickaxe": "res://assets/placeholders/audio/player_swing_pickaxe_placeholder.ogg",
+"player.attack.sword": "res://assets/placeholders/audio/player_sword_attack_placeholder.ogg",
+"player.damage": "res://assets/placeholders/audio/player_damage_placeholder.ogg",
+"env.rain": "res://assets/placeholders/audio/env_rain_placeholder.ogg",
+"env.thunder": "res://assets/placeholders/audio/env_thunder_placeholder.ogg",
+"env.wind": "res://assets/placeholders/audio/env_wind_placeholder.ogg",
+"env.storm": "res://assets/placeholders/audio/env_storm_placeholder.ogg",
+"env.ambient.meadows": "res://assets/placeholders/audio/env_ambient_meadows_placeholder.ogg",
+"env.ambient.forest": "res://assets/placeholders/audio/env_ambient_forest_placeholder.ogg",
+"env.ambient.beach": "res://assets/placeholders/audio/env_ambient_beach_placeholder.ogg",
+"env.ambient.night": "res://assets/placeholders/audio/env_ambient_night_placeholder.ogg",
+"tree.chop": "res://assets/placeholders/audio/tree_chop_placeholder.ogg",
+"tree.fall": "res://assets/placeholders/audio/tree_fall_placeholder.ogg",
+"tree.leaves": "res://assets/placeholders/audio/tree_leaves_placeholder.ogg",
+"mining.rock_hit": "res://assets/placeholders/audio/mining_rock_hit_placeholder.ogg",
+"mining.ore_break": "res://assets/placeholders/audio/mining_ore_break_placeholder.ogg",
+"mining.item_drop": "res://assets/placeholders/audio/mining_item_drop_placeholder.ogg",
+"farming.till": "res://assets/placeholders/audio/farming_till_soil_placeholder.ogg",
+"farming.plant": "res://assets/placeholders/audio/farming_plant_seed_placeholder.ogg",
+"farming.water": "res://assets/placeholders/audio/farming_water_crop_placeholder.ogg",
+"farming.harvest": "res://assets/placeholders/audio/farming_harvest_placeholder.ogg",
+"animals.idle": "res://assets/placeholders/audio/animal_idle_placeholder.ogg",
+"animals.eating": "res://assets/placeholders/audio/animal_eating_placeholder.ogg",
+"crafting.complete": "res://assets/placeholders/audio/crafting_complete_placeholder.ogg",
+"crafting.place": "res://assets/placeholders/audio/crafting_place_object_placeholder.ogg",
+"crafting.pickup": "res://assets/placeholders/audio/crafting_pickup_object_placeholder.ogg",
+"menu.hover": "res://assets/placeholders/audio/menu_button_hover_placeholder.ogg",
+"menu.click": "res://assets/placeholders/audio/menu_button_click_placeholder.ogg",
+"menu.window_open": "res://assets/placeholders/audio/menu_window_open_placeholder.ogg",
+"menu.window_close": "res://assets/placeholders/audio/menu_window_close_placeholder.ogg",
+"menu.inventory_open": "res://assets/placeholders/audio/menu_inventory_open_placeholder.ogg",
+"menu.inventory_close": "res://assets/placeholders/audio/menu_inventory_close_placeholder.ogg",
+"music.main_menu": "res://assets/placeholders/audio/music_main_menu_placeholder.ogg",
+"music.meadows": "res://assets/placeholders/audio/music_meadows_placeholder.ogg",
+"music.forest": "res://assets/placeholders/audio/music_forest_placeholder.ogg",
+"music.beach": "res://assets/placeholders/audio/music_beach_placeholder.ogg",
+"music.night": "res://assets/placeholders/audio/music_night_placeholder.ogg",
+"music.storm": "res://assets/placeholders/audio/music_storm_placeholder.ogg",
+"music.cutscene": "res://assets/placeholders/audio/music_cutscene_placeholder.ogg"
+}

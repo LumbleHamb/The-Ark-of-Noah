@@ -35,6 +35,8 @@ signal contents_changed()
 
 ## Radius (pixels) of the interaction zone around the chest.
 @export var interact_radius: float = 40.0
+## Fallback distance check (pixels) used even if Area2D overlap misses.
+@export var interact_distance: float = 160.0
 
 ## Optional AnimatedSprite2D child to play an "open" animation on open/close.
 @export var open_animation: String = "chest_opening"
@@ -65,12 +67,23 @@ func get_storage() -> InventoryComponent:
 
 ## Returns true if the player is currently standing in this chest's zone.
 func is_player_in_zone() -> bool:
-	if _interact_area == null:
+	if _interact_area != null:
+		for body: Node2D in _interact_area.get_overlapping_bodies():
+			if body.is_in_group(&"player") or body.is_in_group(&"Player"):
+				return true
+	# Fallback: direct distance from chest entity to player node.
+	var entity: Node2D = get_entity() as Node2D
+	if entity == null:
 		return false
-	for body: Node2D in _interact_area.get_overlapping_bodies():
-		if body.is_in_group(&"player") or body.is_in_group(&"Player"):
-			return true
-	return false
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return false
+	var player_node: Node2D = tree.get_first_node_in_group(&"Player") as Node2D
+	if player_node == null:
+		player_node = tree.get_first_node_in_group(&"player") as Node2D
+	if player_node == null:
+		return false
+	return entity.global_position.distance_to(player_node.global_position) <= interact_distance
 
 ## Opens the chest.  Emits chest_opened; the ChestUI listens and shows the grid.
 func open_for(_player: Node) -> void:

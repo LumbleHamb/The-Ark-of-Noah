@@ -107,6 +107,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	_update_animation()
 	_update_rope_visuals()
+	_update_step_stats(delta)
 	
 	if farming:
 		farming.process_cooldown(delta)
@@ -173,11 +174,17 @@ func _handle_farming_state() -> void:
 # INPUT
 # ============================================================================
 func _process_input_actions() -> void:
+	# Inventory toggle must work reliably on Q and never conflict with other UIs.
+	if Input.is_action_just_pressed("inventory"):
+		var inventory_window: CanvasLayer = _get_inventory_window()
+		if inventory_window and inventory_window.has_method(&"toggle_ui"):
+			inventory_window.call("toggle_ui")
+		return
 	if not input_enabled:
 		return
 	
-	# Number keys 1-0 for slot selection
-	for i in range(10):
+	# Number keys 1-8 for slot selection (matches 8-slot action bar).
+	for i in range(8):
 		if Input.is_key_pressed(KEY_1 + i):
 			if inventory:
 				inventory.select_slot(i)
@@ -300,6 +307,23 @@ func safe_get_chest_ui() -> CanvasLayer:
 		return null
 	return tree.root.get_node_or_null("ChestUI") as CanvasLayer
 
+func _is_pause_menu_open() -> bool:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return false
+	var pause_menu: CanvasLayer = tree.root.get_node_or_null("PauseMenu") as CanvasLayer
+	if pause_menu == null:
+		return false
+	if pause_menu.has_method(&"is_open"):
+		return bool(pause_menu.call("is_open"))
+	return pause_menu.visible
+
+func _get_inventory_window() -> CanvasLayer:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("InventoryUI") as CanvasLayer
+
 # ============================================================================
 # CONSTRUCTION AREA — deposit resources into a nearby construction site.
 # ============================================================================
@@ -349,8 +373,8 @@ func _deposit_into_area(area: Node) -> bool:
 		empty_bucket_stack.item_id = "bucket_empty"
 		empty_bucket_stack.item_name = "Empty Bucket"
 		empty_bucket_stack.count = consumed_pitch_buckets
-		empty_bucket_stack.max_stack = 99
-		empty_bucket_stack.stackable = true
+		empty_bucket_stack.max_stack = 1
+		empty_bucket_stack.stackable = false
 		inventory.add_item(empty_bucket_stack)
 	return deposited_any
 
@@ -486,3 +510,13 @@ func _find_farm_manager() -> FarmManager:
 	if fm == null:
 		fm = get_tree().root.find_child("FarmManager", true, false) as FarmManager
 	return fm
+
+func _update_step_stats(delta: float) -> void:
+	if velocity.length() <= 1.0:
+		return
+	var stats_node: Node = get_node_or_null("/root/game_stats")
+	if stats_node == null or not stats_node.has_method("increment_stat"):
+		return
+	var steps_to_add: int = int((velocity.length() * delta) / 8.0)
+	if steps_to_add > 0:
+		stats_node.call("increment_stat", "steps_walked", steps_to_add)

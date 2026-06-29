@@ -5,6 +5,7 @@
 [ext_resource type="Resource" path="res://resources/construction/boat_stage_1.tres" id="2_stage1"]
 [ext_resource type="Resource" path="res://resources/construction/boat_stage_2.tres" id="3_stage2"]
 [ext_resource type="PackedScene" path="res://scenes/construction/completed_boat.tscn" id="4_boat"]
+[ext_resource type="Resource" path="res://resources/construction/boat_construction_plan.tres" id="6_plan"]
 [ext_resource type="Texture2D" uid="uid://c40psus1mhv7i" path="res://icon.svg" id="5_bp"]
 
 [node name="BoatConstructionArea" type="Node2D" unique_id=1312190818]
@@ -13,6 +14,7 @@
 script = ExtResource("1_cac")
 construction_name = "Boat"
 stages = Array[ExtResource("2_g5kq3")]([ExtResource("2_stage1"), ExtResource("3_stage2")])
+construction_plan = ExtResource("6_plan")
 blueprint_sprite = ExtResource("5_bp")
 completed_scene = ExtResource("4_boat")
 interact_radius = 60.0

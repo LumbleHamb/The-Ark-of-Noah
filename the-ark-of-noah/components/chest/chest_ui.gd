@@ -21,13 +21,13 @@ extends CanvasLayer
 signal chest_ui_opened(chest: ChestComponent)
 signal chest_ui_closed()
 
-@onready var dimmer: ColorRect = %Dimmer
+@onready var dimmer: TextureRect = %Dimmer
 @onready var panel: PanelContainer = %Panel
 @onready var player_label: Label = %PlayerLabel
 @onready var chest_label: Label = %ChestLabel
 @onready var player_grid: InventoryGrid = %PlayerGrid
 @onready var chest_grid: InventoryGrid = %ChestGrid
-@onready var close_button: Button = %CloseButton
+@onready var close_button: BaseButton = %CloseButton
 
 var _chest: ChestComponent = null
 var _player_inventory: InventoryComponent = null
@@ -35,7 +35,7 @@ var _player_inventory: InventoryComponent = null
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
-	dimmer.color.a = 0.0
+	dimmer.modulate.a = 0.0
 	close_button.pressed.connect(close_ui)
 
 func _process(_delta: float) -> void:
@@ -49,36 +49,46 @@ func _process(_delta: float) -> void:
 func show_for(chest: ChestComponent) -> void:
 	if chest == null:
 		return
+	show_for_inventories(_resolve_player_inventory_for_return(), chest.get_storage(), "Your Inventory", "Chest (%d slots)" % chest.chest_capacity)
 	_chest = chest
-	_resolve_player_inventory()
-	if _player_inventory == null:
-		push_warning("ChestUI: no player inventory found; cannot show chest UI.")
-		return
-	player_grid.bind_inventory(_player_inventory)
-	chest_grid.bind_inventory(chest.get_storage())
-	chest_label.text = "Chest (%d slots)" % chest.chest_capacity
-	player_label.text = "Your Inventory"
-	dimmer.color.a = 0.35
-	visible = true
 	chest_ui_opened.emit(chest)
+
+func show_for_inventories(left_inventory: InventoryComponent, right_inventory: InventoryComponent, left_title: String = "Inventory", right_title: String = "Storage") -> void:
+	if left_inventory == null or right_inventory == null:
+		push_warning("ChestUI: cannot show dual inventory; one side is null")
+		return
+	_player_inventory = left_inventory
+	player_grid.bind_inventory(left_inventory)
+	chest_grid.bind_inventory(right_inventory)
+	player_label.text = left_title
+	chest_label.text = right_title
+	dimmer.modulate.a = 0.35
+	visible = true
 
 func close_ui() -> void:
 	if _chest and _chest.is_open():
 		_chest.close()
+	# Re-enable player input after closing chest.
+	if _player_inventory != null:
+		var owner_node: Node = _player_inventory.get_parent()
+		if owner_node != null and owner_node.has_method(&"set_player_paused"):
+			owner_node.call("set_player_paused", false)
 	_chest = null
-	dimmer.color.a = 0.0
+	dimmer.modulate.a = 0.0
 	visible = false
 	chest_ui_closed.emit()
 
 func _resolve_player_inventory() -> void:
-	_player_inventory = null
+	_player_inventory = _resolve_player_inventory_for_return()
+
+func _resolve_player_inventory_for_return() -> InventoryComponent:
 	if get_tree() == null:
-		return
+		return null
 	var player: Node = get_tree().get_first_node_in_group(&"player")
 	if player == null:
 		player = get_tree().get_first_node_in_group(&"Player")
 	if player:
 		for child: Node in player.get_children():
 			if child is InventoryComponent:
-				_player_inventory = child as InventoryComponent
-				break
+				return child as InventoryComponent
+	return null

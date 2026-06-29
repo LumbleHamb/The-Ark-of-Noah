@@ -39,7 +39,7 @@ func do_farming_action(entity_pos: Vector2, last_dir: Vector2) -> bool:
 				farming_action_performed.emit("till", target_tile)
 				return true
 		return false
-	elif inventory and inventory.is_seed_selected():
+	elif inventory and inventory.is_seed_pouch_equipped():
 		return _plant_seed(target_tile)
 	return false
 
@@ -68,8 +68,8 @@ func _plant_seed(tile_pos: Vector2i) -> bool:
 	var crop: CropData = inventory.get_selected_seed()
 	if not crop:
 		return false
-	if farm_manager.is_grass_tile(tile_pos) and not farm_manager.get_tile_data(tile_pos)["tilled"]:
-		farm_manager.till_tile(tile_pos)
+	if not farm_manager.is_plantable(tile_pos):
+		return false
 	var planted: bool = false
 	var crop_name_key: String = crop.crop_name.to_lower().replace(" ", "_")
 	for crop_id in farm_manager.crop_registry.keys():

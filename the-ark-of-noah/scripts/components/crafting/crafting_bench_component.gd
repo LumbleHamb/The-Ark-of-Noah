@@ -55,8 +55,8 @@ func craft(recipe_id: String, inventory: InventoryComponent) -> bool:
 		stack.item_id = output.item_id
 		stack.item_name = output.item_id.capitalize()
 		stack.count = output.count
-		stack.max_stack = 99
-		stack.stackable = true
+		stack.max_stack = 1
+		stack.stackable = false
 		inventory.add_item(stack)
 	crafted.emit(recipe.recipe_id)
 	return true

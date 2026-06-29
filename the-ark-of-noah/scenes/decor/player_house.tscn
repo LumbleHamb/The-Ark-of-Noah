@@ -539,8 +539,8 @@ size = Vector2(102, 3.75)
 script = ExtResource("1_k5ju1")
 
 [node name="doorway" type="Area2D" parent="." unique_id=598194746]
-collision_layer = 7
-collision_mask = 7
+collision_layer = 2
+collision_mask = 1
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="doorway" unique_id=1116398520]
@@ -555,7 +555,7 @@ texture = ExtResource("1_dieq8")
 metadata/_edit_lock_ = true
 
 [node name="front_wall" type="Sprite2D" parent="." unique_id=408525203]
-z_index = 5
+z_index = 18
 texture = ExtResource("2_k5ju1")
 metadata/_edit_lock_ = true
 
@@ -572,6 +572,7 @@ frame = 1
 metadata/_edit_lock_ = true
 
 [node name="roof" type="AnimatedSprite2D" parent="." unique_id=1136022037]
+z_index = 20
 position = Vector2(0, -112)
 sprite_frames = SubResource("SpriteFrames_xpsms")
 animation = &"roof_opening"
@@ -618,8 +619,8 @@ texture = ExtResource("13_mm860")
 metadata/_edit_lock_ = true
 
 [node name="walls" type="StaticBody2D" parent="." unique_id=153947008]
-collision_layer = 7
-collision_mask = 7
+collision_layer = 1
+collision_mask = 1
 physics_material_override = SubResource("PhysicsMaterial_wodrh")
 
 [node name="left_wall" type="CollisionShape2D" parent="walls" unique_id=1169270209]

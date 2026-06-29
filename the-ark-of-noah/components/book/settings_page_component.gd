@@ -2,133 +2,228 @@ class_name SettingsPageComponent
 extends Control
 
 ## ============================================================================
-## SETTINGS PAGE COMPONENT — The first visible page when the book opens.
+## SETTINGS PAGE COMPONENT
 ##
-## Populated with placeholder settings text across typical categories:
-## Graphics, Audio, Gameplay, Controls, Accessibility, Language.
+## Book settings page with practical controls grouped by category:
+## - Audio: master/music/sfx sliders.
+## - Graphics: camera zoom, fullscreen, vsync.
+## - Controls: key-rebind placeholder text.
+## - Gameplay: future-options placeholder text.
 ##
-## This is a placeholder — the user will connect actual settings later.
-## The page is built procedurally so adding/removing categories is trivial.
-## Implements the BookPage interface (on_page_opened/on_page_closed) via
-## duck-typing so it doesn't depend on a base class at parse time.
+## Uses project settings for fullscreen/vsync persistence and keeps all widgets
+## clipped to the page rect.
 ## ============================================================================
 
 signal page_opened()
 signal page_closed()
 
-## Title displayed at the top of the page.
 @export var page_title: String = "Settings"
-
-## Categories to display (left = category list, right = placeholder detail).
-@export var categories: Array[String] = [
-	"Graphics",
-	"Audio",
-	"Gameplay",
-	"Controls",
-	"Accessibility",
-	"Language",
-]
+@export var categories: Array[String] = ["Audio", "Graphics", "Controls", "Gameplay"]
 
 var _selected_category: int = 0
 var _category_list: VBoxContainer = null
 var _detail_panel: VBoxContainer = null
+var _detail_title: Label = null
+
+var _master_slider: HSlider = null
+var _music_slider: HSlider = null
+var _sfx_slider: HSlider = null
+var _zoom_slider: HSlider = null
+var _fullscreen_checkbox: CheckBox = null
+var _vsync_checkbox: CheckBox = null
 
 func _ready() -> void:
 	_build_ui()
+	_load_display_settings()
 
-## Called by the BookUIController when this page becomes visible.
 func on_page_opened() -> void:
+	_rebuild_category_list()
+	_show_category(_selected_category)
 	page_opened.emit()
 
-## Called by the BookUIController when navigating away from this page.
 func on_page_closed() -> void:
 	page_closed.emit()
 
 func _build_ui() -> void:
-	# Full-rect margins.
 	var margin: MarginContainer = MarginContainer.new()
 	margin.set_anchors_preset(PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 24)
-	margin.add_theme_constant_override("margin_top", 24)
-	margin.add_theme_constant_override("margin_right", 24)
-	margin.add_theme_constant_override("margin_bottom", 24)
+	margin.add_theme_constant_override("margin_left", 18)
+	margin.add_theme_constant_override("margin_top", 18)
+	margin.add_theme_constant_override("margin_right", 18)
+	margin.add_theme_constant_override("margin_bottom", 18)
 	add_child(margin)
 
 	var hbox: HBoxContainer = HBoxContainer.new()
 	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	hbox.add_theme_constant_override("separation", 16)
 	margin.add_child(hbox)
 
-	# Left: title + category list.
 	var left: VBoxContainer = VBoxContainer.new()
-	left.custom_minimum_size = Vector2(180, 0)
-	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left.custom_minimum_size = Vector2(150, 0)
 	left.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	hbox.add_child(left)
 
 	var title: Label = Label.new()
 	title.text = page_title
-	title.add_theme_font_size_override("font_size", 24)
+	title.add_theme_font_size_override("font_size", 22)
 	title.add_theme_color_override("font_color", Color(0.31, 0.19, 0.08, 1))
-	title.custom_minimum_size = Vector2(0, 40)
 	left.add_child(title)
 
 	_category_list = VBoxContainer.new()
 	_category_list.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	left.add_child(_category_list)
 
-	for i in range(categories.size()):
-		var cat_label: Label = Label.new()
-		cat_label.text = categories[i]
-		cat_label.add_theme_font_size_override("font_size", 16)
-		cat_label.add_theme_color_override("font_color",
-			Color(0.4, 0.28, 0.12, 1) if i == _selected_category else Color(0.5, 0.35, 0.15, 0.7))
-		cat_label.custom_minimum_size = Vector2(0, 28)
-		cat_label.gui_input.connect(_on_category_gui_input.bind(i))
-		_category_list.add_child(cat_label)
+	for i: int in range(categories.size()):
+		var category_button: Button = Button.new()
+		category_button.text = categories[i]
+		category_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		category_button.pressed.connect(_on_category_selected.bind(i))
+		_category_list.add_child(category_button)
 
-	# Right: placeholder detail panel.
 	var right: VBoxContainer = VBoxContainer.new()
-	right.custom_minimum_size = Vector2(180, 0)
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	right.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	hbox.add_child(right)
 
-	var detail_title: Label = Label.new()
-	detail_title.text = categories[_selected_category]
-	detail_title.add_theme_font_size_override("font_size", 20)
-	detail_title.add_theme_color_override("font_color", Color(0.31, 0.19, 0.08, 1))
-	detail_title.custom_minimum_size = Vector2(0, 40)
-	right.add_child(detail_title)
+	_detail_title = Label.new()
+	_detail_title.text = categories[_selected_category]
+	_detail_title.add_theme_font_size_override("font_size", 18)
+	_detail_title.add_theme_color_override("font_color", Color(0.31, 0.19, 0.08, 1))
+	right.add_child(_detail_title)
+
+	var scroll: ScrollContainer = ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	right.add_child(scroll)
 
 	_detail_panel = VBoxContainer.new()
-	_detail_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	right.add_child(_detail_panel)
-	_populate_placeholder_detail()
+	_detail_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_detail_panel.add_theme_constant_override("separation", 8)
+	scroll.add_child(_detail_panel)
 
-func _populate_placeholder_detail() -> void:
-	for child in _detail_panel.get_children():
-		child.queue_free()
-	var placeholder: Label = Label.new()
-	placeholder.text = "(Placeholder — connect actual " + categories[_selected_category] + " settings here.)"
-	placeholder.add_theme_font_size_override("font_size", 14)
-	placeholder.add_theme_color_override("font_color", Color(0.5, 0.35, 0.15, 0.7))
-	placeholder.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	placeholder.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_detail_panel.add_child(placeholder)
+	_show_category(_selected_category)
 
-func _on_category_gui_input(event: InputEvent, index: int) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if index != _selected_category:
-			_selected_category = index
-			_rebuild_category_list()
-			# Update detail title + content.
-			var right_title: Label = _detail_panel.get_parent().get_child(0)
-			right_title.text = categories[index]
-			_populate_placeholder_detail()
+func _on_category_selected(index: int) -> void:
+	if index == _selected_category:
+		return
+	_selected_category = index
+	_rebuild_category_list()
+	_show_category(index)
 
 func _rebuild_category_list() -> void:
-	for i in range(_category_list.get_child_count()):
-		var lbl: Label = _category_list.get_child(i)
-		lbl.add_theme_color_override("font_color",
-			Color(0.4, 0.28, 0.12, 1) if i == _selected_category else Color(0.5, 0.35, 0.15, 0.7))
+	for i: int in range(_category_list.get_child_count()):
+		var category_button: Button = _category_list.get_child(i) as Button
+		if category_button == null:
+			continue
+		category_button.disabled = i == _selected_category
+
+func _show_category(index: int) -> void:
+	if _detail_panel == null:
+		return
+	for child: Node in _detail_panel.get_children():
+		child.queue_free()
+
+	_detail_title.text = categories[index]
+
+	match categories[index]:
+		"Audio":
+			_build_audio_settings()
+		"Graphics":
+			_build_graphics_settings()
+		"Controls":
+			_build_controls_settings()
+		"Gameplay":
+			_build_gameplay_settings()
+		_:
+			_build_placeholder("No settings available yet.")
+
+func _build_audio_settings() -> void:
+	_master_slider = _create_slider_row("Master Volume", 0.0, 1.0, 0.01, 1.0)
+	_music_slider = _create_slider_row("Music Volume", 0.0, 1.0, 0.01, 0.8)
+	_sfx_slider = _create_slider_row("Sound Effects", 0.0, 1.0, 0.01, 0.8)
+
+	_master_slider.value_changed.connect(_on_master_volume_changed)
+	_music_slider.value_changed.connect(_on_music_volume_changed)
+	_sfx_slider.value_changed.connect(_on_sfx_volume_changed)
+
+func _build_graphics_settings() -> void:
+	_zoom_slider = _create_slider_row("Camera Zoom", 0.5, 2.0, 0.05, 1.0)
+	_zoom_slider.value_changed.connect(_on_zoom_changed)
+
+	_fullscreen_checkbox = _create_checkbox("Fullscreen", DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)
+	_fullscreen_checkbox.toggled.connect(_on_fullscreen_toggled)
+
+	_vsync_checkbox = _create_checkbox("VSync", DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED)
+	_vsync_checkbox.toggled.connect(_on_vsync_toggled)
+
+func _build_controls_settings() -> void:
+	_build_placeholder("Key rebinding UI placeholder.\n\nFuture: list actions and allow remapping keys/gamepad buttons.")
+
+func _build_gameplay_settings() -> void:
+	_build_placeholder("Gameplay options placeholder.\n\nFuture: crop growth speed, tutorial hints, difficulty options.")
+
+func _build_placeholder(text: String) -> void:
+	var label: Label = Label.new()
+	label.text = text
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.add_theme_color_override("font_color", Color(0.5, 0.35, 0.15, 1))
+	_detail_panel.add_child(label)
+
+func _create_slider_row(label_text: String, min_value: float, max_value: float, step: float, value: float) -> HSlider:
+	var row: VBoxContainer = VBoxContainer.new()
+	_detail_panel.add_child(row)
+
+	var label: Label = Label.new()
+	label.text = label_text
+	label.add_theme_color_override("font_color", Color(0.36, 0.24, 0.1, 1))
+	row.add_child(label)
+
+	var slider: HSlider = HSlider.new()
+	slider.min_value = min_value
+	slider.max_value = max_value
+	slider.step = step
+	slider.value = clampf(value, min_value, max_value)
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(slider)
+
+	return slider
+
+func _create_checkbox(label_text: String, toggled_on: bool) -> CheckBox:
+	var checkbox: CheckBox = CheckBox.new()
+	checkbox.text = label_text
+	checkbox.button_pressed = toggled_on
+	checkbox.add_theme_color_override("font_color", Color(0.36, 0.24, 0.1, 1))
+	_detail_panel.add_child(checkbox)
+	return checkbox
+
+func _on_master_volume_changed(value: float) -> void:
+	AudioServer.set_bus_volume_db(0, linear_to_db(maxf(value, 0.001)))
+
+func _on_music_volume_changed(value: float) -> void:
+	if AudioServer.get_bus_count() > 1:
+		AudioServer.set_bus_volume_db(1, linear_to_db(maxf(value, 0.001)))
+
+func _on_sfx_volume_changed(value: float) -> void:
+	if AudioServer.get_bus_count() > 2:
+		AudioServer.set_bus_volume_db(2, linear_to_db(maxf(value, 0.001)))
+
+func _on_zoom_changed(value: float) -> void:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return
+	var player: Node = tree.get_first_node_in_group(&"player")
+	if player == null:
+		player = tree.get_first_node_in_group(&"Player")
+	if player != null:
+		var camera: Camera2D = player.get_node_or_null("Camera2D") as Camera2D
+		if camera != null:
+			camera.zoom = Vector2.ONE * value
+
+func _on_fullscreen_toggled(enabled: bool) -> void:
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if enabled else DisplayServer.WINDOW_MODE_WINDOWED)
+
+func _on_vsync_toggled(enabled: bool) -> void:
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if enabled else DisplayServer.VSYNC_DISABLED)
+
+func _load_display_settings() -> void:
+	pass

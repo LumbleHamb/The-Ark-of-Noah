@@ -1,7 +1,7 @@
 extends CanvasLayer
 
 ## ============================================================================
-## BOOK UI CONTROLLER — Orchestrates the book-style pause / inventory menu.
+## BOOK UI CONTROLLER — Orchestrates the book-style pause menu.
 ##
 ## This is the single autoload (project setting: PauseMenu) that owns the
 ## "spellbook" overlay.  It is a thin state machine that wires together several
@@ -13,9 +13,9 @@ extends CanvasLayer
 ##     - PageTurnComponent       → plays the page-flip animation between pages.
 ##
 ##   Pages (children of BookRoot, each a Control with a Page*Component script):
-##     - Page 0: Home       (HomePageComponent)      — Resume / Save / Exit
-##     - Page 1: Settings   (SettingsPageComponent)  — settings categories
-##     - Page 2: Inventory   (BookInventoryComponent) — player inventory grid
+##     - Page 0: Statistics (StatisticsPageComponent) — gameplay metrics
+##     - Page 1: Settings   (SettingsPageComponent)   — game options
+##     - Page 2: Credits    (CreditsPageComponent)    — placeholder scrolling credits
 ##
 ## The controller is data-driven: pages are discovered at runtime by scanning
 ## BookRoot for children whose script implements the BookPage interface
@@ -26,9 +26,8 @@ extends CanvasLayer
 ##   CLOSED → OPENING → OPEN(current) → (turn) → OPEN(next) → CLOSING → CLOSED
 ##
 ## Input:
-##   - "pause"     toggles the book open / close (opens to the Home page).
-##   - "inventory" opens directly to the Inventory page (auto-turns past Home
-##                 and Settings); from OPEN it closes the book.
+##   - "pause" toggles the book open / close (opens to the Settings page).
+## Inventory uses a separate standalone inventory window UI.
 ##
 ## The controller runs in PROCESS_MODE_ALWAYS so it still receives input while
 ## the world is paused.  It owns NO gameplay logic — it delegates to components
@@ -40,9 +39,9 @@ signal book_closed()
 
 enum BookState { CLOSED, OPENING, OPEN, TURNING, CLOSING }
 
-const PAGE_HOME: int = 0
+const PAGE_STATS: int = 0
 const PAGE_SETTINGS: int = 1
-const PAGE_INVENTORY: int = 2
+const PAGE_CREDITS: int = 2
 
 @export var dimmer_fade_duration: float = 0.3
 @export var dimmer_alpha: float = 0.45
@@ -65,9 +64,9 @@ const PAGE_INVENTORY: int = 2
 var _pages: Array[Control] = []
 
 var _state: int = BookState.CLOSED
-var _current_page: int = PAGE_HOME
-var _target_page: int = PAGE_HOME
-var _pending_page: int = PAGE_HOME
+var _current_page: int = PAGE_SETTINGS
+var _target_page: int = PAGE_SETTINGS
+var _pending_page: int = PAGE_SETTINGS
 # Components found at runtime (untyped — duck-typed via has_method/has_signal).
 var _pause: Node = null
 var _animation: Node = null
@@ -115,8 +114,10 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("pause"):
 		_on_pause_input()
-	if Input.is_action_just_pressed("inventory"):
-		_on_inventory_input()
+	# Inventory is a separate window now (not part of the pause book).
+
+func is_open() -> bool:
+	return _state != BookState.CLOSED
 
 # ============================================================================
 # PAGE DISCOVERY
@@ -143,7 +144,6 @@ func _wire_page_signals() -> void:
 			page.save_requested.connect(_on_save_requested)
 		if page.has_signal("exit_requested"):
 			page.exit_requested.connect(_on_exit_requested)
-
 func _show_page(page_index: int, show_it: bool) -> void:
 	if page_index < 0 or page_index >= _pages.size():
 		return
@@ -164,25 +164,26 @@ func _show_page(page_index: int, show_it: bool) -> void:
 # INPUT
 # ============================================================================
 func _on_pause_input() -> void:
+	# If another overlay is open, close it first so pause behaves consistently.
+	_close_other_overlays()
 	match _state:
 		BookState.CLOSED:
-			open_book(PAGE_HOME)
+			open_book(PAGE_SETTINGS)
 		BookState.OPEN:
 			close_book()
-		_:
-			pass  # Ignore during OPENING / CLOSING / TURNING.
-
-func _on_inventory_input() -> void:
-	match _state:
-		BookState.CLOSED:
-			open_book(PAGE_INVENTORY)
-		BookState.OPEN:
-			if _current_page != PAGE_INVENTORY:
-				turn_to_page(PAGE_INVENTORY)
-			else:
-				close_book()
-		_:
+		BookState.OPENING:
+			# If pause is pressed during opening, close as soon as opening completes.
+			_target_page = _current_page
+			_pending_page = _current_page
+			_state = BookState.OPEN
+			close_book()
+		BookState.TURNING:
+			# Ignore while page is actively turning.
 			pass
+		BookState.CLOSING:
+			# Already closing; ignore repeated input.
+			pass
+
 
 # ============================================================================
 # OPEN / CLOSE
@@ -190,17 +191,20 @@ func _on_inventory_input() -> void:
 func open_book(target_page: int) -> void:
 	if _state != BookState.CLOSED:
 		return
+	if _pages.is_empty():
+		return
 	_target_page = clampi(target_page, 0, _pages.size() - 1)
-	# Always animate from the Home page, then auto-turn to the requested page.
-	_current_page = PAGE_HOME
+	# Always animate from the Settings page, then auto-turn to requested page.
+	_current_page = PAGE_SETTINGS
 	_state = BookState.OPENING
+	show()
 	if _pause:
 		_pause.pause_world()
 
 	# Show the book, reveal the Home page, hide every other page, hide nav.
 	book_root.show()
 	for i in range(_pages.size()):
-		_show_page(i, i == PAGE_HOME)
+		_show_page(i, i == PAGE_SETTINGS)
 	_hide_nav()
 
 	# Fade in the dimmer overlay.
@@ -229,11 +233,11 @@ func _on_book_opened() -> void:
 	# After opening, show the Home page, then auto-turn if a different page was
 	# requested (e.g. the Inventory key opens straight to the inventory page).
 	_state = BookState.OPEN
-	_current_page = PAGE_HOME
-	_show_page(PAGE_HOME, true)
+	_current_page = PAGE_SETTINGS
+	_show_page(PAGE_SETTINGS, true)
 	_show_nav()
 	book_opened.emit(_current_page)
-	if _target_page != PAGE_HOME:
+	if _target_page != PAGE_SETTINGS:
 		turn_to_page(_target_page)
 
 func _on_book_closed() -> void:
@@ -244,6 +248,17 @@ func _on_book_closed() -> void:
 	if _pause:
 		_pause.resume_world()
 	book_closed.emit()
+
+func _close_other_overlays() -> void:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return
+	var inventory_ui: CanvasLayer = tree.root.get_node_or_null("InventoryUI") as CanvasLayer
+	if inventory_ui != null and inventory_ui.visible and inventory_ui.has_method(&"close_ui"):
+		inventory_ui.call("close_ui")
+	var chest_ui: CanvasLayer = tree.root.get_node_or_null("ChestUI") as CanvasLayer
+	if chest_ui != null and chest_ui.visible and chest_ui.has_method(&"close_ui"):
+		chest_ui.call("close_ui")
 
 # ============================================================================
 # PAGE TURNING

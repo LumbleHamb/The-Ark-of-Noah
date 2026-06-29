@@ -123,6 +123,9 @@ func _collect() -> void:
 			_collected = false
 			_collecting = false
 			return
+		var stats_node: Node = get_node_or_null("/root/game_stats")
+		if stats_node != null and stats_node.has_method("increment_stat"):
+			stats_node.call("increment_stat", "crops_harvested", 1)
 	# Collect pop animation, then free.
 	var tween: Tween = create_tween()
 	tween.tween_property(self, "scale", Vector2(1.4, 1.4), 0.06)

@@ -1,7 +1,8 @@
-[gd_scene format=3 uid="uid://dqhr7im6f0qrd"]
+[gd_scene load_steps=3 format=3 uid="uid://dqhr7im6f0qrd"]
 
 [ext_resource type="Texture2D" uid="uid://cdj1141fhpect" path="res://images/sprites/static/props/props.png" id="1_au8gu"]
 [ext_resource type="Texture2D" uid="uid://ck4nxw6jmo6qr" path="res://images/sprites/static/props/spring_leaf_particle.png" id="2_qsm3n"]
+[ext_resource type="PackedScene" path="res://components/weather/wind_component.tscn" id="3_wind"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_wodrh"]
 lifetime_randomness = 0.19
@@ -37,3 +38,9 @@ process_material = SubResource("ParticleProcessMaterial_wodrh")
 
 [node name="leaves_animation" type="AnimatedSprite2D" parent="." unique_id=1385955121]
 sprite_frames = SubResource("SpriteFrames_wodrh")
+
+[node name="WindComponent" parent="." instance=ExtResource("3_wind")]
+wind_target = 1
+target_path = NodePath("leaves_animation")
+sway_amplitude = 2.0
+sway_frequency = 1.3

@@ -31,17 +31,21 @@ const SLOT_COLUMNS: int = 5
 @export var columns: int = SLOT_COLUMNS
 @export var slot_size: float = SLOT_SIZE
 @export var slot_gap: float = SLOT_GAP
+@export var read_only: bool = false
 
 var _empty_slot_texture: Texture2D = preload("res://images/ui/Individual files/ui_images/Item slots/Slot_01_Empty.png")
 var _inventory: InventoryComponent = null
 var _grid: GridContainer = null
 var _scroll: ScrollContainer = null
 var _slots: Array[TextureRect] = []
+var _slot_icons: Array[TextureRect] = []
 var _dragging_from: int = -1
 var _tooltip_label: Label = null
+var _selected_index: int = 0
 
 func _ready() -> void:
 	_build_ui()
+	set_process_unhandled_input(true)
 
 ## Binds this grid to an InventoryComponent and refreshes the display.
 func bind_inventory(inventory: InventoryComponent) -> void:
@@ -59,11 +63,17 @@ func refresh() -> void:
 	for child: Node in _grid.get_children():
 		child.queue_free()
 	_slots.clear()
+	_slot_icons.clear()
 	var capacity: int = _inventory.item_capacity if _inventory else 0
+	if capacity <= 0:
+		_selected_index = 0
+		return
+	_selected_index = clampi(_selected_index, 0, capacity - 1)
 	for i in range(capacity):
 		var slot: TextureRect = _make_slot(i)
 		_grid.add_child(slot)
 		_slots.append(slot)
+	_update_selection_visuals()
 
 # ---------------------------------------------------------------------------
 # UI CONSTRUCTION
@@ -100,10 +110,30 @@ func _make_slot(index: int) -> TextureRect:
 	slot.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	slot.mouse_filter = Control.MOUSE_FILTER_STOP
 	slot.texture = _empty_slot_texture
+	var icon_rect: TextureRect = TextureRect.new()
+	icon_rect.anchor_left = 0.0
+	icon_rect.anchor_top = 0.0
+	icon_rect.anchor_right = 1.0
+	icon_rect.anchor_bottom = 1.0
+	icon_rect.offset_left = 6.0
+	icon_rect.offset_top = 6.0
+	icon_rect.offset_right = -6.0
+	icon_rect.offset_bottom = -6.0
+	icon_rect.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	slot.add_child(icon_rect)
+	_slot_icons.append(icon_rect)
 	var stack: ItemStack = _stack_at(index)
-	if stack:
-		slot.texture = stack.icon if stack.icon else _empty_slot_texture
-		slot.tooltip_text = "%s\nx%d" % [stack.item_name, stack.count]
+	if stack != null and stack.icon != null:
+		icon_rect.texture = stack.icon
+		if stack.item_name.strip_edges() != "":
+			slot.tooltip_text = "%s\nx%d" % [stack.item_name, stack.count]
+		else:
+			slot.tooltip_text = ""
+	else:
+		icon_rect.texture = null
+		slot.tooltip_text = ""
 	slot.gui_input.connect(_on_slot_gui_input.bind(index, slot))
 	slot.mouse_entered.connect(_on_slot_mouse_entered.bind(index))
 	slot.mouse_exited.connect(_on_slot_mouse_exited)
@@ -118,6 +148,10 @@ func _stack_at(index: int) -> ItemStack:
 # INPUT
 # ---------------------------------------------------------------------------
 func _on_slot_gui_input(event: InputEvent, index: int, slot: TextureRect) -> void:
+	_selected_index = index
+	_update_selection_visuals()
+	if read_only:
+		return
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			_start_drag(index, slot)
@@ -235,3 +269,40 @@ func _slot_index_at_mouse() -> int:
 		if _slots[i].get_global_rect().has_point(mouse_pos):
 			return i
 	return -1
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if read_only:
+		return
+	if _inventory == null or _slots.is_empty():
+		return
+	if event.is_action_pressed("ui_left"):
+		_selected_index = max(0, _selected_index - 1)
+		_update_selection_visuals()
+		accept_event()
+	elif event.is_action_pressed("ui_right"):
+		_selected_index = min(_slots.size() - 1, _selected_index + 1)
+		_update_selection_visuals()
+		accept_event()
+	elif event.is_action_pressed("ui_up"):
+		_selected_index = max(0, _selected_index - max(columns, 1))
+		_update_selection_visuals()
+		accept_event()
+	elif event.is_action_pressed("ui_down"):
+		_selected_index = min(_slots.size() - 1, _selected_index + max(columns, 1))
+		_update_selection_visuals()
+		accept_event()
+	elif event.is_action_pressed("ui_accept"):
+		if _dragging_from < 0:
+			_start_drag(_selected_index, _slots[_selected_index])
+		else:
+			_end_drag(_slots[_selected_index], _selected_index)
+		accept_event()
+
+func _update_selection_visuals() -> void:
+	for i: int in range(_slots.size()):
+		if i == _selected_index:
+			_slots[i].self_modulate = Color(1.2, 1.15, 0.8, 1.0)
+		else:
+			_slots[i].self_modulate = Color.WHITE

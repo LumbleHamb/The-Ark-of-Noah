@@ -27,19 +27,25 @@ func setup(sprite: AnimatedSprite2D) -> void:
 func play_idle(dir_key: String) -> void:
 	if anim_sprite:
 		anim_sprite.offset = BASE_OFFSET
-		anim_sprite.play("idle_" + dir_key)
+		var next_anim: String = "idle_" + dir_key
+		if anim_sprite.animation != next_anim:
+			anim_sprite.play(next_anim)
 
 ## Plays walk animation for the given direction key.
 func play_walk(dir_key: String) -> void:
 	if anim_sprite:
 		anim_sprite.offset = BASE_OFFSET
-		anim_sprite.play("walk_" + dir_key)
+		var next_anim: String = "walk_" + dir_key
+		if anim_sprite.animation != next_anim:
+			anim_sprite.play(next_anim)
 
 ## Plays run animation for the given direction key.
 func play_run(dir_key: String) -> void:
 	if anim_sprite:
 		anim_sprite.offset = BASE_OFFSET
-		anim_sprite.play("run_" + dir_key)
+		var next_anim: String = "run_" + dir_key
+		if anim_sprite.animation != next_anim:
+			anim_sprite.play(next_anim)
 
 ## Plays attack animation with attack offset for the given direction.
 func play_attack(dir_key: String) -> void:

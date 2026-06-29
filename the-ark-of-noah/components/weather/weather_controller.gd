@@ -40,12 +40,23 @@ extends Component
 
 # --- Intensities ---
 @export_group("Intensities")
-## Base wind strength (0..1). Storms multiply up to ~1.5x.
+## Base wind strength (0..1). Storms multiply this via storm_wind_multiplier.
 @export_range(0.0, 1.0, 0.01) var wind_strength: float = 0.3
 ## Base rain intensity (0..1). Light rain ~0.3, storm ~1.0.
 @export_range(0.0, 1.0, 0.01) var rain_intensity: float = 0.5
 ## How often lightning strikes while lightning is active (strikes/sec).
 @export_range(0.0, 1.0, 0.01) var lightning_frequency: float = 0.1
+## Storm wind multiplier. 1.0 = same as base, 2.0 = double base wind in storms.
+@export_range(1.0, 3.0, 0.05) var storm_wind_multiplier: float = 1.6
+
+# --- Wind / Gust model ---
+@export_group("Wind")
+## Average seconds between gust starts at base intensity.
+@export_range(0.2, 10.0, 0.1) var gust_frequency: float = 2.2
+## Average gust envelope duration in seconds.
+@export_range(0.1, 5.0, 0.1) var gust_duration: float = 1.0
+## Randomness scale applied to gust intensity/timing (0..1).
+@export_range(0.0, 1.0, 0.01) var gust_randomness: float = 0.45
 
 # --- Thunder ---
 @export_group("Thunder")

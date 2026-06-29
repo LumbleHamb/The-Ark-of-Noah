@@ -106,6 +106,9 @@ func _tick() -> void:
 		if current_hour >= 24:
 			current_hour = 0
 			current_day += 1
+			var stats_node: Node = get_node_or_null("/root/game_stats")
+			if stats_node != null and stats_node.has_method("set_stat"):
+				stats_node.call("set_stat", "days_elapsed", current_day)
 	
 	time_tick.emit(current_hour, current_minute, current_day)
 	

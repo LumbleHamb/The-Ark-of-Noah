@@ -32,8 +32,8 @@ func collect_into(inventory: InventoryComponent) -> int:
 	produced_stack.item_id = produced_item_id
 	produced_stack.item_name = produced_item_id.capitalize()
 	produced_stack.count = produce_amount
-	produced_stack.max_stack = 99
-	produced_stack.stackable = true
+	produced_stack.max_stack = 1
+	produced_stack.stackable = false
 	var leftover: int = inventory.add_item(produced_stack)
 	if leftover > 0:
 		# Rollback container consumption if produced item did not fit.
@@ -41,8 +41,8 @@ func collect_into(inventory: InventoryComponent) -> int:
 		container_stack.item_id = required_container_item_id
 		container_stack.item_name = required_container_item_id.capitalize()
 		container_stack.count = 1
-		container_stack.max_stack = 99
-		container_stack.stackable = true
+		container_stack.max_stack = 1
+		container_stack.stackable = false
 		inventory.add_item(container_stack)
 		return 0
 	resource_collected.emit(source_resource_id, produce_amount)

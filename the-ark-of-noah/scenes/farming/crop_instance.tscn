@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://components/farming/crop_growth_component.gd" id="1_growth"]
+
+[node name="CropInstance" type="Node2D"]
+y_sort_enabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+centered = false
+
+[node name="CropGrowthComponent" type="Node" parent="."]
+script = ExtResource("1_growth")

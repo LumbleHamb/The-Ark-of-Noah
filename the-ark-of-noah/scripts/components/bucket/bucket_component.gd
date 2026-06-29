@@ -47,6 +47,6 @@ func _make_stack(item_id: String, item_name: String, count: int) -> ItemStack:
 	stack.item_id = item_id
 	stack.item_name = item_name
 	stack.count = count
-	stack.max_stack = 99
-	stack.stackable = true
+	stack.max_stack = 1
+	stack.stackable = false
 	return stack

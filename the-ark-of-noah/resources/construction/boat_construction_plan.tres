@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ConstructionPlanResource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/construction/construction_plan_resource.gd" id="1_plan"]
+[ext_resource type="Resource" path="res://resources/construction/boat_stage_1.tres" id="2_stage1"]
+[ext_resource type="Resource" path="res://resources/construction/boat_stage_2.tres" id="3_stage2"]
+
+[resource]
+script = ExtResource("1_plan")
+plan_name = "Noah_Ark_Boat"
+stages = Array[ExtResource("2_stage1")]([ExtResource("2_stage1"), ExtResource("3_stage2")])

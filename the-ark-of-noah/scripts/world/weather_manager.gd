@@ -43,6 +43,7 @@ signal rain_intensity_changed(intensity: float)  # 0..1
 signal lightning_strike(brightness: float, duration: float)  # a flash just happened
 signal thunder_triggered(distance: float)  # simulated distance 0=near, 1=far
 signal state_changed(from_state: int, to_state: int)
+signal storm_intensity_changed(intensity: float)
 
 # ============================================================================
 # ENUMS
@@ -61,6 +62,7 @@ var wind_direction: float = 0.0      # radians
 var _wind_display: float = 0.0       # smoothed display value
 var _wind_gust_timer: float = 0.0
 var _wind_gust_active: float = 0.0   # 0..1 gust envelope
+var _storm_intensity: float = 0.0    # 0..1, used by wind/tree sway/audio
 
 var rain_intensity: float = 0.0      # 0..1 target
 var _rain_display: float = 0.0       # smoothed
@@ -90,6 +92,10 @@ var _max_clear_duration: float = 240.0
 var _base_wind_strength: float = 0.3
 var _base_rain_intensity: float = 0.5
 var _lightning_frequency: float = 0.1  # strikes per second during storm
+var _storm_wind_multiplier: float = 1.6
+var _gust_frequency: float = 2.2
+var _gust_duration: float = 1.0
+var _gust_randomness: float = 0.45
 var _thunder_delay_min: float = 0.5
 var _thunder_delay_max: float = 4.0
 var _transition_speed: float = 1.5   # how fast effects ramp in/out
@@ -167,21 +173,25 @@ func _enter_state(new_state: WeatherState) -> void:
 			_set_effects([WeatherEffect.CALM])
 			_set_wind_target(0.0)
 			_set_rain_target(0.0)
+			_set_storm_intensity(0.0)
 		WeatherState.WINDY:
 			_state_duration = _rng.randf_range(_min_clear_duration * 0.6, _max_clear_duration * 0.6)
 			_set_effects([WeatherEffect.WIND])
 			_set_wind_target(_base_wind_strength * _rng.randf_range(0.6, 1.0))
 			_set_rain_target(0.0)
+			_set_storm_intensity(0.15)
 		WeatherState.RAINY:
 			_state_duration = _rng.randf_range(_min_storm_duration * 0.5, _max_storm_duration * 0.5)
 			_set_effects([WeatherEffect.WIND, WeatherEffect.RAIN])
 			_set_wind_target(_base_wind_strength * 0.5)
 			_set_rain_target(_base_rain_intensity * _rng.randf_range(0.4, 0.7))
+			_set_storm_intensity(0.45)
 		WeatherState.STORMY:
 			_state_duration = _rng.randf_range(_min_storm_duration, _max_storm_duration)
 			_set_effects([WeatherEffect.WIND, WeatherEffect.RAIN, WeatherEffect.LIGHTNING, WeatherEffect.THUNDER])
-			_set_wind_target(_base_wind_strength * _rng.randf_range(1.0, 1.5))
+			_set_wind_target(_base_wind_strength * _storm_wind_multiplier * _rng.randf_range(0.9, 1.2))
 			_set_rain_target(_base_rain_intensity * _rng.randf_range(0.8, 1.0))
+			_set_storm_intensity(1.0)
 		WeatherState.TRANSITIONING:
 			# Brief interstitial; immediately pick a real next state.
 			_state_duration = 0.5
@@ -239,14 +249,18 @@ func _update_wind(delta: float) -> void:
 	var target: float = wind_strength + _wind_gust_active * 0.3
 	_wind_display = lerpf(_wind_display, target, clampf(delta * _transition_speed, 0.0, 1.0))
 	
-	# Random gusts — occur at random intervals, scale with base wind.
+	# Random gusts — driven by controller-tunable frequency/duration/randomness.
 	if wind_strength > 0.05:
 		_wind_gust_timer -= delta
 		if _wind_gust_timer <= 0.0:
-			_wind_gust_active = _rng.randf_range(0.3, 1.0) * wind_strength
-			_wind_gust_timer = _rng.randf_range(1.5, 5.0) / maxf(wind_strength, 0.1)
-		# Decay gust envelope.
-		_wind_gust_active = maxf(0.0, _wind_gust_active - delta * 0.8)
+			var random_scale: float = lerpf(1.0 - _gust_randomness, 1.0 + _gust_randomness, _rng.randf())
+			var storm_boost: float = lerpf(1.0, 1.6, _storm_intensity)
+			_wind_gust_active = clampf(_rng.randf_range(0.25, 1.0) * wind_strength * random_scale * storm_boost, 0.0, 1.5)
+			var next_delay: float = maxf(0.05, _gust_frequency / maxf(wind_strength + (_storm_intensity * 0.5), 0.1))
+			_wind_gust_timer = next_delay * _rng.randf_range(0.7, 1.3)
+		# Decay gust envelope over configured gust duration.
+		var gust_decay_speed: float = 1.0 / maxf(_gust_duration, 0.05)
+		_wind_gust_active = maxf(0.0, _wind_gust_active - delta * gust_decay_speed)
 	else:
 		_wind_gust_active = 0.0
 	
@@ -270,6 +284,9 @@ func get_wind_direction() -> float:
 ## Polled by shaders/components that want gust info (0..1).
 func get_wind_gust() -> float:
 	return _wind_gust_active
+
+func get_storm_intensity() -> float:
+	return _storm_intensity
 
 # ============================================================================
 # RAIN
@@ -327,6 +344,10 @@ func _set_effects(effects: Array) -> void:
 	for e in effects:
 		active_effects.append(e)
 
+func _set_storm_intensity(intensity: float) -> void:
+	_storm_intensity = clampf(intensity, 0.0, 1.0)
+	storm_intensity_changed.emit(_storm_intensity)
+
 ## Returns true if a given effect is currently active.
 func has_effect(effect: WeatherEffect) -> bool:
 	return effect in active_effects
@@ -357,6 +378,10 @@ func _apply_controller_config() -> void:
 	_base_wind_strength = _controller.wind_strength
 	_base_rain_intensity = _controller.rain_intensity
 	_lightning_frequency = _controller.lightning_frequency
+	_storm_wind_multiplier = _controller.storm_wind_multiplier
+	_gust_frequency = _controller.gust_frequency
+	_gust_duration = _controller.gust_duration
+	_gust_randomness = _controller.gust_randomness
 	_thunder_delay_min = _controller.thunder_delay_min
 	_thunder_delay_max = _controller.thunder_delay_max
 	_transition_speed = _controller.transition_speed

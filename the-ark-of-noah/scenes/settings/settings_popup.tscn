@@ -1,0 +1,87 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/settings_popup.gd" id="1_script"]
+
+[node name="SettingsPopup" type="PopupPanel"]
+size = Vector2i(520, 560)
+script = ExtResource("1_script")
+
+[node name="Margin" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_top = 14.0
+offset_right = -14.0
+offset_bottom = -14.0
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="AudioTitle" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "Audio"
+
+[node name="MasterVolumeSlider" type="HSlider" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="MusicVolumeSlider" type="HSlider" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="SfxVolumeSlider" type="HSlider" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="CameraTitle" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "Camera"
+
+[node name="ZoomInButton" type="Button" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Zoom In"
+
+[node name="ZoomOutButton" type="Button" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Zoom Out"
+
+[node name="ControlsTitle" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "Controls"
+
+[node name="ControlsPlaceholder" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "# PLACEHOLDER: Key rebinding UI will be added here."
+autowrap_mode = 2
+
+[node name="CreditsTitle" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "Credits"
+
+[node name="CreditsText" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+text = "The Ark of Noah\n# PLACEHOLDER: Full credits list"
+autowrap_mode = 2
+
+[node name="CloseButton" type="Button" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Close"

@@ -1,41 +1,55 @@
 [gd_scene format=3 uid="uid://dckb0uj0ynn5p"]
 
 [ext_resource type="Script" uid="uid://c3s27gbqmdkh1" path="res://scenes/menu/main_menu.gd" id="1_kn5tk"]
-[ext_resource type="Texture2D" uid="uid://bvap3qwa5a141" path="res://images/backgrounds/background_main_menu.png" id="2_6r4eb"]
+[ext_resource type="Texture2D" uid="uid://bdyj22sqrgbpi" path="res://images/ui/Individual files/ui_images/Background boxes/BGbox_08A.png" id="2_6r4eb"]
 [ext_resource type="Texture2D" uid="uid://bmr6kixvks001" path="res://images/ui/Individual files/ui_images/Buttons/Button_03A_Normal.png" id="3_xaymh"]
 [ext_resource type="Texture2D" uid="uid://d2vs6c6ty5plx" path="res://images/ui/Individual files/ui_images/Buttons/Button_03A_Pressed.png" id="4_pc6sr"]
 [ext_resource type="Texture2D" uid="uid://b075c6qslmcmv" path="res://images/ui/Individual files/ui_images/Buttons/Button_03A_Selected.png" id="5_mrxb8"]
+[ext_resource type="PackedScene" path="res://scenes/menu/save_selection_menu.tscn" id="6_save"]
+[ext_resource type="PackedScene" path="res://scenes/settings/settings_popup.tscn" id="7_settings"]
 
 [node name="MainMenu" type="Control" unique_id=1768490226]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_kn5tk")
 
 [node name="Background" type="TextureRect" parent="." unique_id=1072431673]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 1925.0
-offset_bottom = 1085.0
+offset_left = 26.0
+offset_top = 210.0
+offset_right = 26.0
+offset_bottom = 210.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_6r4eb")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=112739918]
 
-[node name="NewGameButton" type="TextureButton" parent="UI" unique_id=645622976]
+[node name="MenuVBox" type="VBoxContainer" parent="UI" unique_id=2142996766]
+offset_left = 836.0
+offset_top = 622.0
+offset_right = 1136.0
+offset_bottom = 980.0
+theme_override_constants/separation = 12
+
+[node name="NewGameButton" type="TextureButton" parent="UI/MenuVBox" unique_id=645622976]
 unique_name_in_owner = true
-offset_left = 857.0
-offset_top = 722.0
-offset_right = 1118.0
-offset_bottom = 816.0
+custom_minimum_size = Vector2(260, 92)
+layout_mode = 2
 texture_normal = ExtResource("3_xaymh")
 texture_pressed = ExtResource("4_pc6sr")
 texture_hover = ExtResource("5_mrxb8")
 stretch_mode = 0
 
-[node name="Label" type="Label" parent="UI/NewGameButton" unique_id=938271605]
+[node name="Label" type="Label" parent="UI/MenuVBox/NewGameButton" unique_id=938271605]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -46,16 +60,68 @@ text = "New Game"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="ContinueButton" type="TextureButton" parent="UI/MenuVBox" unique_id=1454916808]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 92)
+layout_mode = 2
+texture_normal = ExtResource("3_xaymh")
+texture_pressed = ExtResource("4_pc6sr")
+texture_hover = ExtResource("5_mrxb8")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="UI/MenuVBox/ContinueButton" unique_id=328817008]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "Continue"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SettingsButton" type="TextureButton" parent="UI/MenuVBox" unique_id=1082098770]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 92)
+layout_mode = 2
+texture_normal = ExtResource("3_xaymh")
+texture_pressed = ExtResource("4_pc6sr")
+texture_hover = ExtResource("5_mrxb8")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="UI/MenuVBox/SettingsButton" unique_id=1926956809]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "Settings"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SaveSelectionMenu" parent="UI" unique_id=2022596935 instance=ExtResource("6_save")]
+unique_name_in_owner = true
+visible = false
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SettingsPopup" parent="UI" unique_id=401626484 instance=ExtResource("7_settings")]
+unique_name_in_owner = true
+
 [node name="FadeLayer" type="CanvasLayer" parent="." unique_id=968540148]
 layer = 128
 
-[node name="FadeOverlay" type="ColorRect" parent="FadeLayer" unique_id=1692787079]
+[node name="FadeOverlay" type="TextureRect" parent="FadeLayer" unique_id=1692787079]
 unique_name_in_owner = true
 visible = false
+modulate = Color(0, 0, 0, 0)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0, 0, 0, 0)
+texture = ExtResource("2_6r4eb")
+expand_mode = 1
+stretch_mode = 6

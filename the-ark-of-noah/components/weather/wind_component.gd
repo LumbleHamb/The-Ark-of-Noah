@@ -62,9 +62,15 @@ var _base_modulate: Color = Color.WHITE
 func _component_ready() -> void:
 	# Resolve the target node.
 	if target_path != NodePath(""):
-		_target_node = get_node(target_path)
+		_target_node = get_node_or_null(target_path)
+		if _target_node == null and get_parent() != null:
+			_target_node = get_parent().get_node_or_null(target_path)
 	if _target_node == null:
 		_target_node = _auto_resolve_target()
+	# Fallback: common leaves setup has AnimatedSprite2D named "leaves_animation"
+	# as a sibling of WindComponent under the same parent node.
+	if _target_node == null and wind_target == WindTarget.SPRITE and get_parent() != null:
+		_target_node = get_parent().get_node_or_null("leaves_animation")
 	
 	if _target_node is Node2D:
 		_base_position = (_target_node as Node2D).position
@@ -87,7 +93,8 @@ func _process(delta: float) -> void:
 	var strength: float = _weather_manager.get_wind_strength()
 	var direction: float = _weather_manager.get_wind_direction()
 	var gust: float = _weather_manager.get_wind_gust() if react_to_gusts else 0.0
-	var effective: float = clampf(strength + gust * 0.3, 0.0, 1.5)
+	var storm_intensity: float = _weather_manager.get_storm_intensity() if _weather_manager.has_method("get_storm_intensity") else 0.0
+	var effective: float = clampf(strength + gust * 0.3 + storm_intensity * 0.35, 0.0, 1.8)
 	
 	match wind_target:
 		WindTarget.TILEMAP_LAYER:
@@ -111,7 +118,7 @@ func _apply_tilemap(strength: float, _direction: float) -> void:
 	var tint: Color = _base_modulate.lerp(Color(0.85, 0.9, 0.75, 1.0), strength * 0.4)
 	layer.modulate = tint
 
-func _apply_sprite(strength: float, direction: float, gust: float) -> void:
+func _apply_sprite(strength: float, _direction: float, gust: float) -> void:
 	var sprite: Node2D = _target_node as Node2D
 	if sprite == null:
 		return

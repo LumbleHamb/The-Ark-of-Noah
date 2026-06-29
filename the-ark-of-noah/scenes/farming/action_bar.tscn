@@ -15,8 +15,8 @@ anchor_left = 0.5
 anchor_right = 0.5
 offset_top = -60.0
 offset_bottom = -12.0
-offset_left = -280.0
-offset_right = 280.0
+offset_left = -236.0
+offset_right = 236.0
 
 [node name="SlotContainer" type="HBoxContainer" parent="Panel"]
 unique_name_in_owner = true

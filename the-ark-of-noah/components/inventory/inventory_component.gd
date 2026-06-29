@@ -43,6 +43,7 @@ signal items_changed()
 ## Maximum number of item slots (stack-based inventory). Tools/seeds are not
 ## counted against this limit.
 @export var item_capacity: int = 24
+@export_range(2, 16, 1) var hotbar_slot_count: int = 8
 
 var tool_inventory: Array[ToolData] = []
 var seed_inventory: Array[CropData] = []
@@ -99,24 +100,57 @@ func is_tool_selected() -> bool:
 	return selected_slot >= 0 and selected_slot < tool_inventory.size()
 
 func is_seed_selected() -> bool:
-	return selected_slot >= tool_inventory.size()
+	var tool_count: int = tool_inventory.size()
+	var total: int = tool_count + seed_inventory.size()
+	return selected_slot >= tool_count and selected_slot < total
+
+## Compatibility helper: in this project, selecting a seed slot represents
+## having the seed pouch equipped/active.
+func is_seed_pouch_equipped() -> bool:
+	return is_seed_selected()
 
 func get_total_slots() -> int:
 	return tool_inventory.size() + seed_inventory.size()
 
+func get_hotbar_slot_count() -> int:
+	return hotbar_slot_count
+
+func get_hotbar_texture(slot_index: int) -> Texture2D:
+	if slot_index < 0 or slot_index >= hotbar_slot_count:
+		return null
+	if slot_index < tool_inventory.size():
+		var tool: ToolData = tool_inventory[slot_index]
+		return tool.icon if tool != null else null
+	var seed_index: int = slot_index - tool_inventory.size()
+	if seed_index >= 0 and seed_index < seed_inventory.size():
+		var crop: CropData = seed_inventory[seed_index]
+		return crop.seed_sprite if crop != null else null
+	return null
+
+func get_hotbar_slot_label(slot_index: int) -> String:
+	if slot_index < 0 or slot_index >= hotbar_slot_count:
+		return ""
+	if slot_index < tool_inventory.size():
+		var tool: ToolData = tool_inventory[slot_index]
+		return tool.tool_name if tool != null else ""
+	var seed_index: int = slot_index - tool_inventory.size()
+	if seed_index >= 0 and seed_index < seed_inventory.size():
+		var crop: CropData = seed_inventory[seed_index]
+		return crop.crop_name if crop != null else ""
+	return ""
+
 ## Updates action bar icons to match inventory contents.
 func update_action_bar() -> void:
-	if not _action_bar or not _action_bar.has_method("set_slot_texture"):
+	if _action_bar == null:
 		return
-	var idx: int = 0
-	for tool: ToolData in tool_inventory:
-		if tool.icon:
-			_action_bar.set_slot_texture(idx, tool.icon)
-		idx += 1
-	for entry: CropData in seed_inventory:
-		if entry.seed_sprite:
-			_action_bar.set_slot_texture(idx, entry.seed_sprite)
-		idx += 1
+	if not _action_bar.has_method("set_slot_texture"):
+		return
+	for idx: int in range(hotbar_slot_count):
+		if _action_bar.has_method("clear_slot_texture"):
+			_action_bar.clear_slot_texture(idx)
+		var tex: Texture2D = get_hotbar_texture(idx)
+		if tex != null:
+			_action_bar.set_slot_texture(idx, tex)
 
 func _on_action_bar_selected(slot_index: int) -> void:
 	selected_slot = slot_index
@@ -291,8 +325,8 @@ func load_from_save(data: Dictionary) -> void:
 		stack.item_id = entry["id"]
 		stack.item_name = entry.get("name", stack.item_id)
 		stack.count = int(entry.get("count", 1))
-		stack.max_stack = int(entry.get("max_stack", 99))
-		stack.stackable = bool(entry.get("stackable", true))
+		stack.max_stack = int(entry.get("max_stack", 1))
+		stack.stackable = bool(entry.get("stackable", false))
 		items.append(stack)
 	equipped_tool_index = int(data.get("equipped_tool", -1))
 	items_changed.emit()
