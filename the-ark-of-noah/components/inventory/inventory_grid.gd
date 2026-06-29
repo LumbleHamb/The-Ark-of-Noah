@@ -41,12 +41,14 @@ var _scroll: ScrollContainer = null
 var _slots: Array[TextureRect] = []
 var _slot_icons: Array[TextureRect] = []
 var _dragging_from: int = -1
+var _drag_preview: TextureRect = null
 var _tooltip_label: Label = null
 var _selected_index: int = 0
 
 func _ready() -> void:
 	_build_ui()
 	set_process_unhandled_input(true)
+	set_process_input(true)
 
 ## Binds this grid to an InventoryComponent and refreshes the display.
 func bind_inventory(inventory: InventoryComponent) -> void:
@@ -59,6 +61,12 @@ func bind_inventory(inventory: InventoryComponent) -> void:
 
 ## Rebuilds the slot grid to match the bound inventory's capacity + contents.
 func refresh() -> void:
+	# Cancel any in-progress drag (e.g. if the UI closed during a drag).
+	if _dragging_from >= 0 or _drag_preview.visible:
+		_drag_preview.visible = false
+		if _dragging_from >= 0 and _dragging_from < _slot_icons.size():
+			_slot_icons[_dragging_from].modulate = Color.WHITE
+		_dragging_from = -1
 	if _grid == null:
 		return
 	for child: Node in _grid.get_children():
@@ -102,6 +110,16 @@ func _build_ui() -> void:
 	_tooltip_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_tooltip_label.z_index = 100
 	add_child(_tooltip_label)
+
+	# Drag preview sprite (hidden until a drag starts).
+	_drag_preview = TextureRect.new()
+	_drag_preview.visible = false
+	_drag_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_drag_preview.z_index = 200
+	_drag_preview.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	_drag_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_drag_preview.custom_minimum_size = Vector2(slot_size * 0.9, slot_size * 0.9)
+	add_child(_drag_preview)
 
 func _make_slot(index: int) -> TextureRect:
 	var slot: TextureRect = TextureRect.new()
@@ -163,17 +181,29 @@ func _on_slot_gui_input(event: InputEvent, index: int, slot: TextureRect) -> voi
 			_end_drag(slot, index)
 	elif event is InputEventMouseMotion and _dragging_from >= 0:
 		_update_tooltip_to_mouse()
+		if _drag_preview.visible:
+			_position_drag_preview()
 
 func _start_drag(index: int, _slot: TextureRect) -> void:
-	if _stack_at(index) == null:
+	var stack: ItemStack = _stack_at(index)
+	if stack == null or stack.icon == null:
 		# Clicking an empty slot with nothing in hand = nothing.
 		_dragging_from = -1
 		return
 	_dragging_from = index
-	_show_drag_tooltip(index)
+	# Show the floating drag-preview sprite.
+	_drag_preview.texture = stack.icon
+	_drag_preview.visible = true
+	_position_drag_preview()
+	# Dim the source slot so it looks "picked up".
+	if index < _slot_icons.size():
+		_slot_icons[index].modulate = Color(1, 1, 1, 0.3)
 
 func _end_drag(_slot: TextureRect, index: int) -> void:
-	_hide_drag_tooltip()
+	_drag_preview.visible = false
+	# Restore source slot opacity.
+	if _dragging_from >= 0 and _dragging_from < _slot_icons.size():
+		_slot_icons[_dragging_from].modulate = Color.WHITE
 	if _dragging_from < 0:
 		return
 	# Did the user drop onto a different InventoryGrid (chest transfer)?
@@ -233,7 +263,7 @@ func _on_slot_mouse_exited() -> void:
 func _show_drag_tooltip(index: int) -> void:
 	var stack: ItemStack = _stack_at(index)
 	if stack:
-		_tooltip_label.text = "Dragging: %s  (x%d)" % [stack.item_name, stack.count]
+		_tooltip_label.text = "%s  (x%d)" % [stack.item_name, stack.count]
 		_tooltip_label.visible = true
 		_position_tooltip()
 
@@ -242,10 +272,17 @@ func _hide_drag_tooltip() -> void:
 		_tooltip_label.visible = false
 
 func _update_tooltip_to_mouse() -> void:
-	_position_tooltip()
+	if _tooltip_label.visible:
+		_position_tooltip()
 
 func _position_tooltip() -> void:
 	_tooltip_label.position = get_local_mouse_position() + Vector2(12, 12)
+
+## Positions the floating drag-preview sprite centered on the mouse cursor,
+## using global coordinates so it stays in place when moving between grids.
+func _position_drag_preview() -> void:
+	var half: float = _drag_preview.custom_minimum_size.x * 0.5
+	_drag_preview.global_position = get_global_mouse_position() - Vector2(half, half)
 
 # ---------------------------------------------------------------------------
 # GRID-UNDER-MOUSE HELPERS (for cross-grid drag/drop transfers)
@@ -271,6 +308,40 @@ func _slot_index_at_mouse() -> int:
 		if _slots[i].get_global_rect().has_point(mouse_pos):
 			return i
 	return -1
+
+func _input(event: InputEvent) -> void:
+	if _dragging_from < 0:
+		return
+	if event is InputEventMouseMotion and _drag_preview.visible:
+		_position_drag_preview()
+	elif event is InputEventMouseButton and not event.pressed \
+	and event.button_index == MOUSE_BUTTON_LEFT:
+		# Mouse released during a drag — check where.
+		# First, is the mouse over a slot in THIS grid? If so let gui_input
+		# handle it normally (reorder / merge / swap within the same grid).
+		if _slot_index_at_mouse() >= 0:
+			return
+		# Is the mouse over a slot in a DIFFERENT grid? Cross-grid transfer.
+		var target_grid: InventoryGrid = _find_grid_under_mouse()
+		if target_grid != null:
+			var target_slot: int = target_grid._slot_index_at_mouse()
+			if target_slot >= 0:
+				_drag_preview.visible = false
+				if _dragging_from >= 0 and _dragging_from < _slot_icons.size():
+					_slot_icons[_dragging_from].modulate = Color.WHITE
+				stack_dragged_to.emit(target_grid, _dragging_from, target_slot)
+				_inventory.transfer_to(target_grid._inventory, _dragging_from, target_slot)
+				target_grid.refresh()
+				refresh()
+				var old_from: int = _dragging_from
+				_dragging_from = -1
+				drag_finished.emit(old_from, target_slot, target_grid)
+				return
+		# Over empty space (no slot in any grid) — cancel the drag cleanly.
+		_drag_preview.visible = false
+		if _dragging_from >= 0 and _dragging_from < _slot_icons.size():
+			_slot_icons[_dragging_from].modulate = Color.WHITE
+		_dragging_from = -1
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
