@@ -262,21 +262,45 @@ func transfer_to(other: InventoryComponent, from: int, to: int) -> bool:
 	var stack: ItemStack = items[from]
 	if stack == null:
 		return false
-	# If target slot holds a same-type stackable stack, merge into it directly.
-	if to >= 0 and to < other.items.size() and other.items[to] != null:
-		var dst: ItemStack = other.items[to]
-		if dst.same_type(stack) and dst.stackable:
-			var leftover: int = dst.add(stack.count)
-			if leftover <= 0:
-				items.remove_at(from)
+	# If a specific target slot was given, try to place it there.
+	if to >= 0 and to < other.item_capacity:
+		# Target slot is within bounds — check what's in it.
+		if to < other.items.size() and other.items[to] != null:
+			var dst: ItemStack = other.items[to]
+			if dst.same_type(stack) and dst.stackable:
+				# Merge same-type stackable items.
+				var leftover: int = dst.add(stack.count)
+				if leftover <= 0:
+					items.remove_at(from)
+				else:
+					stack.count = leftover
+				other.items_changed.emit()
+				other.inventory_changed.emit()
+				items_changed.emit()
+				inventory_changed.emit()
+				return true
 			else:
-				stack.count = leftover
-			other.items_changed.emit()
-			other.inventory_changed.emit()
+				# Slot has a different item — swap them.
+				other.items[to] = stack
+				items[from] = dst
+				items_changed.emit()
+				inventory_changed.emit()
+				other.items_changed.emit()
+				other.inventory_changed.emit()
+				return true
+		else:
+			# Target slot is empty — place the item directly.
+			if to >= other.items.size():
+				# Pad the array if needed.
+				other.items.resize(to + 1)
+			other.items[to] = stack
+			items.remove_at(from)
 			items_changed.emit()
 			inventory_changed.emit()
+			other.items_changed.emit()
+			other.inventory_changed.emit()
 			return true
-	# Otherwise add to the other inventory (merging where possible).
+	# No specific target slot (or out of range): auto-place via add_item.
 	var leftover_count: int = other.add_item(stack)
 	if leftover_count <= 0:
 		items.remove_at(from)

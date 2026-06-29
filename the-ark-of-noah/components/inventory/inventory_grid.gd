@@ -23,6 +23,7 @@ extends Control
 ## ============================================================================
 
 signal stack_dragged_to(other_grid: InventoryGrid, from_index: int, to_index: int)
+signal drag_finished(from_index: int, to_index: int, target_grid: InventoryGrid)
 
 const SLOT_SIZE: float = 48.0
 const SLOT_GAP: float = 4.0
@@ -186,6 +187,7 @@ func _end_drag(_slot: TextureRect, index: int) -> void:
 		# Drop within this grid: reorder / merge / swap.
 		_inventory.move_slot(_dragging_from, index)
 		refresh()
+	drag_finished.emit(_dragging_from, index, target_grid)
 	_dragging_from = -1
 
 func _split_stack(index: int) -> void:
