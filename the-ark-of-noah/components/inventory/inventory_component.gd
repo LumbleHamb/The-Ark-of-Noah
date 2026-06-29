@@ -42,7 +42,7 @@ signal items_changed()
 
 ## Maximum number of item slots (stack-based inventory). Tools/seeds are not
 ## counted against this limit.
-@export var item_capacity: int = 24
+@export var item_capacity: int = 48
 @export_range(2, 16, 1) var hotbar_slot_count: int = 8
 
 var tool_inventory: Array[ToolData] = []
@@ -185,7 +185,12 @@ func add_item(stack: ItemStack) -> int:
 		new_stack.stackable = stack.stackable
 		new_stack.crop_ref = stack.crop_ref
 		new_stack.tool_ref = stack.tool_ref
-		leftover = new_stack.add(leftover)
+		if stack.stackable:
+			leftover = new_stack.add(leftover)
+		else:
+			# Non-stackable items each fill exactly one slot.
+			new_stack.count = 1
+			leftover -= 1
 		items.append(new_stack)
 	items_changed.emit()
 	inventory_changed.emit()

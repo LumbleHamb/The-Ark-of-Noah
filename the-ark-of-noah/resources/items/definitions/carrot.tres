@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-carrot_7.png" id="1_t7xtq"]
+[ext_resource type="Script" path="res://resources/items/item_definition.gd" id="2_h8srf"]
+
+[resource]
+script = ExtResource("2_h8srf")
+item_id = "carrot"
+item_name = "Carrot"
+description = "A crisp, orange root vegetable. Nutritious and satisfying."
+icon = ExtResource("1_t7xtq")
+category = 0
+max_stack_size = 99
+sell_value = 3

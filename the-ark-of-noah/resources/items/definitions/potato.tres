@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-potato_7.png" id="1_9x8dq"]
+[ext_resource type="Script" path="res://resources/items/item_definition.gd" id="2_j7m3k"]
+
+[resource]
+script = ExtResource("2_j7m3k")
+item_id = "potato"
+item_name = "Potato"
+description = "A hearty, earthy tuber. Filling and versatile."
+icon = ExtResource("1_9x8dq")
+category = 0
+max_stack_size = 99
+sell_value = 3

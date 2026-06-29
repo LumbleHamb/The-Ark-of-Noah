@@ -75,11 +75,6 @@ layer = 10
 [node name="Thunder" parent="WeatherFX" unique_id=571994076 instance=ExtResource("23_thunder")]
 
 [node name="FarmManager" parent="." unique_id=293512700 instance=ExtResource("6_farm")]
-tile_size = null
-map_node_name = null
-grass_layer_names = null
-tilled_layer_names = null
-meadows_layer_names = null
 
 [node name="Lamp" parent="." unique_id=770411211 groups=["chunked"] instance=ExtResource("10_dlabj")]
 position = Vector2(916, 331)

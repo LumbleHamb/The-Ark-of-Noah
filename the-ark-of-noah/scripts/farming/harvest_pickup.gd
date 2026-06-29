@@ -46,8 +46,9 @@ static var _empty_texture: Texture2D = preload("res://images/ui/Individual files
 static func spawn(stack: ItemStack, parent: Node, world_position: Vector2) -> HarvestPickup:
 	var pickup_scene: PackedScene = load("res://scenes/farming/harvest_pickup.tscn") as PackedScene
 	var pickup: HarvestPickup = pickup_scene.instantiate()
-	parent.add_child(pickup)
+	# Must set position BEFORE add_child so that _ready() captures the correct Y.
 	pickup.global_position = world_position
+	parent.add_child(pickup)
 	pickup.set_stack(stack)
 	return pickup
 
@@ -58,10 +59,11 @@ func _ready() -> void:
 	_sprite.texture = _empty_texture
 	_sprite.z_index = 20
 	add_child(_sprite)
-	# Spawn pop: start small and scale up.
+	# Spawn pop: start small and scale up, and rise from the ground.
 	scale = Vector2(0.2, 0.2)
-	var tween: Tween = create_tween()
-	tween.tween_property(self, "scale", Vector2.ONE, 0.18).set_ease(Tween.EASE_OUT)
+	var pop_tween: Tween = create_tween().set_parallel()
+	pop_tween.tween_property(self, "scale", Vector2.ONE, 0.18).set_ease(Tween.EASE_OUT)
+	pop_tween.tween_property(self, "_origin_y", _origin_y - 24.0, 0.35).set_ease(Tween.EASE_OUT)
 	# Register so the player can find nearby pickups if needed.
 	add_to_group(&"pickup")
 
@@ -120,8 +122,8 @@ func _collect() -> void:
 		if leftover > 0:
 			# Couldn't fit everything; leave the remainder on the ground.
 			_stack.count = leftover
-			_collected = false
 			_collecting = false
+			_collected = false
 			return
 		var stats_node: Node = get_node_or_null("/root/game_stats")
 		if stats_node != null and stats_node.has_method("increment_stat"):

@@ -234,20 +234,21 @@ func _handle_interact() -> void:
 	if _handle_crafting():
 		return
 
-	# 3. Check if axe is equipped and no log nearby → attack instead
+	# 3. Try harvest on a ripe crop (works with any equipped item, or none)
+	if farming and farming.try_harvest(global_position, last_dir):
+		_do_farming_anim()
+		return
+
+	# 4. Check if axe is equipped and no log nearby → attack instead
 	if _can_attack_with_axe():
 		_start_attack()
 		return
-	
-	# 4. Try farming action (till soil / plant seed)
+
+	# 5. Try farming action (till soil / plant seed)
 	if inventory and inventory.selected_slot >= 0 and farming:
 		if farming.do_farming_action(global_position, last_dir):
 			_do_farming_anim()
 			return
-	
-	# 5. Try harvest
-	if farming and farming.try_harvest(global_position, last_dir):
-		_do_farming_anim()
 
 
 func _start_attack() -> void:

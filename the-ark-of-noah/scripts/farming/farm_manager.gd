@@ -197,7 +197,7 @@ func harvest_tile(tile_pos: Vector2i) -> int:
 	var crop: CropData = tile_data.get("crop") as CropData
 	if crop == null:
 		return 0
-	var yield_count: int = crop.get_yield()
+	var yield_count: int = crop.get_harvest_amount()
 	var crop_name: String = crop.crop_name
 	if crop.regrowable:
 		tile_data["planted_at_day"] = time_manager.current_day if time_manager != null else 0
@@ -222,15 +222,18 @@ func harvest_tile(tile_pos: Vector2i) -> int:
 func _spawn_harvest_pickup(crop: CropData, tile_pos: Vector2i, yield_count: int) -> void:
 	if crop == null or yield_count <= 0:
 		return
-	var item_id: String = crop.harvest_item_name.to_lower().replace(" ", "_") if crop.harvest_item_name != "" else crop.crop_name.to_lower().replace(" ", "_")
-	var display_name: String = crop.harvest_item_name if crop.harvest_item_name != "" else crop.crop_name
+	var item_id: String = crop.get_harvest_item_id()
+	var display_name: String = crop.get_harvest_display_name()
+	# Use the mature (final-stage) crop texture as the world sprite so the
+	# pickup shows the actual vegetable / fruit, not a UI icon.
+	var world_texture: Texture2D = crop.get_harvest_icon()
 	var stack: ItemStack = ItemStack.new()
 	stack.item_id = item_id
 	stack.item_name = display_name
-	stack.icon = crop.harvest_sprite if crop.harvest_sprite != null else crop.seed_sprite
+	stack.icon = world_texture
 	stack.count = yield_count
-	stack.max_stack = 1
-	stack.stackable = false
+	stack.max_stack = 99
+	stack.stackable = true
 	stack.crop_ref = crop
 	var world_pos: Vector2 = get_world_pos(tile_pos)
 	HarvestPickup.spawn(stack, get_parent(), world_pos - Vector2(0.0, 8.0))
