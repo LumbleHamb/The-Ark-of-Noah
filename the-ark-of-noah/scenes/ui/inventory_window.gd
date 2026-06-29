@@ -78,6 +78,9 @@ func close_ui() -> void:
 	# Before closing, move any plain hotbar items (no tool/crop ref) back to
 	# the player's inventory so they aren't orphaned.
 	_return_orphan_hotbar_items()
+	# Rebuild the compact tool/seed arrays from the hotbar so the in-game
+	# action bar and save/load reflect the current arrangement.
+	_sync_tools_and_seeds_from_hotbar()
 	visible = false
 	dimmer.modulate.a = 0.0
 	_set_player_paused(false)
@@ -156,16 +159,12 @@ func _connect_signals() -> void:
 		inventory_grid.drag_finished.connect(_on_grid_drag_finished)
 	if not hotbar_grid.drag_finished.is_connected(_on_grid_drag_finished):
 		hotbar_grid.drag_finished.connect(_on_grid_drag_finished)
-	if not _hotbar_inventory.items_changed.is_connected(_on_hotbar_changed):
-		_hotbar_inventory.items_changed.connect(_on_hotbar_changed)
 
 func _disconnect_signals() -> void:
 	if inventory_grid.drag_finished.is_connected(_on_grid_drag_finished):
 		inventory_grid.drag_finished.disconnect(_on_grid_drag_finished)
 	if hotbar_grid.drag_finished.is_connected(_on_grid_drag_finished):
 		hotbar_grid.drag_finished.disconnect(_on_grid_drag_finished)
-	if _hotbar_inventory.items_changed.is_connected(_on_hotbar_changed):
-		_hotbar_inventory.items_changed.disconnect(_on_hotbar_changed)
 
 # ---------------------------------------------------------------------------
 # HOTBAR SYNC - convert between tool/seed arrays and hotbar ItemStacks
@@ -237,17 +236,11 @@ func _update_action_bar_textures() -> void:
 # ---------------------------------------------------------------------------
 
 func _on_grid_drag_finished(_from_index: int, _to_index: int, _target_grid: InventoryGrid) -> void:
-	"""Called after any drag completes in either grid. Syncs hotbar state."""
+	"""Called after any drag completes in either grid. Updates action bar textures."""
 	if _bound_inventory == null or not visible:
 		return
-	_sync_tools_and_seeds_from_hotbar()
+	_update_action_bar_textures()
 	_bound_inventory.inventory_changed.emit()
-
-func _on_hotbar_changed() -> void:
-	"""Called when _hotbar_inventory.items changes directly."""
-	if not visible or _bound_inventory == null:
-		return
-	_sync_tools_and_seeds_from_hotbar()
 
 ## Moves any hotbar items that aren't tools or seeds back to the main inventory.
 ## Prevents items from being orphaned when the inventory window closes.

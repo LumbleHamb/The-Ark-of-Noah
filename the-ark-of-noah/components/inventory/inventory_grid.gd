@@ -215,7 +215,13 @@ func _end_drag(_slot: TextureRect, index: int) -> void:
 		refresh()
 	else:
 		# Drop within this grid: reorder / merge / swap.
-		_inventory.move_slot(_dragging_from, index)
+		# NOTE: `index` comes from gui_input which always fires on the press
+		# slot (Godot sends release to the same control).  Use the actual
+		# mouse position to find the real target slot.
+		var target_idx: int = _slot_index_at_mouse()
+		if target_idx < 0:
+			target_idx = index  # fallback
+		_inventory.move_slot(_dragging_from, target_idx)
 		refresh()
 	drag_finished.emit(_dragging_from, index, target_grid)
 	_dragging_from = -1
@@ -328,6 +334,12 @@ func _slot_index_at_mouse() -> int:
 
 func _input(event: InputEvent) -> void:
 	if _dragging_from < 0:
+		return
+	# If the preview isn't visible, this _dragging_from is stale — it was
+	# inherited from a cross-grid transfer that already completed on another
+	# grid (the preview was hidden before the transfer).  Clear and bail.
+	if not _drag_preview.visible:
+		_dragging_from = -1
 		return
 	if event is InputEventMouseMotion and _drag_preview.visible:
 		_position_drag_preview()
