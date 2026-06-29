@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ShopTradeResource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/shop/shop_trade_resource.gd" id="1_trd"]
+[ext_resource type="Resource" path="res://resources/shop/costs/cost_wood_8.tres" id="2"]
+[ext_resource type="Resource" path="res://resources/shop/costs/cost_gold_ingot_1.tres" id="3"]
+[ext_resource type="Resource" path="res://resources/crops/crop_strawberry.tres" id="4"]
+
+[resource]
+script = ExtResource("1_trd")
+offer_id = "seed_strawberry"
+offer_name = "Strawberry Seeds"
+description = "8 Wood + 1 Gold Ingot for Strawberry Seeds"
+costs = Array[Resource]([ExtResource("2"), ExtResource("3")])
+reward_crop = ExtResource("4")

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ShopTradeResource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/shop/shop_trade_resource.gd" id="1_trd"]
+[ext_resource type="Resource" path="res://resources/shop/costs/cost_wood_5.tres" id="2"]
+[ext_resource type="Resource" path="res://resources/shop/costs/cost_copper_ore_2.tres" id="3"]
+[ext_resource type="Resource" path="res://resources/tools/shovel_copper.tres" id="4"]
+
+[resource]
+script = ExtResource("1_trd")
+offer_id = "copper_shovel"
+offer_name = "Copper Shovel"
+description = "5 Wood + 2 Copper Ore for a Copper Shovel"
+costs = Array[Resource]([ExtResource("2"), ExtResource("3")])
+reward_tool = ExtResource("4")

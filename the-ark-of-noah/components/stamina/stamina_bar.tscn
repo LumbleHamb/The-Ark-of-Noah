@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://dm5iu0bgokvmw"]
+
+[ext_resource type="Texture2D" uid="uid://b0frm3u6n3o2b" path="res://images/ui/Individual files/ui_images/Sliders & Bars/Slider01_Box.png" id="1_f4pcf"]
+[ext_resource type="Texture2D" uid="uid://ba31ce4b375bv" path="res://images/ui/Individual files/ui_images/Sliders & Bars/Slider01_Bar05.png" id="2_mijdh"]
+[ext_resource type="Script" uid="uid://dxi8bgn17egrd" path="res://components/stamina/stamina_bar.gd" id="3_43oub"]
+
+[node name="StaminaBar" type="CanvasLayer" unique_id=193942635]
+layer = 128
+script = ExtResource("3_43oub")
+
+[node name="BoxBg" type="TextureRect" parent="." unique_id=513851767]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -94.0
+offset_right = 120.0
+offset_bottom = -68.0
+mouse_filter = 2
+texture = ExtResource("1_f4pcf")
+
+[node name="FillBar" type="TextureRect" parent="." unique_id=2045667461]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -116.0
+offset_top = -90.0
+offset_right = 116.0
+offset_bottom = -72.0
+mouse_filter = 2
+texture = ExtResource("2_mijdh")

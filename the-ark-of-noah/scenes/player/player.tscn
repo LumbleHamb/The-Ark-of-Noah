@@ -13,6 +13,10 @@
 [ext_resource type="PackedScene" path="res://components/inventory/inventory_component.tscn" id="11_inv_scene"]
 [ext_resource type="PackedScene" path="res://components/farming/farming_component.tscn" id="12_farm_scene"]
 [ext_resource type="PackedScene" path="res://scripts/components/bucket/bucket_component.tscn" id="13_bucket_scene"]
+[ext_resource type="Script" uid="uid://dxi8bgn17egrd" path="res://components/stamina/stamina_bar.gd" id="15_fcs02"]
+[ext_resource type="Script" uid="uid://b0t3m7xxvenel" path="res://components/stamina/stamina_component.gd" id="15_stamina"]
+[ext_resource type="Texture2D" uid="uid://b0frm3u6n3o2b" path="res://images/ui/Individual files/ui_images/Sliders & Bars/Slider01_Box.png" id="14_box"]
+[ext_resource type="Texture2D" uid="uid://ba31ce4b375bv" path="res://images/ui/Individual files/ui_images/Sliders & Bars/Slider01_Bar05.png" id="16_bar"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qek5x"]
 atlas = ExtResource("1_lvxji")
@@ -2147,10 +2151,9 @@ size = Vector2(24, 27)
 [sub_resource type="CircleShape2D" id="CircleShape2D_wodrh"]
 radius = 11.0
 
-[node name="player" type="CharacterBody2D"  groups=["Player"]]
+[node name="player" type="CharacterBody2D" unique_id=1661681255 groups=["Player"]]
 scale = Vector2(1.5, 1.5)
 collision_layer = 2
-collision_mask = 1
 script = ExtResource("5_p47bc")
 
 [node name="player_animation" type="AnimatedSprite2D" parent="." unique_id=475524584]
@@ -2196,7 +2199,7 @@ visible = false
 z_index = 10
 scale = Vector2(0.4, 0.4)
 
-[node name="ActionBar" parent="." instance=ExtResource("6_farm_action_bar")]
+[node name="ActionBar" parent="." unique_id=1801354306 instance=ExtResource("6_farm_action_bar")]
 
 [node name="PlayerLight" type="PointLight2D" parent="." unique_id=228434386]
 enabled = false
@@ -2207,14 +2210,49 @@ shadow_color = Color(0, 0, 0, 0.8)
 texture = ExtResource("7_light")
 texture_scale = 4.0
 
-[node name="MovementComponent" parent="." instance=ExtResource("8_mov_scene")]
+[node name="MovementComponent" parent="." unique_id=1339332317 instance=ExtResource("8_mov_scene")]
 
-[node name="PlayerAnimationComponent" parent="." instance=ExtResource("9_anim_scene")]
+[node name="PlayerAnimationComponent" parent="." unique_id=147972089 instance=ExtResource("9_anim_scene")]
 
-[node name="AttackComponent" parent="." instance=ExtResource("10_att_scene")]
+[node name="AttackComponent" parent="." unique_id=1175547543 instance=ExtResource("10_att_scene")]
 
-[node name="InventoryComponent" parent="." instance=ExtResource("11_inv_scene")]
+[node name="InventoryComponent" parent="." unique_id=305377032 instance=ExtResource("11_inv_scene")]
 
-[node name="FarmingComponent" parent="." instance=ExtResource("12_farm_scene")]
+[node name="FarmingComponent" parent="." unique_id=516671975 instance=ExtResource("12_farm_scene")]
 
-[node name="BucketComponent" parent="." instance=ExtResource("13_bucket_scene")]
+[node name="BucketComponent" parent="." unique_id=720646055 instance=ExtResource("13_bucket_scene")]
+
+[node name="StaminaComponent" type="Node" parent="." unique_id=531966348]
+script = ExtResource("15_stamina")
+
+[node name="StaminaBar" type="CanvasLayer" parent="." unique_id=535233773]
+layer = 128
+script = ExtResource("15_fcs02")
+
+[node name="BoxBg" type="TextureRect" parent="StaminaBar" unique_id=1474790754]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -94.0
+offset_right = 120.0
+offset_bottom = -68.0
+mouse_filter = 2
+texture = ExtResource("14_box")
+expand_mode = 0
+
+[node name="FillBar" type="TextureRect" parent="StaminaBar" unique_id=2045667461]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -116.0
+offset_top = -90.0
+offset_right = 116.0
+offset_bottom = -72.0
+mouse_filter = 2
+texture = ExtResource("16_bar")
+expand_mode = 0

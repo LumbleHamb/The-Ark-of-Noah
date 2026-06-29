@@ -31,7 +31,6 @@
 [ext_resource type="PackedScene" uid="uid://b234vaedf8y10" path="res://scenes/decor/storage_chest.tscn" id="24_chest"]
 [ext_resource type="PackedScene" uid="uid://btdalj0q64o65" path="res://scenes/construction/boat_construction_area.tscn" id="25_boat"]
 [ext_resource type="PackedScene" path="res://scenes/construction/pitch_source.tscn" id="26_pitch"]
-[ext_resource type="PackedScene" path="res://scenes/construction/crafting_bench.tscn" id="27_bench"]
 [ext_resource type="Script" uid="uid://c574peqx8uuv5" path="res://scripts/world/world_flow.gd" id="28_world_flow"]
 
 [node name="world" type="Node2D" unique_id=259029940]
@@ -139,10 +138,7 @@ position = Vector2(1180, 420)
 [node name="PitchSource" parent="." unique_id=1402079461 instance=ExtResource("26_pitch")]
 position = Vector2(1050, 420)
 
-[node name="CraftingBench" parent="." unique_id=1583568019 instance=ExtResource("27_bench")]
-position = Vector2(1120, 470)
-
 [node name="WorldFlow" type="Node" parent="." unique_id=60819934]
 script = ExtResource("28_world_flow")
 
-[node name="StorageChest" type="Node2D" parent="." unique_id=460688515 instance=ExtResource("24_chest")]
+[node name="StorageChest" parent="." unique_id=460688515 instance=ExtResource("24_chest")]

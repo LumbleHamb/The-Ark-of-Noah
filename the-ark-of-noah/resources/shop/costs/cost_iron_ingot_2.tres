@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ShopCostResource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/shop/shop_cost_resource.gd" id="1_cst"]
+
+[resource]
+script = ExtResource("1_cst")
+item_id = "iron_ingot"
+count = 2

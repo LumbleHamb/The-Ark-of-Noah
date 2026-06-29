@@ -1,0 +1,93 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/blacksmith_shop_ui.gd" id="1_shopui"]
+[ext_resource type="Texture2D" path="res://images/ui/Individual files/ui_images/Background boxes/BGbox_04B.png" id="2_panel"]
+[ext_resource type="Texture2D" path="res://images/ui/Individual files/ui_images/Buttons/Button_01A_Normal.png" id="3_btn_n"]
+[ext_resource type="Texture2D" path="res://images/ui/Individual files/ui_images/Buttons/Button_01A_Pressed.png" id="4_btn_p"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_panel"]
+texture = ExtResource("2_panel")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
+
+[node name="BlacksmithShop" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_shopui")
+
+[node name="Dimmer" type="TextureRect" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("2_panel")
+expand_mode = 1
+stretch_mode = 6
+modulate = Color(0, 0, 0, 0.35)
+
+[node name="Panel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -280.0
+offset_right = 400.0
+offset_bottom = 280.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_panel")
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="Panel/VBox/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.88, 0.75, 1)
+theme_override_font_sizes/font_size = 22
+text = "Blacksmith"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Panel/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(20, 0)
+
+[node name="CloseButton" type="TextureButton" parent="Panel/VBox/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 48)
+texture_normal = ExtResource("3_btn_n")
+texture_pressed = ExtResource("4_btn_p")
+
+[node name="Label" type="Label" parent="Panel/VBox/Header/CloseButton"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Close"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = ""
+horizontal_alignment = 1
+
+[node name="TradeScroll" type="ScrollContainer" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 320)
+
+[node name="TradeList" type="VBoxContainer" parent="Panel/VBox/TradeScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3

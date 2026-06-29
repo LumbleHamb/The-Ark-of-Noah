@@ -36,6 +36,7 @@ var animator: PlayerAnimationComponent = null
 var attack: AttackComponent = null
 var inventory: InventoryComponent = null
 var farming: FarmingComponent = null
+var stamina: StaminaComponent = null
 var bucket: Node = null
 
 # ============================================================================
@@ -58,6 +59,7 @@ func _ready() -> void:
 	attack = get_node_or_null("AttackComponent") as AttackComponent
 	inventory = get_node_or_null("InventoryComponent") as InventoryComponent
 	farming = get_node_or_null("FarmingComponent") as FarmingComponent
+	stamina = get_node_or_null("StaminaComponent") as StaminaComponent
 	bucket = get_node_or_null("BucketComponent") as Node
 	
 	# Hitbox handling is delegated to AttackComponent
@@ -224,7 +226,11 @@ func _handle_interact() -> void:
 	if _handle_construction_deposit():
 		return
 
-	# 2.7. Try crafting bench interaction.
+	# 2.7. Try blacksmith shop interaction.
+	if _handle_blacksmith_shop():
+		return
+
+	# 2.8. Try crafting bench interaction.
 	if _handle_crafting():
 		return
 
@@ -394,6 +400,34 @@ func _handle_resource_collection() -> bool:
 			if node.is_player_in_zone():
 				return node.collect_into(inventory) > 0
 	return false
+
+func _handle_blacksmith_shop() -> bool:
+	if inventory == null:
+		return false
+	var shop_ui: CanvasLayer = safe_get_blacksmith_shop()
+	# If the shop UI is already open, close it.
+	if shop_ui and shop_ui.visible:
+		if shop_ui.has_method(&"close_ui"):
+			shop_ui.call("close_ui")
+		return true
+	# Find a blacksmith whose interaction zone contains the player.
+	for node: Node in get_tree().get_nodes_in_group(&"blacksmith_shop"):
+		if node is BlacksmithShopComponent:
+			var shop: BlacksmithShopComponent = node as BlacksmithShopComponent
+			if shop.is_player_in_zone():
+				shop.open_for(self)
+				if shop_ui and shop_ui.has_method(&"show_for"):
+					shop_ui.show_for(shop)
+				set_player_paused(true)
+				return true
+	return false
+
+## Resolves the BlacksmithShop autoload without importing it.
+func safe_get_blacksmith_shop() -> CanvasLayer:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("BlacksmithShop") as CanvasLayer
 
 func _handle_crafting() -> bool:
 	if inventory == null:

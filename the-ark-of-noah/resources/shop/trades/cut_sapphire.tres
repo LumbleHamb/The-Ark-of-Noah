@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ShopTradeResource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/shop/shop_trade_resource.gd" id="1_trd"]
+[ext_resource type="Resource" path="res://resources/shop/costs/cost_gold_ore_3.tres" id="2"]
+[ext_resource type="Resource" path="res://resources/shop/costs/cost_coal_1.tres" id="3"]
+
+[resource]
+script = ExtResource("1_trd")
+offer_id = "cut_sapphire"
+offer_name = "Cut Sapphire"
+description = "3 Gold Ore + 1 Coal to 1 Sapphire"
+costs = Array[Resource]([ExtResource("2"), ExtResource("3")])
+reward_item_id = "sapphire"
+reward_item_count = 1

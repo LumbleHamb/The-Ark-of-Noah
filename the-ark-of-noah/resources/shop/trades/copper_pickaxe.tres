@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ShopTradeResource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/shop/shop_trade_resource.gd" id="1_trd"]
+[ext_resource type="Resource" path="res://resources/shop/costs/cost_wood_5.tres" id="2"]
+[ext_resource type="Resource" path="res://resources/shop/costs/cost_copper_ore_3.tres" id="3"]
+[ext_resource type="Resource" path="res://resources/tools/pickaxe_copper.tres" id="4"]
+
+[resource]
+script = ExtResource("1_trd")
+offer_id = "copper_pickaxe"
+offer_name = "Copper Pickaxe"
+description = "5 Wood + 3 Copper Ore for a Copper Pickaxe"
+costs = Array[Resource]([ExtResource("2"), ExtResource("3")])
+reward_tool = ExtResource("4")

@@ -34,3 +34,14 @@ enum ItemCategory {
 @export var consumable: bool = false
 @export var quest_item: bool = false
 @export var max_stack_size: int = 1
+
+## Creates an ItemStack from this definition, with icon, name, etc. pre-filled.
+func create_stack(amount: int = 1) -> ItemStack:
+	var stack: ItemStack = ItemStack.new()
+	stack.item_id = item_id
+	stack.item_name = item_name
+	stack.icon = icon
+	stack.count = clampi(amount, 1, max_stack_size)
+	stack.max_stack = max_stack_size
+	stack.stackable = max_stack_size > 1
+	return stack

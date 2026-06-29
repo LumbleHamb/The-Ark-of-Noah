@@ -32,6 +32,8 @@ WeatherManager="*res://scripts/world/weather_manager.gd"
 ChestUI="*res://scenes/ui/chest_ui.tscn"
 InventoryUI="*res://scenes/ui/inventory_window.tscn"
 game_stats="*res://scripts/world/game_stats.gd"
+ItemRegistry="*res://scripts/items/item_registry.gd"
+BlacksmithShop="*res://scenes/ui/blacksmith_shop_ui.tscn"
 
 [display]
 

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ShopTradeResource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/shop/shop_trade_resource.gd" id="1_trd"]
+[ext_resource type="Resource" path="res://resources/shop/costs/cost_wood_8.tres" id="2"]
+[ext_resource type="Resource" path="res://resources/shop/costs/cost_steel_ingot_2.tres" id="3"]
+[ext_resource type="Resource" path="res://resources/shop/costs/cost_diamond_2.tres" id="4"]
+[ext_resource type="Resource" path="res://resources/tools/axe_diamond.tres" id="5"]
+
+[resource]
+script = ExtResource("1_trd")
+offer_id = "diamond_axe"
+offer_name = "Diamond Axe"
+description = "8 Wood + 2 Steel Ingot + 2 Diamond for a Diamond Axe"
+costs = Array[Resource]([ExtResource("2"), ExtResource("3"), ExtResource("4")])
+reward_tool = ExtResource("5")

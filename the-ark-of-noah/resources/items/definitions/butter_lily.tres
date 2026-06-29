@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://resources/items/item_definition.gd" id="1_scrp"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/items-flowers-mushrooms-sprites/items-flowers4_2.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_scrp")
+item_id = "butter_lily"
+item_name = "Butter Lily"
+description = "A creamy yellow lily that smells of honey."
+icon = ExtResource("2_tex")
+category = 4
+max_stack_size = 99
+sell_value = 3
