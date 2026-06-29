@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-potato.png" id="1_ys0ww"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_suukk"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-potato.png" id="3_frkkp"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-potato_0.png" id="4_8pxpd"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-potato_1.png" id="5_otog2"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-potato_2.png" id="6_bv22v"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-potato_3.png" id="7_afwjs"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-potato_4.png" id="8_rs2m2"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-potato_5.png" id="9_pox8e"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-potato_6.png" id="10_ggfae"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-potato_7.png" id="11_oaree"]
+
+[resource]
+script = ExtResource("2_suukk")
+crop_name = "Potato"
+growth_days = 4
+max_yield = 3
+stage_sprites = Array[Texture2D]([ExtResource("4_8pxpd"), ExtResource("5_otog2"), ExtResource("6_bv22v"), ExtResource("7_afwjs"), ExtResource("8_rs2m2"), ExtResource("9_pox8e"), ExtResource("10_ggfae"), ExtResource("11_oaree")])
+seed_sprite = ExtResource("3_frkkp")
+harvest_sprite = ExtResource("1_ys0ww")
+harvest_item_name = "Potato"

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ConstructionStageResource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/construction/construction_stage_resource.gd" id="1_stage"]
+[ext_resource type="Resource" path="res://resources/construction/req_stage2_log.tres" id="2_log"]
+[ext_resource type="Resource" path="res://resources/construction/req_stage2_pitch.tres" id="3_pitch"]
+[ext_resource type="PackedScene" path="res://scenes/construction/boat_stage_2.tscn" id="4_scene"]
+
+[resource]
+script = ExtResource("1_stage")
+stage_name = "Hull Reinforcement"
+requirements = Array[ExtResource("2_log")]([ExtResource("2_log"), ExtResource("3_pitch")])
+stage_scene = ExtResource("4_scene")

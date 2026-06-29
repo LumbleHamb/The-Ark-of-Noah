@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-green bean.png" id="1_tug46"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_6ljob"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-green bean.png" id="3_hl2uo"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-green bean_0.png" id="4_4a53b"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-green bean_1.png" id="5_ls6vw"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-green bean_2.png" id="6_u822f"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-green bean_3.png" id="7_ckxpi"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-green bean_4.png" id="8_oqsfu"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-green bean_5.png" id="9_aokxe"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-green bean_6.png" id="10_w2dfk"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-green bean_7.png" id="11_27qhb"]
+
+[resource]
+script = ExtResource("2_6ljob")
+crop_name = "Green Bean"
+max_yield = 2
+stage_sprites = Array[Texture2D]([ExtResource("4_4a53b"), ExtResource("5_ls6vw"), ExtResource("6_u822f"), ExtResource("7_ckxpi"), ExtResource("8_oqsfu"), ExtResource("9_aokxe"), ExtResource("10_w2dfk"), ExtResource("11_27qhb")])
+seed_sprite = ExtResource("3_hl2uo")
+harvest_sprite = ExtResource("1_tug46")
+harvest_item_name = "Green Bean"

@@ -1,6 +1,9 @@
 extends CharacterBody2D
 class_name Player
 
+# Direct script reference for the construction area (avoids depending on the
+# global class_name registry being rescanned for newly-added scripts).
+
 ## Player entity using component architecture.
 ##
 ## Components (added as children in scene):
@@ -33,6 +36,7 @@ var animator: PlayerAnimationComponent = null
 var attack: AttackComponent = null
 var inventory: InventoryComponent = null
 var farming: FarmingComponent = null
+var bucket: Node = null
 
 # ============================================================================
 # STATE
@@ -54,6 +58,7 @@ func _ready() -> void:
 	attack = get_node_or_null("AttackComponent") as AttackComponent
 	inventory = get_node_or_null("InventoryComponent") as InventoryComponent
 	farming = get_node_or_null("FarmingComponent") as FarmingComponent
+	bucket = get_node_or_null("BucketComponent") as Node
 	
 	# Hitbox handling is delegated to AttackComponent
 	
@@ -198,18 +203,34 @@ func _handle_interact() -> void:
 	if attached_log != null:
 		return
 	
-	# 2. Check if axe is equipped and no log nearby → attack instead
+	# 2. Try chest open/close (if standing in a chest's interaction zone)
+	if _handle_chest():
+		return
+
+	# 2.5. Try collecting resources (pitch source etc.)
+	if _handle_resource_collection():
+		return
+
+	# 2.6. Try construction-area deposit (if standing in a construction zone)
+	if _handle_construction_deposit():
+		return
+
+	# 2.7. Try crafting bench interaction.
+	if _handle_crafting():
+		return
+
+	# 3. Check if axe is equipped and no log nearby → attack instead
 	if _can_attack_with_axe():
 		_start_attack()
 		return
 	
-	# 3. Try farming action (till soil / plant seed)
+	# 4. Try farming action (till soil / plant seed)
 	if inventory and inventory.selected_slot >= 0 and farming:
 		if farming.do_farming_action(global_position, last_dir):
 			_do_farming_anim()
 			return
 	
-	# 4. Try harvest
+	# 5. Try harvest
 	if farming and farming.try_harvest(global_position, last_dir):
 		_do_farming_anim()
 
@@ -247,6 +268,110 @@ func _detach_rope() -> void:
 	if rope_line:
 		rope_line.visible = false
 
+# ============================================================================
+# CHEST
+# ============================================================================
+## Opens the nearest chest the player is standing in, via the ChestUI autoload.
+## Returns true if a chest was opened (so the caller can stop the interact
+## chain).  While the chest UI is open the player is paused; ChestUI.close_ui()
+## restores player input when the player presses E/Esc again (see chest_ui.gd).
+func _handle_chest() -> bool:
+	var chest_ui: CanvasLayer = safe_get_chest_ui()
+	# If a chest UI is already open, let the ChestUI handle the close on E/esc.
+	if chest_ui and chest_ui.visible:
+		return true
+	# Find a chest whose interaction zone currently contains the player.
+	for node: Node in get_tree().get_nodes_in_group(&"chest"):
+		if node is ChestComponent:
+			var chest: ChestComponent = node as ChestComponent
+			if chest.is_player_in_zone():
+				chest.open_for(self)
+				if chest_ui and chest_ui.has_method(&"show_for"):
+					chest_ui.show_for(chest)
+				# Pause player movement while the chest is open.
+				set_player_paused(true)
+				return true
+	return false
+
+## Resolves the ChestUI autoload without importing it (duck-typed).
+func safe_get_chest_ui() -> CanvasLayer:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return null
+	return tree.root.get_node_or_null("ChestUI") as CanvasLayer
+
+# ============================================================================
+# CONSTRUCTION AREA — deposit resources into a nearby construction site.
+# ============================================================================
+## If the player is standing in a construction area, deposit any accepted
+## resources the player is carrying into the current stage.  Returns true if a
+## deposit happened (so the caller can stop the interact chain).
+func _handle_construction_deposit() -> bool:
+	for node: Node in get_tree().get_nodes_in_group(&"construction_area"):
+		if node is Node and node.has_method("is_finished") and node.has_method("is_player_in_zone") and node.has_method("try_deposit"):
+			var area: Node = node
+			if area.is_finished():
+				continue
+			if not area.is_player_in_zone():
+				continue
+			return _deposit_into_area(area)
+	return false
+
+## Deposits every accepted resource the player carries into the area's current
+## stage.  Returns true if at least one item was deposited.
+func _deposit_into_area(area: Node) -> bool:
+	if inventory == null:
+		return false
+	var deposited_any: bool = false
+	var consumed_pitch_buckets: int = 0
+	var stacks_snapshot: Array[ItemStack] = inventory.items.duplicate()
+	for stack: ItemStack in stacks_snapshot:
+		if stack == null or stack.count <= 0:
+			continue
+		var item_id: String = stack.item_id
+		var deposit_item_id: String = item_id
+		if item_id == "bucket_pitch":
+			deposit_item_id = "pitch"
+		var carried_count: int = inventory.count_of(item_id)
+		if carried_count <= 0:
+			continue
+		var accepted_count: int = area.try_deposit(deposit_item_id, carried_count)
+		if accepted_count <= 0:
+			continue
+		var removed_count: int = inventory.remove_item(item_id, accepted_count)
+		if removed_count <= 0:
+			continue
+		if item_id == "bucket_pitch":
+			consumed_pitch_buckets += removed_count
+		deposited_any = true
+	if consumed_pitch_buckets > 0:
+		var empty_bucket_stack: ItemStack = ItemStack.new()
+		empty_bucket_stack.item_id = "bucket_empty"
+		empty_bucket_stack.item_name = "Empty Bucket"
+		empty_bucket_stack.count = consumed_pitch_buckets
+		empty_bucket_stack.max_stack = 99
+		empty_bucket_stack.stackable = true
+		inventory.add_item(empty_bucket_stack)
+	return deposited_any
+
+
+func _handle_resource_collection() -> bool:
+	if inventory == null:
+		return false
+	for node: Node in get_tree().get_nodes_in_group(&"resource_collector"):
+		if node is Node and node.has_method("is_player_in_zone") and node.has_method("collect_into"):
+			if node.is_player_in_zone():
+				return node.collect_into(inventory) > 0
+	return false
+
+func _handle_crafting() -> bool:
+	if inventory == null:
+		return false
+	for node: Node in get_tree().get_nodes_in_group(&"crafting_bench"):
+		if node is Node and node.has_method("is_player_in_zone") and node.has_method("craft_first_available"):
+			if node.is_player_in_zone():
+				return node.craft_first_available(inventory)
+	return false
 
 func _update_rope_visuals() -> void:
 	if not is_instance_valid(attached_log) or not rope_line:

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://icon.svg" id="1_icon"]
+
+[node name="BoatStage1" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_icon")
+scale = Vector2(0.25, 0.25)
+modulate = Color(0.75, 0.55, 0.3, 0.85)

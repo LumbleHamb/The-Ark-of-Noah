@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-radish.png" id="1_hsawc"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_ioqga"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-radish.png" id="3_vn8bb"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-radish_0.png" id="4_gja36"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-radish_1.png" id="5_s1xtv"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-radish_2.png" id="6_oui1m"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-radish_3.png" id="7_o3ask"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-radish_4.png" id="8_7jkoe"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-radish_5.png" id="9_pnmlk"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-radish_6.png" id="10_5d7ja"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-radish_7.png" id="11_s777d"]
+
+[resource]
+script = ExtResource("2_ioqga")
+crop_name = "Radish"
+growth_days = 2
+max_yield = 2
+stage_sprites = Array[Texture2D]([ExtResource("4_gja36"), ExtResource("5_s1xtv"), ExtResource("6_oui1m"), ExtResource("7_o3ask"), ExtResource("8_7jkoe"), ExtResource("9_pnmlk"), ExtResource("10_5d7ja"), ExtResource("11_s777d")])
+seed_sprite = ExtResource("3_vn8bb")
+harvest_sprite = ExtResource("1_hsawc")
+harvest_item_name = "Radish"

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-pumpkin.png" id="1_s8hdm"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_olsh1"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-pumpkin.png" id="3_h6s4j"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-pumpkin_0.png" id="4_aeupg"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-pumpkin_1.png" id="5_3wicb"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-pumpkin_2.png" id="6_82plp"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-pumpkin_3.png" id="7_14jvr"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-pumpkin_4.png" id="8_rn5k2"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-pumpkin_5.png" id="9_5hiee"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-pumpkin_6.png" id="10_g5o3x"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-pumpkin_7.png" id="11_5nn0g"]
+
+[resource]
+script = ExtResource("2_olsh1")
+crop_name = "Pumpkin"
+growth_days = 5
+stage_sprites = Array[Texture2D]([ExtResource("4_aeupg"), ExtResource("5_3wicb"), ExtResource("6_82plp"), ExtResource("7_14jvr"), ExtResource("8_rn5k2"), ExtResource("9_5hiee"), ExtResource("10_g5o3x"), ExtResource("11_5nn0g")])
+seed_sprite = ExtResource("3_h6s4j")
+harvest_sprite = ExtResource("1_s8hdm")
+harvest_item_name = "Pumpkin"

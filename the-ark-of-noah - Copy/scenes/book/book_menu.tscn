@@ -1,0 +1,446 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/book/book_ui_controller.gd" id="1_f64fv"]
+[ext_resource type="Script" path="res://components/book/pause_component.gd" id="2_o14ew"]
+[ext_resource type="Script" path="res://components/book/book_animation_component.gd" id="3_bn11u"]
+[ext_resource type="Script" path="res://components/book/page_turn_component.gd" id="4_pk15e"]
+[ext_resource type="Texture2D" path="res://assets/generated/book_open_spread_frame_0.png" id="5_4lf1k"]
+[ext_resource type="Texture2D" path="res://assets/generated/book_cover_frame_0.png" id="6_clbse"]
+[ext_resource type="Script" path="res://components/book/settings_page_component.gd" id="7_mu1x4"]
+[ext_resource type="Script" path="res://components/book/book_inventory_component.gd" id="8_euw55"]
+[ext_resource type="Script" path="res://components/book/home_page_component.gd" id="13_home"]
+[ext_resource type="Shader" path="res://shaders/gold_glow.gdshader" id="9_iog1a"]
+[ext_resource type="Texture2D" path="res://images/ui/Individual files/ui_images/Spellbook & Tabs/PageFold_Left.png" id="10_2ggxb"]
+[ext_resource type="Texture2D" path="res://images/ui/Individual files/ui_images/Spellbook & Tabs/PageFold_Right.png" id="11_h13ue"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3cl6x"]
+shader = ExtResource("9_iog1a")
+shader_parameter/glow_intensity = 0.0
+shader_parameter/glow_color = Color(1, 0.84, 0, 1)
+shader_parameter/glow_radius = 0.15
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c1oa5"]
+shader = ExtResource("9_iog1a")
+shader_parameter/glow_intensity = 0.0
+shader_parameter/glow_color = Color(1, 0.84, 0, 1)
+shader_parameter/glow_radius = 0.15
+
+[sub_resource type="Animation" id="Animation_1sx4g"]
+resource_name = "book_close"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BookSpread:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BookCover:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.15, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("BookCover:scale")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.15, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_5saig"]
+resource_name = "book_open"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BookCover:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
+"update": 0,
+"values": []
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BookCover:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("BookSpread:scale")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.3, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.7, 0.7), Vector2(1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("BookSpread:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.3, 0.55),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_7mg55"]
+resource_name = "next_page"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TurningPage:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(960, 540), Vector2(640, 540)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("TurningPage:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("TurningPage:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_5lhap"]
+resource_name = "previous_page"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TurningPage:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(640, 540), Vector2(960, 540)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("TurningPage:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 1), Vector2(1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("TurningPage:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6w7u3"]
+_data = {
+&"book_close": SubResource("Animation_1sx4g"),
+&"book_open": SubResource("Animation_5saig"),
+&"next_page": SubResource("Animation_7mg55"),
+&"previous_page": SubResource("Animation_5lhap")
+}
+
+[node name="PauseMenu" type="CanvasLayer" unique_id=1343664780]
+process_mode = 3
+script = ExtResource("1_f64fv")
+
+[node name="Pause" type="Node" parent="." unique_id=590581455]
+script = ExtResource("2_o14ew")
+
+[node name="BookAnimation" type="Node" parent="." unique_id=1775588921]
+script = ExtResource("3_bn11u")
+
+[node name="PageTurn" type="Node" parent="." unique_id=421351643]
+script = ExtResource("4_pk15e")
+
+[node name="Dimmer" type="ColorRect" parent="." unique_id=358809040]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="BookRoot" type="Control" parent="." unique_id=2075158457]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -192.0
+offset_right = 640.0
+offset_bottom = 384.0
+mouse_filter = 2
+
+[node name="BookSpread" type="TextureRect" parent="BookRoot" unique_id=16640576]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource("5_4lf1k")
+expand_mode = 3
+
+[node name="BookCover" type="TextureRect" parent="BookRoot" unique_id=636088083]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -128.0
+offset_top = -128.0
+offset_right = 128.0
+offset_bottom = 128.0
+texture = ExtResource("6_clbse")
+expand_mode = 3
+
+[node name="TurningPage" type="ColorRect" parent="BookRoot" unique_id=734383519]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -160.0
+offset_right = 160.0
+offset_bottom = 160.0
+color = Color(0.95, 0.88, 0.75, 1)
+
+[node name="HomePageContainer" type="Control" parent="BookRoot" unique_id=2100000001]
+unique_name_in_owner = true
+visible = false
+clip_contents = true
+anchors_preset = 0
+offset_left = 44.0
+offset_top = 36.0
+offset_right = 600.0
+offset_bottom = 380.0
+mouse_filter = 0
+
+[node name="HomePage" type="Control" parent="BookRoot/HomePageContainer" unique_id=2100000002]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("13_home")
+
+[node name="Title" type="Label" parent="BookRoot/HomePageContainer/HomePage" unique_id=2100000003]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 24.0
+offset_right = 120.0
+offset_bottom = 64.0
+theme_override_colors/font_color = Color(0.31, 0.19, 0.08, 1)
+theme_override_font_sizes/font_size = 28
+text = "Paused"
+horizontal_alignment = 1
+
+[node name="ButtonBox" type="VBoxContainer" parent="BookRoot/HomePageContainer/HomePage" unique_id=2100000004]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -110.0
+offset_top = -40.0
+offset_right = 110.0
+offset_bottom = 140.0
+theme_override_constants/separation = 12
+
+[node name="ResumeButton" type="Button" parent="BookRoot/HomePageContainer/HomePage/ButtonBox" unique_id=2100000005]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 44)
+theme_override_colors/font_color = Color(0.31, 0.19, 0.08, 1)
+theme_override_colors/font_hover_color = Color(0.5, 0.3, 0.1, 1)
+theme_override_font_sizes/font_size = 20
+text = "▶  Resume Game"
+
+[node name="SaveButton" type="Button" parent="BookRoot/HomePageContainer/HomePage/ButtonBox" unique_id=2100000006]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 44)
+theme_override_colors/font_color = Color(0.31, 0.19, 0.08, 1)
+theme_override_colors/font_hover_color = Color(0.5, 0.3, 0.1, 1)
+theme_override_font_sizes/font_size = 20
+text = "💾  Save Game"
+
+[node name="ExitButton" type="Button" parent="BookRoot/HomePageContainer/HomePage/ButtonBox" unique_id=2100000007]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 44)
+theme_override_colors/font_color = Color(0.6, 0.15, 0.1, 1)
+theme_override_colors/font_hover_color = Color(0.8, 0.2, 0.15, 1)
+theme_override_font_sizes/font_size = 20
+text = "✕  Exit Game"
+
+[node name="SettingsPageContainer" type="Control" parent="BookRoot" unique_id=1532742524]
+unique_name_in_owner = true
+visible = false
+clip_contents = true
+anchors_preset = 0
+offset_left = 44.0
+offset_top = 36.0
+offset_right = 316.0
+offset_bottom = 380.0
+mouse_filter = 2
+
+[node name="SettingsPage" type="Control" parent="BookRoot/SettingsPageContainer" unique_id=526361029]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("7_mu1x4")
+
+[node name="InventoryPageContainer" type="Control" parent="BookRoot" unique_id=1134833484]
+unique_name_in_owner = true
+visible = false
+clip_contents = true
+anchors_preset = 0
+offset_left = 332.0
+offset_top = 36.0
+offset_right = 600.0
+offset_bottom = 380.0
+mouse_filter = 2
+
+[node name="InventoryPage" type="Control" parent="BookRoot/InventoryPageContainer" unique_id=1969465697]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("8_euw55")
+
+[node name="CornerPrev" type="TextureButton" parent="BookRoot" unique_id=931481506]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_3cl6x")
+layout_mode = 0
+anchor_bottom = 1.0
+offset_left = 44.0
+offset_top = 340.0
+offset_right = 84.0
+offset_bottom = 376.0
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("10_2ggxb")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="CornerNext" type="TextureButton" parent="BookRoot" unique_id=908179623]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_c1oa5")
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 560.0
+offset_top = 340.0
+offset_right = 600.0
+offset_bottom = 376.0
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource("11_h13ue")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="NavPrev" type="Button" parent="BookRoot" unique_id=2009496999]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = 596.0
+offset_right = 160.0
+offset_bottom = 640.0
+theme_override_font_sizes/font_size = 14
+text = "◀  Prev"
+
+[node name="NavNext" type="Button" parent="BookRoot" unique_id=324511001]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 480.0
+offset_top = 596.0
+offset_right = 560.0
+offset_bottom = 640.0
+theme_override_font_sizes/font_size = 14
+text = "Next  ▶"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="BookRoot" unique_id=602765679]
+unique_name_in_owner = true
+libraries/ = SubResource("AnimationLibrary_6w7u3")

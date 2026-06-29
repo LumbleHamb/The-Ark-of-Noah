@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://components/attack/attack_component.tscn" id="10_att_scene"]
 [ext_resource type="PackedScene" path="res://components/inventory/inventory_component.tscn" id="11_inv_scene"]
 [ext_resource type="PackedScene" path="res://components/farming/farming_component.tscn" id="12_farm_scene"]
+[ext_resource type="PackedScene" path="res://scripts/components/bucket/bucket_component.tscn" id="13_bucket_scene"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qek5x"]
 atlas = ExtResource("1_lvxji")
@@ -2215,3 +2216,5 @@ texture_scale = 4.0
 [node name="InventoryComponent" parent="." instance=ExtResource("11_inv_scene")]
 
 [node name="FarmingComponent" parent="." instance=ExtResource("12_farm_scene")]
+
+[node name="BucketComponent" parent="." instance=ExtResource("13_bucket_scene")]

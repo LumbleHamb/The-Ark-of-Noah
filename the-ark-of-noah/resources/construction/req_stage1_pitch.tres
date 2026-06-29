@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ConstructionRequirementResource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/construction/construction_requirement_resource.gd" id="1_req"]
+
+[resource]
+script = ExtResource("1_req")
+item_id = "pitch"
+amount = 2

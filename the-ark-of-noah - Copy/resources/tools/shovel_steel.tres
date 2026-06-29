@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ToolData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/shovel-steel_0.png" id="1_oepyf"]
+[ext_resource type="Script" path="res://scripts/farming/tool_data.gd" id="2_vce4a"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/shovel-steel_1.png" id="3_ikulp"]
+
+[resource]
+script = ExtResource("2_vce4a")
+tool_name = "Steel Shovel"
+tool_type = 4
+tier = "steel"
+swing_sprites = Array[Texture2D]([ExtResource("1_oepyf"), ExtResource("3_ikulp")])
+icon = ExtResource("1_oepyf")
+speed_multiplier = 1.3
+efficiency = 1.2

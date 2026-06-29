@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/components/resources/resource_collector_component.gd" id="1_col"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet1-sprites/bucket 1.png" id="2_tex"]
+
+[node name="PitchSource" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+
+[node name="ResourceCollectorComponent" type="Node" parent="."]
+script = ExtResource("1_col")
+source_resource_id = "pitch"
+required_container_item_id = "bucket_empty"
+produced_item_id = "bucket_pitch"
+produce_amount = 1
+interact_radius = 48.0

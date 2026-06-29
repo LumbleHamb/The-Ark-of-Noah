@@ -28,7 +28,10 @@
 [ext_resource type="PackedScene" path="res://components/weather/rain_component.tscn" id="21_rain"]
 [ext_resource type="PackedScene" path="res://components/weather/lightning_component.tscn" id="22_lgt"]
 [ext_resource type="PackedScene" path="res://components/weather/thunder_component.tscn" id="23_thunder"]
-[ext_resource type="PackedScene" path="res://scenes/decor/storage_chest.tscn" id="24_chest"]
+[ext_resource type="PackedScene" uid="uid://b234vaedf8y10" path="res://scenes/decor/storage_chest.tscn" id="24_chest"]
+[ext_resource type="PackedScene" uid="uid://btdalj0q64o65" path="res://scenes/construction/boat_construction_area.tscn" id="25_boat"]
+[ext_resource type="PackedScene" path="res://scenes/construction/pitch_source.tscn" id="26_pitch"]
+[ext_resource type="PackedScene" path="res://scenes/construction/crafting_bench.tscn" id="27_bench"]
 
 [node name="world" type="Node2D" unique_id=259029940]
 y_sort_enabled = true
@@ -124,5 +127,14 @@ near_water = true
 position = Vector2(512, 194)
 near_water = true
 
-[node name="StorageChest" parent="." unique_id=2400000001 groups=["chunked"] instance=ExtResource("24_chest")]
+[node name="StorageChest" parent="." unique_id=-1894967295 groups=["chunked"] instance=ExtResource("24_chest")]
 position = Vector2(940, 360)
+
+[node name="BoatConstructionArea" parent="." unique_id=267884360 instance=ExtResource("25_boat")]
+position = Vector2(1180, 420)
+
+[node name="PitchSource" parent="." unique_id=1402079461 instance=ExtResource("26_pitch")]
+position = Vector2(1050, 420)
+
+[node name="CraftingBench" parent="." unique_id=1583568019 instance=ExtResource("27_bench")]
+position = Vector2(1120, 470)

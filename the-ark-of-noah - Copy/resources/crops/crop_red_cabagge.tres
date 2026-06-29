@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-red cabagge.png" id="1_ksdx6"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_una32"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-red cabagge.png" id="3_t5ac7"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-red cabagge_0.png" id="4_drs1j"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-red cabagge_1.png" id="5_11d1n"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-red cabagge_2.png" id="6_7fdmu"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-red cabagge_3.png" id="7_3x3qy"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-red cabagge_4.png" id="8_f0m4h"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-red cabagge_5.png" id="9_fcsve"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-red cabagge_6.png" id="10_4e841"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-red cabagge_7.png" id="11_idqrs"]
+
+[resource]
+script = ExtResource("2_una32")
+crop_name = "Red Cabbage"
+growth_days = 4
+stage_sprites = Array[Texture2D]([ExtResource("4_drs1j"), ExtResource("5_11d1n"), ExtResource("6_7fdmu"), ExtResource("7_3x3qy"), ExtResource("8_f0m4h"), ExtResource("9_fcsve"), ExtResource("10_4e841"), ExtResource("11_idqrs")])
+seed_sprite = ExtResource("3_t5ac7")
+harvest_sprite = ExtResource("1_ksdx6")
+harvest_item_name = "Red Cabbage"

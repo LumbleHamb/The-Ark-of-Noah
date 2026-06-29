@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://wo7rfu4kjt3"]
+
+[ext_resource type="Script" uid="uid://bwnlwr3vnlva8" path="res://scripts/ui/virtual_joystick.gd" id="1_v73ug"]
+
+[node name="VirtualJoystick" type="CanvasLayer" unique_id=964172324]
+process_mode = 3
+layer = 128
+script = ExtResource("1_v73ug")
+
+[node name="JoystickArea" type="Control" parent="." unique_id=277511979]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

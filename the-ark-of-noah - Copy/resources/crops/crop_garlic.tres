@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-garlic.png" id="1_40mn6"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_8io3g"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-garlic.png" id="3_au8kb"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-garlic_0.png" id="4_1265j"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-garlic_1.png" id="5_ohcur"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-garlic_2.png" id="6_eryjv"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-garlic_3.png" id="7_agrn8"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-garlic_4.png" id="8_ti1iy"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-garlic_5.png" id="9_g4v4g"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-garlic_6.png" id="10_5oge6"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-garlic_7.png" id="11_gabcq"]
+
+[resource]
+script = ExtResource("2_8io3g")
+crop_name = "Garlic"
+growth_days = 3
+max_yield = 2
+stage_sprites = Array[Texture2D]([ExtResource("4_1265j"), ExtResource("5_ohcur"), ExtResource("6_eryjv"), ExtResource("7_agrn8"), ExtResource("8_ti1iy"), ExtResource("9_g4v4g"), ExtResource("10_5oge6"), ExtResource("11_gabcq")])
+seed_sprite = ExtResource("3_au8kb")
+harvest_sprite = ExtResource("1_40mn6")
+harvest_item_name = "Garlic"

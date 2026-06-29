@@ -1,0 +1,105 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://components/chest/chest_ui.gd" id="1_chestui"]
+[ext_resource type="Script" path="res://components/inventory/inventory_grid.gd" id="2_grid"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.18, 0.13, 0.08, 0.92)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.5, 0.35, 0.15, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="ChestUI" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_chestui")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.35)
+
+[node name="Panel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -460.0
+offset_top = -260.0
+offset_right = 460.0
+offset_bottom = 260.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="Panel/VBox/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.88, 0.75, 1)
+theme_override_font_sizes/font_size = 22
+text = "Storage Chest"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Panel/VBox/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(20, 0)
+
+[node name="CloseButton" type="Button" parent="Panel/VBox/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 36)
+theme_override_colors/font_color = Color(0.6, 0.15, 0.1, 1)
+theme_override_font_sizes/font_size = 16
+text = "✕ Close"
+
+[node name="Grids" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 24
+
+[node name="PlayerSide" type="VBoxContainer" parent="Panel/VBox/Grids"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerLabel" type="Label" parent="Panel/VBox/Grids/PlayerSide"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.6, 1)
+theme_override_font_sizes/font_size = 16
+text = "Your Inventory"
+
+[node name="PlayerGrid" type="Control" parent="Panel/VBox/Grids/PlayerSide"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(420, 400)
+layout_mode = 2
+script = ExtResource("2_grid")
+
+[node name="ChestSide" type="VBoxContainer" parent="Panel/VBox/Grids"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ChestLabel" type="Label" parent="Panel/VBox/Grids/ChestSide"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.6, 1)
+theme_override_font_sizes/font_size = 16
+text = "Chest"
+
+[node name="ChestGrid" type="Control" parent="Panel/VBox/Grids/ChestSide"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(420, 400)
+layout_mode = 2
+script = ExtResource("2_grid")

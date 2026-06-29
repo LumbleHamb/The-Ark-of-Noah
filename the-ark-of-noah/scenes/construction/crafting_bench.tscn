@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/components/crafting/crafting_bench_component.gd" id="1_bench"]
+[ext_resource type="Resource" path="res://resources/crafting/recipe_bucket.tres" id="2_recipe"]
+
+[node name="CraftingBench" type="Node2D"]
+
+[node name="CraftingBenchComponent" type="Node" parent="."]
+script = ExtResource("1_bench")
+bench_name = "Simple Workbench"
+recipes = Array[ExtResource("2_recipe")]([ExtResource("2_recipe")])
+interact_radius = 56.0

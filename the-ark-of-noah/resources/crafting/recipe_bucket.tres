@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CraftingRecipeResource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/crafting/crafting_recipe_resource.gd" id="1_recipe"]
+[ext_resource type="Resource" path="res://resources/crafting/ingredient_log_2.tres" id="2_in"]
+[ext_resource type="Resource" path="res://resources/crafting/ingredient_bucket_empty_1.tres" id="3_out"]
+
+[resource]
+script = ExtResource("1_recipe")
+recipe_id = "bucket"
+recipe_name = "Craft Bucket"
+ingredients = Array[ExtResource("2_in")]([ExtResource("2_in")])
+outputs = Array[ExtResource("2_in")]([ExtResource("3_out")])

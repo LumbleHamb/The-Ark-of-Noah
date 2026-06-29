@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ToolData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-diamond_0.png" id="1_e3lu3"]
+[ext_resource type="Script" path="res://scripts/farming/tool_data.gd" id="2_6j4yk"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-diamond_1.png" id="3_bjt34"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-diamond_2.png" id="4_uyfns"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-diamond_3.png" id="5_k7dwi"]
+
+[resource]
+script = ExtResource("2_6j4yk")
+tool_name = "Diamond Pickaxe"
+tool_type = 3
+tier = "diamond"
+swing_sprites = Array[Texture2D]([ExtResource("1_e3lu3"), ExtResource("3_bjt34"), ExtResource("4_uyfns"), ExtResource("5_k7dwi")])
+icon = ExtResource("1_e3lu3")
+speed_multiplier = 1.5
+efficiency = 1.35

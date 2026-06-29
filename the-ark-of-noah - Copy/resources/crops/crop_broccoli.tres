@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CropData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed boxes-broccoli.png" id="1_j211h"]
+[ext_resource type="Script" path="res://scripts/farming/crop_data.gd" id="2_4u2dv"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-seed bags-broccoli.png" id="3_btfpc"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-broccoli_0.png" id="4_sqqcj"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-broccoli_1.png" id="5_fjd4l"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-broccoli_2.png" id="6_ylsgp"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-broccoli_3.png" id="7_ihj5a"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-broccoli_4.png" id="8_gdbme"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-broccoli_5.png" id="9_1g1w8"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-broccoli_6.png" id="10_quoe1"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/crops-broccoli_7.png" id="11_qcj52"]
+
+[resource]
+script = ExtResource("2_4u2dv")
+crop_name = "Broccoli"
+growth_days = 4
+max_yield = 2
+stage_sprites = Array[Texture2D]([ExtResource("4_sqqcj"), ExtResource("5_fjd4l"), ExtResource("6_ylsgp"), ExtResource("7_ihj5a"), ExtResource("8_gdbme"), ExtResource("9_1g1w8"), ExtResource("10_quoe1"), ExtResource("11_qcj52")])
+seed_sprite = ExtResource("3_btfpc")
+harvest_sprite = ExtResource("1_j211h")
+harvest_item_name = "Broccoli"

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ToolData" format=3]
+
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-steel_0.png" id="1_h3b41"]
+[ext_resource type="Script" path="res://scripts/farming/tool_data.gd" id="2_fqe2e"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-steel_1.png" id="3_j8k7p"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-steel_2.png" id="4_bs10b"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/sheet4-sprites/pickaxe-steel_3.png" id="5_tla35"]
+
+[resource]
+script = ExtResource("2_fqe2e")
+tool_name = "Steel Pickaxe"
+tool_type = 3
+tier = "steel"
+swing_sprites = Array[Texture2D]([ExtResource("1_h3b41"), ExtResource("3_j8k7p"), ExtResource("4_bs10b"), ExtResource("5_tla35")])
+icon = ExtResource("1_h3b41")
+speed_multiplier = 1.3
+efficiency = 1.2

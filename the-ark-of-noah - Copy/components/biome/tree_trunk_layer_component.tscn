@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://components/biome/tree_trunk_layer_component.gd" id="1_trunk"]
+
+[node name="TreeTrunkLayerComponent" type="Node"]
+script = ExtResource("1_trunk")

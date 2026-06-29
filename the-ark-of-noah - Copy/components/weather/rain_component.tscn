@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://components/weather/rain_component.gd" id="1_rain"]
+[ext_resource type="Texture2D" path="res://assets/generated/rain_drop_frame_0.png" id="2_drop"]
+
+[node name="RainComponent" type="Node"]
+script = ExtResource("1_rain")
+drop_texture = ExtResource("2_drop")

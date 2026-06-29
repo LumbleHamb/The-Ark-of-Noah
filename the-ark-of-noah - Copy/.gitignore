@@ -1,0 +1,21 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Mono/C# support (ignore if not using C#)
+.mono/
+data_*/
+
+# Export settings (optional)
+export_presets.cfg
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Visual Studio / Rider (only if using C#)
+.vs/
+.idea/

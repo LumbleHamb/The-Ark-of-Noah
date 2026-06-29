@@ -314,8 +314,9 @@ func _hide_nav() -> void:
 func _on_save_requested() -> void:
 	# Delegate to the save_manager autoload — the controller owns no save logic.
 	# The autoload singleton is named "save_manager" in project.godot.
-	if save_manager:
-		save_manager.save_game()
+	var save_manager_node: Node = get_node_or_null("/root/save_manager")
+	if save_manager_node != null and save_manager_node.has_method("save_game"):
+		save_manager_node.call("save_game")
 		print("[BookUI] Game saved from the Home page.")
 
 func _on_exit_requested() -> void:
