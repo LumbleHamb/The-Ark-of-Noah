@@ -88,6 +88,14 @@ func _physics_process(delta: float) -> void:
 	if movement:
 		movement.read_input()
 	
+	# Inventory toggle must always work, even when player input is disabled
+	# (e.g. when a chest or other overlay is open).
+	if Input.is_action_just_pressed("inventory"):
+		var inventory_window: CanvasLayer = _get_inventory_window()
+		if inventory_window and inventory_window.has_method(&"toggle_ui"):
+			inventory_window.call("toggle_ui")
+		return
+	
 	if not input_enabled:
 		velocity = Vector2.ZERO
 		move_and_slide()
@@ -174,12 +182,6 @@ func _handle_farming_state() -> void:
 # INPUT
 # ============================================================================
 func _process_input_actions() -> void:
-	# Inventory toggle must work reliably on Q and never conflict with other UIs.
-	if Input.is_action_just_pressed("inventory"):
-		var inventory_window: CanvasLayer = _get_inventory_window()
-		if inventory_window and inventory_window.has_method(&"toggle_ui"):
-			inventory_window.call("toggle_ui")
-		return
 	if not input_enabled:
 		return
 	

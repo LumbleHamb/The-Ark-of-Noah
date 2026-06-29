@@ -29,7 +29,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if not visible:
 		return
-	if Input.is_action_just_pressed("inventory") or Input.is_action_just_pressed("pause"):
+	if Input.is_action_just_pressed("pause"):
 		close_ui()
 
 func toggle_ui() -> void:

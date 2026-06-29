@@ -224,10 +224,10 @@ func close_book() -> void:
 	for i in range(_pages.size()):
 		_show_page(i, false)
 	_tween_dimmer(0.0)
-	if _animation:
-		_animation.play_close()
-	else:
-		_on_book_closed()
+	# Resume the world and hide the book instantly.
+	if _pause:
+		_pause.resume_world()
+	_on_book_closed()
 
 func _on_book_opened() -> void:
 	# After opening, show the Home page, then auto-turn if a different page was
