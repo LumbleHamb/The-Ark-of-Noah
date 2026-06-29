@@ -288,17 +288,34 @@ func _position_drag_preview() -> void:
 # GRID-UNDER-MOUSE HELPERS (for cross-grid drag/drop transfers)
 # ---------------------------------------------------------------------------
 func _find_grid_under_mouse() -> InventoryGrid:
-	# Walk up the tree from this grid's parent looking for siblings that are
-	# InventoryGrids and contain the mouse position.
+	# Walk up the tree from this grid's parent looking for sibling subtrees
+	# that contain an InventoryGrid (at any nesting depth) under the mouse.
+	# This supports both flat layouts where grids are direct siblings
+	# (e.g. InventoryWindow) and nested layouts where each grid sits inside
+	# its own container (e.g. ChestUI: PlayerSide/PlayerGrid).
 	var mouse_pos: Vector2 = get_global_mouse_position()
 	var ancestor: Node = get_parent()
 	while ancestor != null:
 		for child: Node in ancestor.get_children():
-			if child is InventoryGrid and child != self:
-				var grid: InventoryGrid = child as InventoryGrid
-				if grid.get_global_rect().has_point(mouse_pos):
-					return grid
+			if child == self:
+				continue
+			var found: InventoryGrid = _find_grid_in_subtree(child, mouse_pos)
+			if found != null:
+				return found
 		ancestor = ancestor.get_parent()
+	return null
+
+## Recursively searches `node` and its descendants for an InventoryGrid whose
+## global rect contains `mouse_pos`.  Returns null if nothing is found.
+func _find_grid_in_subtree(node: Node, mouse_pos: Vector2) -> InventoryGrid:
+	if node is InventoryGrid:
+		var grid: InventoryGrid = node as InventoryGrid
+		if grid.get_global_rect().has_point(mouse_pos):
+			return grid
+	for child: Node in node.get_children():
+		var found: InventoryGrid = _find_grid_in_subtree(child, mouse_pos)
+		if found != null:
+			return found
 	return null
 
 func _slot_index_at_mouse() -> int:

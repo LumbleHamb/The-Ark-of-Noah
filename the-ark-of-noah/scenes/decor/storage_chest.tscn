@@ -70,8 +70,9 @@ animations = [{
 [node name="StorageChest" type="Node2D" unique_id=460688515]
 
 [node name="ChestComponent" parent="." unique_id=460688516 instance=ExtResource("2_chest")]
-interact_radius = 150.0
-interact_distance = 220.0
+chest_capacity = 48
+interact_radius = 20.0
+interact_distance = 40.0
 
 [node name="ChestAnimation" type="AnimatedSprite2D" parent="." unique_id=755073503]
 sprite_frames = SubResource("SpriteFrames_wodrh")

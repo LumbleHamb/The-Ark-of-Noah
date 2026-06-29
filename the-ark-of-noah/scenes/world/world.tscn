@@ -133,9 +133,6 @@ near_water = true
 position = Vector2(512, 194)
 near_water = true
 
-[node name="StorageChest" parent="." unique_id=-1894967295 groups=["chunked"] instance=ExtResource("24_chest")]
-position = Vector2(940, 360)
-
 [node name="BoatConstructionArea" parent="." unique_id=267884360 instance=ExtResource("25_boat")]
 position = Vector2(1180, 420)
 
@@ -147,3 +144,5 @@ position = Vector2(1120, 470)
 
 [node name="WorldFlow" type="Node" parent="." unique_id=60819934]
 script = ExtResource("28_world_flow")
+
+[node name="StorageChest" type="Node2D" parent="." unique_id=460688515 instance=ExtResource("24_chest")]

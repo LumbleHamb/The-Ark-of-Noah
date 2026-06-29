@@ -286,8 +286,13 @@ func _detach_rope() -> void:
 ## restores player input when the player presses E/Esc again (see chest_ui.gd).
 func _handle_chest() -> bool:
 	var chest_ui: CanvasLayer = safe_get_chest_ui()
-	# If a chest UI is already open, let the ChestUI handle the close on E/esc.
+	# If a chest UI is already open, close it via ChestUI (which also unpauses the
+	# player).  We do this here rather than in ChestUI._process so the interact
+	# press is handled exactly once — avoids a race where ChestUI closes and then
+	# Player reopens on the same frame.
 	if chest_ui and chest_ui.visible:
+		if chest_ui.has_method(&"close_ui"):
+			chest_ui.call("close_ui")
 		return true
 	# Find a chest whose interaction zone currently contains the player.
 	for node: Node in get_tree().get_nodes_in_group(&"chest"):

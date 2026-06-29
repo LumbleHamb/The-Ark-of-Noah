@@ -31,7 +31,7 @@ signal chest_closed(chest: ChestComponent)
 signal contents_changed()
 
 ## How many item slots this chest holds. Set per-chest in the Inspector.
-@export var chest_capacity: int = 12
+@export var chest_capacity: int = 48
 
 ## Radius (pixels) of the interaction zone around the chest.
 @export var interact_radius: float = 40.0

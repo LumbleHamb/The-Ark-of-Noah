@@ -39,9 +39,10 @@ func _ready() -> void:
 	close_button.pressed.connect(close_ui)
 
 func _process(_delta: float) -> void:
-	# Close on ESC or E (interact) while open.
+	# Close on ESC/pause while open. E (interact) is handled by Player._handle_chest
+	# to avoid a double-handling race where both close and reopen on the same press.
 	if visible:
-		if Input.is_action_just_pressed("interact") or Input.is_action_just_pressed("pause"):
+		if Input.is_action_just_pressed("pause"):
 			close_ui()
 
 ## Shows the chest UI bound to the given chest.  Resolves the player inventory
