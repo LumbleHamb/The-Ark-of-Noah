@@ -2176,6 +2176,7 @@ position_smoothing_speed = 8.0
 [node name="hitbox" type="Area2D" parent="." unique_id=1307241203]
 position = Vector2(-4, 1)
 collision_layer = 4
+collision_mask = 4
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox" unique_id=1155194552]

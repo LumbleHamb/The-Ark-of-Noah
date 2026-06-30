@@ -251,6 +251,11 @@ func _handle_interact() -> void:
 		_start_attack()
 		return
 
+	# 4.5. Check if pickaxe is equipped → mine rock
+	if _can_attack_with_pickaxe():
+		_start_attack()
+		return
+
 	# 5. Try farming action (till soil / plant seed)
 	if inventory and inventory.selected_slot >= 0 and farming:
 		if farming.do_farming_action(global_position, last_dir):
@@ -486,6 +491,17 @@ func _can_attack_with_axe() -> bool:
 	for body in rope_range.get_overlapping_bodies():
 		if body.is_in_group("log"):
 			return false
+	return true
+
+# ============================================================================
+# PICKAXE ATTACK CHECK
+# ============================================================================
+func _can_attack_with_pickaxe() -> bool:
+	if not inventory:
+		return false
+	var tool: ToolData = inventory.get_selected_tool()
+	if not tool or tool.tool_type != ToolData.ToolType.PICKAXE:
+		return false
 	return true
 
 # ============================================================================

@@ -70,5 +70,6 @@ func is_attacking_now() -> bool:
 
 func _on_hitbox_body_entered(body: Node) -> void:
 	if is_attacking and body.has_method("hit"):
-		body.hit()
+		var entity: Node = get_entity()
+		body.hit(entity)
 		body_hit.emit(body)

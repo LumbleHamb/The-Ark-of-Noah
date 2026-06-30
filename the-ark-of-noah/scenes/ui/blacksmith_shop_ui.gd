@@ -181,7 +181,7 @@ func _resolve_player_inventory() -> void:
 				return
 
 func _get_item_icon(item_id: String) -> Texture2D:
-	var reg: Node = Engine.get_singleton("ItemRegistry")
+	var reg: Node = get_node_or_null("/root/ItemRegistry")
 	if reg and reg.has_method("has_item") and reg.has_method("get_item"):
 		if reg.has_item(item_id):
 			var def: ItemDefinition = reg.get_item(item_id)

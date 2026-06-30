@@ -122,7 +122,7 @@ func execute_trade(trade: ShopTradeResource, inventory: InventoryComponent) -> b
 	# Give reward.
 	if trade.rewards_item():
 		# Use ItemRegistry for proper icon/name.
-		var reg: Node = Engine.get_singleton("ItemRegistry")
+		var reg: Node = get_node_or_null("/root/ItemRegistry")
 		var stack: ItemStack = null
 		if reg and reg.has_method("create_stack"):
 			stack = reg.create_stack(trade.reward_item_id, trade.reward_item_count)
@@ -141,7 +141,7 @@ func execute_trade(trade: ShopTradeResource, inventory: InventoryComponent) -> b
 				var cost: ShopCostResource = cost_res as ShopCostResource
 				if cost == null:
 					continue
-				var reg2: Node = Engine.get_singleton("ItemRegistry")
+				var reg2: Node = get_node_or_null("/root/ItemRegistry")
 				var refund: ItemStack = null
 				if reg2 and reg2.has_method("create_stack"):
 					refund = reg2.create_stack(cost.item_id, cost.count)

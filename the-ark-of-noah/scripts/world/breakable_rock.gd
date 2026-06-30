@@ -25,8 +25,10 @@ func _ready() -> void:
 	add_to_group(&"breakable_rock")
 	current_health = max_health
 
-func hit() -> void:
+func hit(hitter: Node = null) -> void:
 	if is_broken:
+		return
+	if not _hitter_has_pickaxe(hitter):
 		return
 	current_health -= 1
 	_play_hit_feedback()
@@ -57,10 +59,10 @@ func _play_hit_feedback() -> void:
 
 func _break_rock() -> void:
 	is_broken = true
-	collision_layer = 0
-	collision_mask = 0
+	set_deferred("collision_layer", 0)
+	set_deferred("collision_mask", 0)
 	if collision_shape != null:
-		collision_shape.disabled = true
+		collision_shape.set_deferred("disabled", true)
 	_play_impact_flash(0.14)
 	_spawn_hit_particles(true)
 	_apply_camera_shake(camera_shake_break)
@@ -78,7 +80,7 @@ func _break_rock() -> void:
 	queue_free()
 
 func _spawn_drops() -> void:
-	var item_registry: Node = Engine.get_singleton("ItemRegistry")
+	var item_registry: Node = get_node_or_null("/root/ItemRegistry")
 	if item_registry == null or not item_registry.has_method("create_stack"):
 		return
 	var drop_count: int = randi_range(drop_count_min, drop_count_max)
@@ -146,6 +148,21 @@ func _apply_camera_shake(amount: float) -> void:
 	shake_tween.tween_property(cam, "offset", start_offset + Vector2(randf_range(-amount, amount), randf_range(-amount, amount)), 0.03)
 	shake_tween.tween_property(cam, "offset", start_offset + Vector2(randf_range(-amount * 0.6, amount * 0.6), randf_range(-amount * 0.6, amount * 0.6)), 0.04)
 	shake_tween.tween_property(cam, "offset", start_offset, 0.05)
+
+func _hitter_has_pickaxe(hitter: Node) -> bool:
+	if hitter == null:
+		return false
+	if not "inventory" in hitter or not hitter.inventory:
+		# Try alternate path for InventoryComponent.
+		var inv: Node = hitter.get_node_or_null("InventoryComponent") as Node
+		if inv == null:
+			return false
+		if not inv.has_method("get_selected_tool"):
+			return false
+		var tool: ToolData = inv.call("get_selected_tool") as ToolData
+		return tool != null and tool.tool_type == ToolData.ToolType.PICKAXE
+	var tool: ToolData = hitter.inventory.get_selected_tool() as ToolData
+	return tool != null and tool.tool_type == ToolData.ToolType.PICKAXE
 
 func _play_audio_hook(cue_name: StringName) -> void:
 	if not enable_audio_hooks:
