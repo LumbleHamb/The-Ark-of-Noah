@@ -20,7 +20,7 @@ signal crop_harvested(tile_pos: Vector2i, crop_name: String, yield_count: int)
 @export var map_node_name: StringName = &"map"
 @export var grass_layer_names: Array[StringName] = [&"Grass", &"grass", &"Ground", &"ground"]
 @export var tilled_layer_names: Array[StringName] = [&"TilledSoil", &"garden"]
-@export var meadows_layer_names: Array[StringName] = [&"Meadows", &"Interaction"]
+@export var meadows_layer_names: Array[StringName] = [&"Meadows"]
 
 @onready var crop_container: Node2D = $Crops
 
@@ -32,6 +32,7 @@ var growth_component: Node = null
 
 var _tiles: Dictionary[Vector2i, Dictionary] = {}
 var _crop_sprites: Dictionary[Vector2i, Sprite2D] = {}
+var _harvest_indicators: Dictionary[Vector2i, Label] = {}
 var _last_checked_day: int = -1
 var crop_registry: Dictionary[String, CropData] = {}
 var seed_to_crop: Dictionary[String, String] = {}
@@ -88,9 +89,12 @@ func _find_map_layers() -> void:
 
 func _find_first_layer(root: Node, names: Array[StringName]) -> TileMapLayer:
 	for layer_name: StringName in names:
-		var node: Node = root.get_node_or_null(NodePath(String(layer_name)))
-		if node is TileMapLayer:
-			return node as TileMapLayer
+		var direct_node: Node = root.get_node_or_null(NodePath(String(layer_name)))
+		if direct_node is TileMapLayer:
+			return direct_node as TileMapLayer
+		var recursive_node: Node = root.find_child(String(layer_name), true, false)
+		if recursive_node is TileMapLayer:
+			return recursive_node as TileMapLayer
 	return null
 
 func is_grass_tile(tile_pos: Vector2i) -> bool:
@@ -186,6 +190,7 @@ func plant_crop(tile_pos: Vector2i, crop_id: String) -> bool:
 	tile_data["growth_stage"] = 0
 	tile_data["harvestable"] = false
 	tile_data["regrow_count"] = 0
+	_remove_harvest_indicator(tile_pos)
 	_create_crop_sprite(tile_pos, crop.get_stage_sprite(0))
 	crop_planted.emit(tile_pos, crop.crop_name)
 	return true
@@ -204,8 +209,10 @@ func harvest_tile(tile_pos: Vector2i) -> int:
 		tile_data["growth_stage"] = maxi(0, crop.growth_stages - 2)
 		tile_data["harvestable"] = false
 		tile_data["regrow_count"] = int(tile_data.get("regrow_count", 0)) + 1
+		_remove_harvest_indicator(tile_pos)
 		_update_crop_sprite(tile_pos, crop.get_stage_sprite(int(tile_data["growth_stage"])))
 	else:
+		_remove_harvest_indicator(tile_pos)
 		_remove_crop_sprite(tile_pos)
 		tile_data["crop"] = null
 		tile_data["crop_id"] = ""
@@ -224,9 +231,12 @@ func _spawn_harvest_pickup(crop: CropData, tile_pos: Vector2i, yield_count: int)
 		return
 	var item_id: String = crop.get_harvest_item_id()
 	var display_name: String = crop.get_harvest_display_name()
-	# Use the mature (final-stage) crop texture as the world sprite so the
-	# pickup shows the actual vegetable / fruit, not a UI icon.
+	# Prefer explicit harvest icon, but force fallback to mature stage sprite
+	# if the icon points to a crate/box style texture.
 	var world_texture: Texture2D = crop.get_harvest_icon()
+	var lower_name: String = String(world_texture.resource_path if world_texture != null else "").to_lower()
+	if world_texture == null or lower_name.contains("crate") or lower_name.contains("box"):
+		world_texture = crop.get_stage_sprite(crop.get_growth_stage_count() - 1)
 	var stack: ItemStack = ItemStack.new()
 	stack.item_id = item_id
 	stack.item_name = display_name
@@ -254,6 +264,7 @@ func _process_daily_growth(day: int) -> void:
 			crop_grew.emit(tile_pos, expected_stage)
 		if growth_component.is_harvestable(expected_stage, crop.growth_stages):
 			tile_data["harvestable"] = true
+			_show_harvest_indicator(tile_pos)
 			crop_harvestable.emit(tile_pos, crop.crop_name)
 
 func _process_soil_reversion(day: int) -> void:
@@ -289,6 +300,27 @@ func _remove_crop_sprite(tile_pos: Vector2i) -> void:
 		sprite.queue_free()
 		_crop_sprites.erase(tile_pos)
 
+func _show_harvest_indicator(tile_pos: Vector2i) -> void:
+	if _harvest_indicators.has(tile_pos):
+		return
+	var indicator: Label = Label.new()
+	indicator.text = "!"
+	indicator.add_theme_font_size_override("font_size", 20)
+	indicator.add_theme_color_override("font_color", Color(1.0, 0.87, 0.22, 1.0))
+	indicator.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.9))
+	indicator.add_theme_constant_override("shadow_offset_x", 1)
+	indicator.add_theme_constant_override("shadow_offset_y", 1)
+	indicator.z_index = 200
+	indicator.position = Vector2(tile_pos) * float(tile_size) + _map_offset + Vector2(float(tile_size) * 0.38, -10.0)
+	crop_container.add_child(indicator)
+	_harvest_indicators[tile_pos] = indicator
+
+func _remove_harvest_indicator(tile_pos: Vector2i) -> void:
+	var indicator: Label = _harvest_indicators.get(tile_pos)
+	if indicator != null:
+		indicator.queue_free()
+		_harvest_indicators.erase(tile_pos)
+
 func get_save_data() -> Dictionary:
 	var farm_data: Dictionary = {}
 	for tile_pos: Vector2i in _tiles.keys():
@@ -309,6 +341,7 @@ func load_from_save(farm_data: Dictionary) -> void:
 	for tile_pos: Vector2i in _tiles.keys():
 		clear_soil_tile(tile_pos)
 		_remove_crop_sprite(tile_pos)
+		_remove_harvest_indicator(tile_pos)
 	_tiles.clear()
 	for key: Variant in farm_data.keys():
 		var tile_pos: Vector2i = str_to_var(String(key)) as Vector2i
@@ -328,6 +361,8 @@ func load_from_save(farm_data: Dictionary) -> void:
 			if crop != null:
 				tile_data["crop"] = crop
 				_create_crop_sprite(tile_pos, crop.get_stage_sprite(int(saved.get("growth_stage", 0))))
+				if bool(saved.get("harvestable", false)):
+					_show_harvest_indicator(tile_pos)
 
 func get_world_pos(tile_pos: Vector2i) -> Vector2:
 	var tile_center: float = float(tile_size) * 0.5

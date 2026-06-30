@@ -1,0 +1,60 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/village_house.gd" id="1"]
+[ext_resource type="Texture2D" path="res://images/sprites/animated/structures/player_house/Cabin-fence-left.png" id="2"]
+[ext_resource type="Texture2D" path="res://images/sprites/animated/structures/player_house/Cabin-fence-right.png" id="3"]
+[ext_resource type="Texture2D" path="res://images/sprites/animated/items/chimney smoke-chiminey 1 - dark smoke.png" id="4"]
+
+[sub_resource type="AtlasTexture" id="1"]
+atlas = ExtResource("2")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="2"]
+atlas = ExtResource("3")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="SpriteFrames" id="3"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("1")}, {"duration": 1.0, "texture": SubResource("2")}],
+"loop": true,
+"name": &"idle",
+"speed": 1.5
+}]
+
+[sub_resource type="AtlasTexture" id="4"]
+atlas = ExtResource("4")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="5"]
+atlas = ExtResource("4")
+region = Rect2(96, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="6"]
+atlas = ExtResource("4")
+region = Rect2(192, 0, 96, 96)
+
+[sub_resource type="SpriteFrames" id="7"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("4")}, {"duration": 1.0, "texture": SubResource("5")}, {"duration": 1.0, "texture": SubResource("6")}],
+"loop": true,
+"name": &"smoke",
+"speed": 5.0
+}]
+
+[node name="VillageHouse" type="Node2D"]
+script = ExtResource("1")
+
+[node name="HouseSprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("3")
+animation = &"idle"
+autoplay = "idle"
+centered = false
+
+[node name="SmokeSprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(34, -18)
+sprite_frames = SubResource("7")
+animation = &"smoke"
+autoplay = "smoke"
+centered = false
+scale = Vector2(0.5, 0.5)
+modulate = Color(1, 1, 1, 0.8)

@@ -26,7 +26,7 @@ animations = [{
 
 [node name="leaves" type="Node2D" unique_id=965971728]
 
-[node name="leaves_particles" type="GPUParticles2D" parent="." unique_id=238464008]
+[node name="leaves_particles" type="GPUParticles2D" parent="." unique_id=238464008 groups=["tree_leaves_particles"]]
 emitting = false
 amount = 12
 texture = ExtResource("2_qsm3n")

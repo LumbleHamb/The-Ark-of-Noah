@@ -42,6 +42,8 @@ func _ready() -> void:
 	dimmer.modulate.a = 0.0
 	_hotbar_inventory = InventoryComponent.new()
 	_hotbar_inventory.item_capacity = 8
+	_hotbar_inventory.fixed_slot_mode = true
+	_hotbar_inventory.items.resize(_hotbar_inventory.item_capacity)
 
 func _process(_delta: float) -> void:
 	if not visible:
@@ -257,10 +259,12 @@ func _return_orphan_hotbar_items() -> void:
 			var leftover: int = _bound_inventory.add_item(stack)
 			if leftover <= 0:
 				to_remove.append(i)
-	# Remove the orphaned items from the hotbar (in reverse order).
-	to_remove.reverse()
+	# Clear orphaned slots without collapsing indices (hotbar must stay fixed).
 	for idx: int in to_remove:
-		_hotbar_inventory.items.remove_at(idx)
+		if idx >= 0 and idx < _hotbar_inventory.items.size():
+			_hotbar_inventory.items[idx] = null
+	_hotbar_inventory.items_changed.emit()
+	_hotbar_inventory.inventory_changed.emit()
 
 # ---------------------------------------------------------------------------
 # OVERLAY BLOCKING

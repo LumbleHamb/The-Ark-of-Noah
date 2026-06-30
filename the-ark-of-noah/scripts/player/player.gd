@@ -48,6 +48,7 @@ var state: State = State.IDLE
 var last_dir: Vector2 = Vector2.DOWN
 var attached_log: Node2D = null
 var input_enabled: bool = true
+var _footstep_timer: float = 0.0
 
 # ============================================================================
 # LIFECYCLE
@@ -97,6 +98,12 @@ func _physics_process(delta: float) -> void:
 		if inventory_window and inventory_window.has_method(&"toggle_ui"):
 			inventory_window.call("toggle_ui")
 		return
+	
+	# Dev menu toggle — always works.
+	if Input.is_action_just_pressed("devmenu"):
+		var dev_menu: CanvasLayer = _get_dev_menu()
+		if dev_menu and dev_menu.has_method(&"toggle_ui"):
+			dev_menu.call("toggle_ui")
 	
 	if not input_enabled:
 		velocity = Vector2.ZERO
@@ -338,6 +345,16 @@ func _get_inventory_window() -> CanvasLayer:
 		return null
 	return tree.root.get_node_or_null("InventoryUI") as CanvasLayer
 
+func _get_dev_menu() -> CanvasLayer:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return null
+	# DevMenu is a child of the current scene (world), not the root.
+	var scene_root: Node = tree.current_scene
+	if scene_root == null:
+		return null
+	return scene_root.get_node_or_null("DevMenu") as CanvasLayer
+
 # ============================================================================
 # CONSTRUCTION AREA — deposit resources into a nearby construction site.
 # ============================================================================
@@ -555,10 +572,64 @@ func _find_farm_manager() -> FarmManager:
 
 func _update_step_stats(delta: float) -> void:
 	if velocity.length() <= 1.0:
+		_footstep_timer = 0.0
 		return
 	var stats_node: Node = get_node_or_null("/root/game_stats")
-	if stats_node == null or not stats_node.has_method("increment_stat"):
+	if stats_node != null and stats_node.has_method("increment_stat"):
+		var steps_to_add: int = int((velocity.length() * delta) / 8.0)
+		if steps_to_add > 0:
+			stats_node.call("increment_stat", "steps_walked", steps_to_add)
+	_footstep_timer += delta
+	var cadence: float = 0.22 if state == State.RUN else 0.34
+	if _footstep_timer >= cadence:
+		_footstep_timer = 0.0
+		_spawn_footstep_feedback()
+
+func _spawn_footstep_feedback() -> void:
+	var parent_node: Node = get_parent()
+	if parent_node == null:
 		return
-	var steps_to_add: int = int((velocity.length() * delta) / 8.0)
-	if steps_to_add > 0:
-		stats_node.call("increment_stat", "steps_walked", steps_to_add)
+	var particles: GPUParticles2D = GPUParticles2D.new()
+	particles.one_shot = true
+	particles.amount = 5
+	particles.lifetime = 0.24
+	particles.explosiveness = 1.0
+	particles.local_coords = false
+	particles.global_position = global_position + Vector2(0.0, 11.0)
+	particles.z_index = 3
+	var process: ParticleProcessMaterial = ParticleProcessMaterial.new()
+	process.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+	process.emission_sphere_radius = 1.5
+	process.gravity = Vector3(0.0, 24.0, 0.0)
+	process.direction = Vector3(0.0, -1.0, 0.0)
+	process.spread = 24.0
+	process.color = Color(0.65, 0.63, 0.56, 0.85)
+	process.set_param_min(ParticleProcessMaterial.PARAM_INITIAL_LINEAR_VELOCITY, 16.0)
+	process.set_param_max(ParticleProcessMaterial.PARAM_INITIAL_LINEAR_VELOCITY, 38.0)
+	particles.process_material = process
+	parent_node.add_child(particles)
+	particles.restart()
+	var stats_node: Node = get_node_or_null("/root/game_stats")
+	if stats_node != null:
+		stats_node.set_meta(&"last_footstep_surface", _resolve_surface_tag())
+		stats_node.set_meta(&"last_audio_cue", "footstep_%s" % _resolve_surface_tag())
+	var cleanup_timer: SceneTreeTimer = get_tree().create_timer(0.4)
+	cleanup_timer.timeout.connect(func() -> void:
+		if is_instance_valid(particles):
+			particles.queue_free())
+
+func _resolve_surface_tag() -> String:
+	var map_node: Node = get_parent().get_node_or_null("map") if get_parent() != null else null
+	if map_node == null:
+		return "ground"
+	var water_layer: TileMapLayer = map_node.get_node_or_null("Water") as TileMapLayer
+	if water_layer != null:
+		var water_tile: Vector2i = water_layer.local_to_map(global_position - water_layer.global_position)
+		if water_layer.get_cell_source_id(water_tile) != -1:
+			return "water"
+	var beach_layer: TileMapLayer = map_node.get_node_or_null("Beach") as TileMapLayer
+	if beach_layer != null:
+		var beach_tile: Vector2i = beach_layer.local_to_map(global_position - beach_layer.global_position)
+		if beach_layer.get_cell_source_id(beach_tile) != -1:
+			return "sand"
+	return "grass"

@@ -1,6 +1,8 @@
 class_name BlacksmithShopComponent
 extends Component
 
+const ShopTradeListResourceClass: Script = preload("res://scripts/resources/shop/shop_trade_list_resource.gd")
+
 ## ============================================================================
 ## BLACKSMITH SHOP COMPONENT — Turn any NPC into a shop where the player can
 ## trade resources (ores, wood, gems) for items, tools, or seeds.
@@ -26,6 +28,7 @@ signal trade_completed(offer_id: String)
 
 ## Array of ShopTradeResource offers.
 @export var trades: Array[Resource] = []
+@export var beginner_trade_list: Resource = preload("res://resources/shop/blacksmith_beginner_trades.tres")
 
 ## Interaction zone radius (pixels).
 @export var interact_radius: float = 48.0
@@ -39,6 +42,10 @@ var _is_open: bool = false
 
 func _component_ready() -> void:
 	add_to_group(&"blacksmith_shop")
+	if beginner_trade_list != null and trades.is_empty() and beginner_trade_list.get_script() == ShopTradeListResourceClass:
+		var list_resource: ShopTradeListResource = beginner_trade_list as ShopTradeListResource
+		if list_resource != null:
+			trades = list_resource.trades.duplicate()
 	_build_interact_zone()
 	_anim_sprite = get_entity().get_node_or_null("AnimatedSprite2D") as AnimatedSprite2D
 	if _anim_sprite and _anim_sprite.sprite_frames:

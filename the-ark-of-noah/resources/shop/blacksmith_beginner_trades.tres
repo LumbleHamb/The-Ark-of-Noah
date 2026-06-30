@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ShopTradeListResource" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/shop/shop_trade_list_resource.gd" id="1"]
+[ext_resource type="Resource" path="res://resources/shop/trades/smelt_copper.tres" id="2"]
+[ext_resource type="Resource" path="res://resources/shop/trades/smelt_iron.tres" id="3"]
+[ext_resource type="Resource" path="res://resources/shop/trades/forage_charcoal.tres" id="4"]
+[ext_resource type="Resource" path="res://resources/shop/trades/seed_carrot.tres" id="5"]
+[ext_resource type="Resource" path="res://resources/shop/trades/seed_potato.tres" id="6"]
+[ext_resource type="Resource" path="res://resources/shop/trades/seed_tomato.tres" id="7"]
+[ext_resource type="Resource" path="res://resources/shop/trades/copper_axe.tres" id="8"]
+[ext_resource type="Resource" path="res://resources/shop/trades/copper_pickaxe.tres" id="9"]
+[ext_resource type="Resource" path="res://resources/shop/trades/copper_hoe.tres" id="10"]
+[ext_resource type="Resource" path="res://resources/shop/trades/copper_shovel.tres" id="11"]
+[ext_resource type="Resource" path="res://resources/shop/trades/steel_axe.tres" id="12"]
+[ext_resource type="Resource" path="res://resources/shop/trades/steel_pickaxe.tres" id="13"]
+[ext_resource type="Resource" path="res://resources/shop/trades/steel_hoe.tres" id="14"]
+[ext_resource type="Resource" path="res://resources/shop/trades/steel_shovel.tres" id="15"]
+
+[resource]
+script = ExtResource("1")
+trades = Array[Resource]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7"), ExtResource("8"), ExtResource("9"), ExtResource("10"), ExtResource("11"), ExtResource("12"), ExtResource("13"), ExtResource("14"), ExtResource("15")])

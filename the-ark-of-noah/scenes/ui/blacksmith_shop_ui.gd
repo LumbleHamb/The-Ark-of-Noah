@@ -102,10 +102,10 @@ func _make_cost_display(cost: ShopCostResource, can_afford: bool) -> Control:
 	var box := VBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.custom_minimum_size = Vector2(48, 48)
-	var tex := TextureRect.new()
+	var tex: TextureRect = TextureRect.new()
 	tex.custom_minimum_size = Vector2(24, 24)
-	tex.expand_mode = 1
-	tex.stretch_mode = 5
+	tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	tex.texture = _get_item_icon(cost.item_id)
 	box.add_child(tex)
 	var lbl := Label.new()
@@ -120,10 +120,10 @@ func _make_reward_display(trade: ShopTradeResource) -> Control:
 	var box := HBoxContainer.new()
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.add_theme_constant_override("separation", 4)
-	var tex := TextureRect.new()
+	var tex: TextureRect = TextureRect.new()
 	tex.custom_minimum_size = Vector2(28, 28)
-	tex.expand_mode = 1
-	tex.stretch_mode = 5
+	tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	if trade.rewards_item():
 		tex.texture = _get_item_icon(trade.reward_item_id)
 	elif trade.rewards_tool():
@@ -148,9 +148,25 @@ func _on_trade_pressed(trade: ShopTradeResource) -> void:
 		_populate_trades()
 		status_label.text = "Received " + trade.get_reward_summary() + "!"
 		status_label.add_theme_color_override("font_color", Color(0.3, 0.9, 0.3, 1))
+		_play_status_pulse(Color(0.3, 0.9, 0.3, 1.0))
+		_set_audio_hook("blacksmith_trade_success")
 	else:
 		status_label.text = "Cannot complete trade - resources or inventory full."
 		status_label.add_theme_color_override("font_color", Color(0.9, 0.3, 0.3, 1))
+		_play_status_pulse(Color(0.9, 0.3, 0.3, 1.0))
+		_set_audio_hook("blacksmith_trade_fail")
+
+func _play_status_pulse(color: Color) -> void:
+	status_label.modulate = color
+	var tween: Tween = create_tween()
+	tween.tween_property(status_label, "scale", Vector2(1.08, 1.08), 0.06)
+	tween.tween_property(status_label, "scale", Vector2.ONE, 0.12)
+	tween.parallel().tween_property(status_label, "modulate", Color.WHITE, 0.22)
+
+func _set_audio_hook(cue_name: String) -> void:
+	var stats_node: Node = get_node_or_null("/root/game_stats")
+	if stats_node != null:
+		stats_node.set_meta(&"last_audio_cue", cue_name)
 
 func _resolve_player_inventory() -> void:
 	if get_tree() == null:
@@ -177,9 +193,9 @@ func close_ui() -> void:
 	if _shop and _shop.is_open():
 		_shop.close()
 	if _player_inventory != null:
-		var owner: Node = _player_inventory.get_parent()
-		if owner and owner.has_method(&"set_player_paused"):
-			owner.call("set_player_paused", false)
+		var owner_node: Node = _player_inventory.get_parent()
+		if owner_node and owner_node.has_method(&"set_player_paused"):
+			owner_node.call("set_player_paused", false)
 	_shop = null
 	dimmer.modulate.a = 0.0
 	visible = false

@@ -83,6 +83,9 @@ var _controller: Node = null  # WeatherController (untyped to avoid circular dep
 var _storm_chance: float = 0.15
 var _rain_chance: float = 0.25
 var _wind_chance: float = 0.35
+var _base_storm_chance: float = 0.15
+var _base_rain_chance: float = 0.25
+var _base_wind_chance: float = 0.35
 var _lightning_chance: float = 0.5   # chance per storm tick that lightning fires
 var _thunder_chance: float = 0.9     # chance that a lightning strike produces thunder
 var _min_storm_duration: float = 60.0
@@ -343,6 +346,8 @@ func _set_effects(effects: Array) -> void:
 	active_effects.clear()
 	for e in effects:
 		active_effects.append(e)
+	_set_leaf_emitters(active_effects)
+	_set_fog_overlay(active_effects)
 
 func _set_storm_intensity(intensity: float) -> void:
 	_storm_intensity = clampf(intensity, 0.0, 1.0)
@@ -369,6 +374,9 @@ func _apply_controller_config() -> void:
 	_storm_chance = _controller.storm_chance
 	_rain_chance = _controller.rain_chance
 	_wind_chance = _controller.wind_chance
+	_base_storm_chance = _storm_chance
+	_base_rain_chance = _rain_chance
+	_base_wind_chance = _wind_chance
 	_lightning_chance = _controller.lightning_chance
 	_thunder_chance = _controller.thunder_chance
 	_min_storm_duration = _controller.min_storm_duration
@@ -429,3 +437,48 @@ func get_weather_label() -> String:
 	if labels.size() == 0:
 		return "Calm"
 	return " + ".join(labels)
+
+func set_weather_intensity(scale: float) -> void:
+	var safe_scale: float = clampf(scale, 0.0, 2.0)
+	_season_multiplier = safe_scale
+	_storm_chance = clampf(_base_storm_chance * safe_scale, 0.0, 1.0)
+	_rain_chance = clampf(_base_rain_chance * safe_scale, 0.0, 1.0)
+	_wind_chance = clampf(_base_wind_chance * safe_scale, 0.0, 1.0)
+
+func get_weather_intensity() -> float:
+	return _season_multiplier
+
+func _set_leaf_emitters(effects: Array[WeatherEffect]) -> void:
+	if not is_inside_tree() or get_tree() == null:
+		return
+	var emit_strength: float = 0.0
+	if WeatherEffect.WIND in effects:
+		emit_strength += 0.7
+	if WeatherEffect.THUNDER in effects or WeatherEffect.LIGHTNING in effects:
+		emit_strength += 0.3
+	var leaf_nodes: Array[Node] = get_tree().get_nodes_in_group(&"tree_leaves_particles")
+	for node: Node in leaf_nodes:
+		var particles: GPUParticles2D = node as GPUParticles2D
+		if particles == null:
+			continue
+		particles.emitting = emit_strength > 0.05
+		particles.amount = int(lerpf(2.0, 20.0, clampf(emit_strength, 0.0, 1.0)))
+
+func _set_fog_overlay(effects: Array[WeatherEffect]) -> void:
+	if not is_inside_tree() or get_tree() == null:
+		return
+	var fog_alpha: float = 0.0
+	if WeatherEffect.RAIN in effects:
+		fog_alpha = 0.08
+	if WeatherEffect.THUNDER in effects:
+		fog_alpha = 0.13
+	var world_root: Node = get_tree().current_scene
+	if world_root == null:
+		return
+	var fog_layer: CanvasModulate = world_root.get_node_or_null("WeatherFog") as CanvasModulate
+	if fog_layer == null:
+		fog_layer = CanvasModulate.new()
+		fog_layer.name = "WeatherFog"
+		world_root.add_child(fog_layer)
+		world_root.move_child(fog_layer, 0)
+	fog_layer.color = Color(0.78, 0.83, 0.9, 1.0 - fog_alpha)

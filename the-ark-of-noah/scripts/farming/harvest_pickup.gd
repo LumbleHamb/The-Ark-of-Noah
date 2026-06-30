@@ -30,6 +30,11 @@ extends Node2D
 
 ## How fast it bobs (cycles per second).
 @export var bob_speed: float = 2.5
+@export var pickup_particle_amount: int = 10
+@export var floating_text_rise: float = 16.0
+@export var floating_text_duration: float = 0.45
+@export var enable_audio_hooks: bool = true
+@export var pickup_audio_cue: StringName = &"item_pickup"
 
 var _stack: ItemStack = null
 var _sprite: Sprite2D = null
@@ -128,8 +133,66 @@ func _collect() -> void:
 		var stats_node: Node = get_node_or_null("/root/game_stats")
 		if stats_node != null and stats_node.has_method("increment_stat"):
 			stats_node.call("increment_stat", "crops_harvested", 1)
+	_spawn_pickup_particles()
+	_spawn_floating_text()
+	_play_audio_hook()
 	# Collect pop animation, then free.
 	var tween: Tween = create_tween()
 	tween.tween_property(self, "scale", Vector2(1.4, 1.4), 0.06)
 	tween.tween_property(self, "scale", Vector2.ZERO, 0.12).set_ease(Tween.EASE_IN)
 	tween.tween_callback(queue_free)
+
+func _spawn_pickup_particles() -> void:
+	var particles: GPUParticles2D = GPUParticles2D.new()
+	particles.one_shot = true
+	particles.explosiveness = 1.0
+	particles.amount = pickup_particle_amount
+	particles.lifetime = 0.28
+	particles.local_coords = false
+	particles.global_position = global_position
+	particles.z_index = 40
+	var process: ParticleProcessMaterial = ParticleProcessMaterial.new()
+	process.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+	process.emission_sphere_radius = 2.0
+	process.gravity = Vector3(0.0, 45.0, 0.0)
+	process.direction = Vector3(0.0, -1.0, 0.0)
+	process.spread = 40.0
+	process.color = Color(1.0, 0.96, 0.55, 1.0)
+	process.set_param_min(ParticleProcessMaterial.PARAM_INITIAL_LINEAR_VELOCITY, 25.0)
+	process.set_param_max(ParticleProcessMaterial.PARAM_INITIAL_LINEAR_VELOCITY, 85.0)
+	particles.process_material = process
+	var parent_node: Node = get_parent()
+	if parent_node == null:
+		return
+	parent_node.add_child(particles)
+	particles.restart()
+	var cleanup_timer: SceneTreeTimer = get_tree().create_timer(0.5)
+	cleanup_timer.timeout.connect(func() -> void:
+		if is_instance_valid(particles):
+			particles.queue_free())
+
+func _spawn_floating_text() -> void:
+	if _stack == null:
+		return
+	var label: Label = Label.new()
+	label.text = "+%d %s" % [_stack.count, _stack.item_name]
+	label.z_index = 50
+	label.position = Vector2(-22.0, -14.0)
+	label.add_theme_font_size_override("font_size", 14)
+	label.add_theme_color_override("font_color", Color(1.0, 0.97, 0.72, 1.0))
+	label.add_theme_color_override("font_shadow_color", Color(0.0, 0.0, 0.0, 0.8))
+	label.add_theme_constant_override("shadow_offset_x", 1)
+	label.add_theme_constant_override("shadow_offset_y", 1)
+	add_child(label)
+	var text_tween: Tween = create_tween()
+	text_tween.set_parallel(true)
+	text_tween.tween_property(label, "position:y", label.position.y - floating_text_rise, floating_text_duration)
+	text_tween.tween_property(label, "modulate:a", 0.0, floating_text_duration)
+	text_tween.tween_callback(label.queue_free)
+
+func _play_audio_hook() -> void:
+	if not enable_audio_hooks:
+		return
+	var stats_node: Node = get_node_or_null("/root/game_stats")
+	if stats_node != null:
+		stats_node.set_meta(&"last_audio_cue", String(pickup_audio_cue))

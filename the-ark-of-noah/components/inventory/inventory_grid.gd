@@ -186,10 +186,13 @@ func _on_slot_gui_input(event: InputEvent, index: int, slot: TextureRect) -> voi
 
 func _start_drag(index: int, _slot: TextureRect) -> void:
 	var stack: ItemStack = _stack_at(index)
+	print("InventoryGrid._start_drag(", index, "): stack=", stack, " icon=", stack.icon if stack else null, " name=", stack.item_name if stack else "null")
 	if stack == null or stack.icon == null:
 		# Clicking an empty slot with nothing in hand = nothing.
+		print("  -> ABORT: stack or icon is null")
 		_dragging_from = -1
 		return
+	print("  -> STARTED drag from index ", index)
 	_dragging_from = index
 	# Show the floating drag-preview sprite.
 	_drag_preview.texture = stack.icon

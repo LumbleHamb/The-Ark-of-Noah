@@ -44,6 +44,7 @@ signal items_changed()
 ## counted against this limit.
 @export var item_capacity: int = 48
 @export_range(2, 16, 1) var hotbar_slot_count: int = 8
+@export var fixed_slot_mode: bool = false
 
 var tool_inventory: Array[ToolData] = []
 var seed_inventory: Array[CropData] = []
@@ -234,6 +235,25 @@ func move_slot(from: int, to: int) -> void:
 		return
 	if from < 0 or from >= items.size() or to < 0 or to >= item_capacity:
 		return
+	if fixed_slot_mode:
+		if to >= items.size():
+			items.resize(item_capacity)
+		var src_fixed: ItemStack = items[from]
+		if src_fixed == null:
+			return
+		var dst_fixed: ItemStack = items[to]
+		if dst_fixed != null and dst_fixed.same_type(src_fixed) and dst_fixed.stackable:
+			var fixed_leftover: int = dst_fixed.add(src_fixed.count)
+			if fixed_leftover <= 0:
+				items[from] = null
+			else:
+				src_fixed.count = fixed_leftover
+		else:
+			items[from] = dst_fixed
+			items[to] = src_fixed
+		items_changed.emit()
+		inventory_changed.emit()
+		return
 	# Dropping onto an empty slot (to >= array size) = move to end of array.
 	if to >= items.size():
 		var stack: ItemStack = items[from]
@@ -264,11 +284,15 @@ func move_slot(from: int, to: int) -> void:
 func transfer_to(other: InventoryComponent, from: int, to: int) -> bool:
 	if other == null or from < 0 or from >= items.size():
 		return false
+	if fixed_slot_mode and from >= items.size():
+		return false
 	var stack: ItemStack = items[from]
 	if stack == null:
 		return false
 	# If a specific target slot was given, try to place it there.
 	if to >= 0 and to < other.item_capacity:
+		if other.fixed_slot_mode and other.items.size() < other.item_capacity:
+			other.items.resize(other.item_capacity)
 		# Target slot is within bounds — check what's in it.
 		if to < other.items.size() and other.items[to] != null:
 			var dst: ItemStack = other.items[to]
@@ -276,7 +300,10 @@ func transfer_to(other: InventoryComponent, from: int, to: int) -> bool:
 				# Merge same-type stackable items.
 				var leftover: int = dst.add(stack.count)
 				if leftover <= 0:
-					items.remove_at(from)
+					if fixed_slot_mode:
+						items[from] = null
+					else:
+						items.remove_at(from)
 				else:
 					stack.count = leftover
 				other.items_changed.emit()
@@ -299,7 +326,10 @@ func transfer_to(other: InventoryComponent, from: int, to: int) -> bool:
 				# Pad the array if needed.
 				other.items.resize(to + 1)
 			other.items[to] = stack
-			items.remove_at(from)
+			if fixed_slot_mode:
+				items[from] = null
+			else:
+				items.remove_at(from)
 			items_changed.emit()
 			inventory_changed.emit()
 			other.items_changed.emit()
@@ -308,7 +338,10 @@ func transfer_to(other: InventoryComponent, from: int, to: int) -> bool:
 	# No specific target slot (or out of range): auto-place via add_item.
 	var leftover_count: int = other.add_item(stack)
 	if leftover_count <= 0:
-		items.remove_at(from)
+		if fixed_slot_mode:
+			items[from] = null
+		else:
+			items.remove_at(from)
 	else:
 		stack.count = leftover_count
 	items_changed.emit()
@@ -331,7 +364,7 @@ func get_equipped_tool() -> ToolData:
 # SAVE / LOAD (stack-based items only; tools/seeds reload from starter load)
 # ---------------------------------------------------------------------------
 func get_save_data() -> Dictionary:
-	var item_data: Array = []
+	var item_data: Array[Dictionary] = []
 	for stack: ItemStack in items:
 		item_data.append({
 			"id": stack.item_id,
@@ -340,23 +373,56 @@ func get_save_data() -> Dictionary:
 			"max_stack": stack.max_stack,
 			"stackable": stack.stackable,
 		})
+	var tool_paths: Array[String] = []
+	for tool: ToolData in tool_inventory:
+		tool_paths.append(tool.resource_path if tool != null else "")
+	var seed_paths: Array[String] = []
+	for crop: CropData in seed_inventory:
+		seed_paths.append(crop.resource_path if crop != null else "")
 	return {
 		"items": item_data,
 		"capacity": item_capacity,
 		"equipped_tool": equipped_tool_index,
+		"selected_slot": selected_slot,
+		"tools": tool_paths,
+		"seeds": seed_paths,
 	}
 
 func load_from_save(data: Dictionary) -> void:
 	items.clear()
+	tool_inventory.clear()
+	seed_inventory.clear()
 	item_capacity = int(data.get("capacity", item_capacity))
-	for entry: Dictionary in data.get("items", []):
+	var raw_items: Array = data.get("items", []) as Array
+	for entry_variant: Variant in raw_items:
+		var entry: Dictionary = entry_variant as Dictionary
 		var stack: ItemStack = ItemStack.new()
-		stack.item_id = entry["id"]
-		stack.item_name = entry.get("name", stack.item_id)
+		stack.item_id = String(entry.get("id", ""))
+		stack.item_name = String(entry.get("name", stack.item_id))
 		stack.count = int(entry.get("count", 1))
 		stack.max_stack = int(entry.get("max_stack", 1))
 		stack.stackable = bool(entry.get("stackable", false))
 		items.append(stack)
+	var tool_paths_raw: Array = data.get("tools", []) as Array
+	for path_variant: Variant in tool_paths_raw:
+		var tool_path: String = String(path_variant)
+		if tool_path == "":
+			continue
+		var tool_res: ToolData = ResourceLoader.load(tool_path) as ToolData
+		if tool_res != null:
+			tool_inventory.append(tool_res)
+	var seed_paths_raw: Array = data.get("seeds", []) as Array
+	for path_variant: Variant in seed_paths_raw:
+		var seed_path: String = String(path_variant)
+		if seed_path == "":
+			continue
+		var crop_res: CropData = ResourceLoader.load(seed_path) as CropData
+		if crop_res != null:
+			seed_inventory.append(crop_res)
 	equipped_tool_index = int(data.get("equipped_tool", -1))
+	selected_slot = int(data.get("selected_slot", -1))
+	if selected_slot >= get_total_slots():
+		selected_slot = -1
+	update_action_bar()
 	items_changed.emit()
 	inventory_changed.emit()

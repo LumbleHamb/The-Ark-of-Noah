@@ -1,0 +1,123 @@
+[gd_scene format=3 uid="uid://b53kwop61saw0"]
+
+[ext_resource type="Script" uid="uid://cnl640tcafpwr" path="res://scenes/ui/dev_menu.gd" id="1_devmenu"]
+[ext_resource type="Script" uid="uid://dri546s7mn244" path="res://components/inventory/inventory_grid.gd" id="2_grid"]
+[ext_resource type="Texture2D" uid="uid://dpa3pmg3vfeis" path="res://images/ui/Individual files/ui_images/Background boxes/BGbox_04B.png" id="3_panel"]
+[ext_resource type="Texture2D" uid="uid://d3boacm4xoxyv" path="res://images/ui/Individual files/ui_images/Buttons/Button_01A_Normal.png" id="4_btn_n"]
+[ext_resource type="Texture2D" uid="uid://kq6h0klgqvr7" path="res://images/ui/Individual files/ui_images/Buttons/Button_01A_Pressed.png" id="5_btn_p"]
+[ext_resource type="Texture2D" uid="uid://cwhts8d3tyujd" path="res://images/ui/Individual files/ui_images/Buttons/Button_01A_Selected.png" id="6_btn_h"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_panel"]
+texture = ExtResource("3_panel")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
+
+[node name="DevMenu" type="CanvasLayer" unique_id=126947457]
+process_mode = 3
+script = ExtResource("1_devmenu")
+
+[node name="Dimmer" type="TextureRect" parent="." unique_id=1112509500]
+unique_name_in_owner = true
+modulate = Color(0, 0, 0, 0.35)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("3_panel")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=226019879]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -520.0
+offset_top = -320.0
+offset_right = 520.0
+offset_bottom = 320.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_panel")
+
+[node name="VBox" type="VBoxContainer" parent="Panel" unique_id=1569567386]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="Panel/VBox" unique_id=57626604]
+layout_mode = 2
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="Panel/VBox/Header" unique_id=1263608282]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.88, 0.75, 1)
+theme_override_font_sizes/font_size = 22
+text = "⚒ Dev Menu"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Panel/VBox/Header" unique_id=1181096553]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CloseButton" type="TextureButton" parent="Panel/VBox/Header" unique_id=1608230670]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 48)
+layout_mode = 2
+texture_normal = ExtResource("4_btn_n")
+texture_pressed = ExtResource("5_btn_p")
+texture_hover = ExtResource("6_btn_h")
+
+[node name="Label" type="Label" parent="Panel/VBox/Header/CloseButton" unique_id=225218465]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Close"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Grids" type="HBoxContainer" parent="Panel/VBox" unique_id=1774657452]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 24
+
+[node name="PaletteSide" type="VBoxContainer" parent="Panel/VBox/Grids" unique_id=734107592]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PaletteLabel" type="Label" parent="Panel/VBox/Grids/PaletteSide" unique_id=1891067579]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.6, 1)
+theme_override_font_sizes/font_size = 16
+text = "📦 Item Palette (drag to your inventory)"
+
+[node name="PaletteGrid" type="Control" parent="Panel/VBox/Grids/PaletteSide" unique_id=9340591]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(480, 520)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("2_grid")
+columns = 6
+
+[node name="PlayerSide" type="VBoxContainer" parent="Panel/VBox/Grids" unique_id=2016598339]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerLabel" type="Label" parent="Panel/VBox/Grids/PlayerSide" unique_id=1745184450]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.6, 1)
+theme_override_font_sizes/font_size = 16
+text = "🎒 Player Inventory"
+
+[node name="PlayerGrid" type="Control" parent="Panel/VBox/Grids/PlayerSide" unique_id=908955765]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(360, 520)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("2_grid")
