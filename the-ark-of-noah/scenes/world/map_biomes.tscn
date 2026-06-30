@@ -2,7 +2,6 @@
 
 [ext_resource type="PackedScene" uid="uid://dqp4knhd03r5y" path="res://scenes/world/map_backup.tscn" id="1"]
 [ext_resource type="TileSet" uid="uid://cq62r0w2aqtjh" path="res://images/tilesets/terrains/grass_tileset.tres" id="2"]
-[ext_resource type="PackedScene" uid="uid://dqhr7im6f0qrd" path="res://scenes/trees/leaves.tscn" id="3_pdymm"]
 
 [node name="map_biomes" type="Node2D" unique_id=1376531837]
 
@@ -50,9 +49,6 @@ tile_set = ExtResource("2")
 [node name="TreeTops" type="TileMapLayer" parent="." unique_id=1327282446]
 y_sort_enabled = true
 tile_set = ExtResource("2")
-
-[node name="leaves" parent="TreeTops" unique_id=965971728 instance=ExtResource("3_pdymm")]
-position = Vector2(436, 226)
 
 [node name="Interaction" type="TileMapLayer" parent="." unique_id=45251297]
 tile_set = ExtResource("2")
