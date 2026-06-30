@@ -1,186 +1,67 @@
 [gd_scene format=3 uid="uid://dek66p0qrerw0"]
 
-[ext_resource type="Texture2D" uid="uid://76ojsu6x0xrs" path="res://assets/generated/blacksmith_idle_shop.png" id="1_hgab7"]
 [ext_resource type="Script" uid="uid://ceseg288oqrh6" path="res://scripts/components/shop/blacksmith_shop_component.gd" id="1_shop"]
-[ext_resource type="Texture2D" path="res://images/sprites/animated/npc/blacksmith/blacksmith-building.png" id="2_building"]
-[ext_resource type="Resource" path="res://resources/shop/trades/smelt_iron.tres" id="4"]
-[ext_resource type="Resource" path="res://resources/shop/trades/smelt_gold.tres" id="5"]
-[ext_resource type="Resource" path="res://resources/shop/trades/smelt_copper.tres" id="6"]
-[ext_resource type="Resource" path="res://resources/shop/trades/smelt_steel.tres" id="7"]
-[ext_resource type="Resource" path="res://resources/shop/trades/cut_ruby.tres" id="8"]
-[ext_resource type="Resource" path="res://resources/shop/trades/cut_sapphire.tres" id="9"]
-[ext_resource type="Resource" path="res://resources/shop/trades/cut_emerald.tres" id="10"]
-[ext_resource type="Resource" path="res://resources/shop/trades/cut_amethyst.tres" id="11"]
-[ext_resource type="Resource" path="res://resources/shop/trades/forge_golden_key.tres" id="12"]
-[ext_resource type="Resource" path="res://resources/shop/trades/forge_skeleton_key.tres" id="13"]
-[ext_resource type="Resource" path="res://resources/shop/trades/forage_charcoal.tres" id="14"]
-[ext_resource type="Resource" path="res://resources/shop/trades/copper_axe.tres" id="15"]
-[ext_resource type="Resource" path="res://resources/shop/trades/copper_pickaxe.tres" id="16"]
-[ext_resource type="Resource" path="res://resources/shop/trades/copper_hoe.tres" id="17"]
-[ext_resource type="Resource" path="res://resources/shop/trades/copper_shovel.tres" id="18"]
-[ext_resource type="Resource" path="res://resources/shop/trades/steel_axe.tres" id="19"]
-[ext_resource type="Resource" path="res://resources/shop/trades/steel_pickaxe.tres" id="20"]
-[ext_resource type="Resource" path="res://resources/shop/trades/steel_hoe.tres" id="21"]
-[ext_resource type="Resource" path="res://resources/shop/trades/steel_shovel.tres" id="22"]
-[ext_resource type="Resource" path="res://resources/shop/trades/diamond_axe.tres" id="23"]
-[ext_resource type="Resource" path="res://resources/shop/trades/diamond_pickaxe.tres" id="24"]
-[ext_resource type="Resource" path="res://resources/shop/trades/diamond_hoe.tres" id="25"]
-[ext_resource type="Resource" path="res://resources/shop/trades/diamond_shovel.tres" id="26"]
-[ext_resource type="Resource" path="res://resources/shop/trades/reinforced_axe.tres" id="27"]
-[ext_resource type="Resource" path="res://resources/shop/trades/reinforced_pickaxe.tres" id="28"]
-[ext_resource type="Resource" path="res://resources/shop/trades/reinforced_hoe.tres" id="29"]
-[ext_resource type="Resource" path="res://resources/shop/trades/reinforced_shovel.tres" id="30"]
-[ext_resource type="Resource" path="res://resources/shop/trades/seed_carrot.tres" id="31"]
-[ext_resource type="Resource" path="res://resources/shop/trades/seed_potato.tres" id="32"]
-[ext_resource type="Resource" path="res://resources/shop/trades/seed_tomato.tres" id="33"]
-[ext_resource type="Resource" path="res://resources/shop/trades/seed_strawberry.tres" id="34"]
-[ext_resource type="Resource" path="res://resources/shop/trades/seed_blueberry.tres" id="35"]
-[ext_resource type="Resource" path="res://resources/shop/trades/seed_melon.tres" id="36"]
-[ext_resource type="Resource" path="res://resources/shop/trades/seed_coffee.tres" id="37"]
-[ext_resource type="Resource" path="res://resources/shop/blacksmith_beginner_trades.tres" id="38"]
+[ext_resource type="Texture2D" uid="uid://cmi8h1ickymap" path="res://images/sprites/animated/npc/blacksmith/blacksmith-anim-idle.png" id="2_anly6"]
+[ext_resource type="Texture2D" uid="uid://b75ma4ixydvy6" path="res://images/sprites/animated/npc/blacksmith/blacksmith-building.png" id="2_building"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_8sbj6"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(0, 0, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_tb8sa"]
+atlas = ExtResource("2_anly6")
+region = Rect2(0, 0, 160, 160)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ub8bq"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(32, 0, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_g4e40"]
+atlas = ExtResource("2_anly6")
+region = Rect2(160, 0, 160, 160)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_mkyey"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(64, 0, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_u1f36"]
+atlas = ExtResource("2_anly6")
+region = Rect2(320, 0, 160, 160)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_4pwfo"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(96, 0, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_w23fl"]
+atlas = ExtResource("2_anly6")
+region = Rect2(480, 0, 160, 160)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_vjk3b"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(128, 0, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_g3gux"]
+atlas = ExtResource("2_anly6")
+region = Rect2(640, 0, 160, 160)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_fo560"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(0, 32, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_bfivv"]
+atlas = ExtResource("2_anly6")
+region = Rect2(800, 0, 160, 160)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_8uu67"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(32, 32, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_ve451"]
+atlas = ExtResource("2_anly6")
+region = Rect2(960, 0, 160, 160)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_mhf4x"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(64, 32, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_aevtt"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(96, 32, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_5wgy0"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(128, 32, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_suuo7"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(0, 64, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_76uy1"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(32, 64, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_yuepo"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(64, 64, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ivfnf"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(96, 64, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_xgivo"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(128, 64, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_pq5nx"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(0, 96, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_v7vri"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(32, 96, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ncknr"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(64, 96, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_slw7j"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(96, 96, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_seiur"]
-atlas = ExtResource("1_hgab7")
-region = Rect2(128, 96, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_pii40"]
+atlas = ExtResource("2_anly6")
+region = Rect2(1120, 0, 160, 160)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_8sbj6")
+"texture": SubResource("AtlasTexture_tb8sa")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ub8bq")
+"texture": SubResource("AtlasTexture_g4e40")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_mkyey")
+"texture": SubResource("AtlasTexture_u1f36")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_4pwfo")
+"texture": SubResource("AtlasTexture_w23fl")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_vjk3b")
+"texture": SubResource("AtlasTexture_g3gux")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_fo560")
+"texture": SubResource("AtlasTexture_bfivv")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_8uu67")
+"texture": SubResource("AtlasTexture_ve451")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_mhf4x")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_aevtt")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_5wgy0")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_suuo7")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_76uy1")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_yuepo")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ivfnf")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_xgivo")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_pq5nx")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_v7vri")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ncknr")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_slw7j")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_seiur")
+"texture": SubResource("AtlasTexture_pii40")
 }],
 "loop": 1,
 "name": &"idle",
@@ -190,21 +71,21 @@ animations = [{
 [node name="Blacksmith" type="Node2D" unique_id=1755051715]
 z_index = 10
 
-[node name="StoreBuilding" type="Sprite2D" parent="."]
-position = Vector2(0, -44)
+[node name="StoreBuilding" type="Sprite2D" parent="." unique_id=804695886]
 z_index = -1
+position = Vector2(-14, -105)
 texture = ExtResource("2_building")
-centered = true
 offset = Vector2(0, -70)
+region_enabled = true
+region_rect = Rect2(77, 240, 611, 307)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1162998000]
-position = Vector2(-8, -6)
+position = Vector2(-164, -35)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"idle"
 autoplay = "idle"
+frame_progress = 0.16018018
 
 [node name="BlacksmithShopComponent" type="Node" parent="." unique_id=395345175]
 script = ExtResource("1_shop")
 shop_name = "The Forge"
-trades = Array[Resource]([])
-beginner_trade_list = ExtResource("38")

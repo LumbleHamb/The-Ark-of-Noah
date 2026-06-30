@@ -152,6 +152,7 @@ func _apply_camera_shake(amount: float) -> void:
 func _hitter_has_pickaxe(hitter: Node) -> bool:
 	if hitter == null:
 		return false
+	var tool: ToolData = null
 	if not "inventory" in hitter or not hitter.inventory:
 		# Try alternate path for InventoryComponent.
 		var inv: Node = hitter.get_node_or_null("InventoryComponent") as Node
@@ -159,9 +160,9 @@ func _hitter_has_pickaxe(hitter: Node) -> bool:
 			return false
 		if not inv.has_method("get_selected_tool"):
 			return false
-		var tool: ToolData = inv.call("get_selected_tool") as ToolData
+		tool = inv.call("get_selected_tool") as ToolData
 		return tool != null and tool.tool_type == ToolData.ToolType.PICKAXE
-	var tool: ToolData = hitter.inventory.get_selected_tool() as ToolData
+	tool = hitter.inventory.get_selected_tool() as ToolData
 	return tool != null and tool.tool_type == ToolData.ToolType.PICKAXE
 
 func _play_audio_hook(cue_name: StringName) -> void:

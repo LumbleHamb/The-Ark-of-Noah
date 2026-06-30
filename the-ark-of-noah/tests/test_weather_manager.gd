@@ -87,3 +87,49 @@ func test_get_weather_label_returns_string() -> void:
 	var wm: WeatherManager = _ensure_wm()
 	var label: Variant = wm.get_weather_label()
 	assert(typeof(label) == TYPE_STRING, "get_weather_label() should return String")
+
+func test_controller_config_recalculates_clear_duration() -> void:
+	var wm: WeatherManager = _ensure_wm()
+	add_child(wm)
+
+	# Simulate _ready() behaviour: enter CLEAR state using default min/max (90-240)
+	# before any controller config is available.
+	wm._enter_state(wm.WeatherState.CLEAR)
+	var initial_duration: float = wm._state_duration
+
+	# Create a mock controller node with a much narrower clear duration range.
+	var controller = Node.new()
+	controller.storm_chance = 1.0
+	controller.rain_chance = 1.0
+	controller.wind_chance = 1.0
+	controller.lightning_chance = 0.5
+	controller.thunder_chance = 0.9
+	controller.min_storm_duration = 60.0
+	controller.max_storm_duration = 180.0
+	controller.min_clear_duration = 5.0
+	controller.max_clear_duration = 15.0
+	controller.wind_strength = 0.3
+	controller.rain_intensity = 0.5
+	controller.lightning_frequency = 0.1
+	controller.storm_wind_multiplier = 1.6
+	controller.gust_frequency = 2.2
+	controller.gust_duration = 1.0
+	controller.gust_randomness = 0.45
+	controller.thunder_delay_min = 0.5
+	controller.thunder_delay_max = 4.0
+	controller.transition_speed = 1.5
+	controller.season_multiplier = 1.0
+	controller.random_seed = 0
+	controller.enable_debug = false
+	controller.add_to_group(&"weather_controller")
+	add_child(controller)
+
+	# Trigger controller discovery and config application — this should recalculate
+	# the CLEAR _state_duration because the current state is still CLEAR.
+	wm._find_controller()
+
+	var new_duration: float = wm._state_duration
+	assert(new_duration >= 4.99 and new_duration <= 15.01,
+		"State duration should be recalculated to the new range [5, 15], got %f" % new_duration)
+	assert(new_duration != initial_duration,
+		"State duration should change after controller config is applied (was %f, now %f)" % [initial_duration, new_duration])

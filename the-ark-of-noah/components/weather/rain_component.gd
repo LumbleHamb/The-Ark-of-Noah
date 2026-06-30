@@ -51,8 +51,13 @@ var _particles: GPUParticles2D = null
 var _process_mat: ParticleProcessMaterial = null
 var _display_intensity: float = 0.0
 
+## Placeholder rain ambient audio (replace with your own .wav/.ogg).
+var _rain_ambient: AudioStream = preload("res://assets/audio/placeholder_rain.wav")
+var _audio_player: AudioStreamPlayer = null
+
 func _component_ready() -> void:
 	_build_emitter()
+	_build_audio()
 	_weather_manager = _find_weather_manager()
 	# Start invisible until rain comes.
 	if _particles:
@@ -82,8 +87,18 @@ func _process(delta: float) -> void:
 		_particles.amount = int(lerpf(10.0, float(max_particles), _display_intensity))
 		# Apply wind tilt to the process material direction.
 		_apply_wind_tilt()
+		# Rain ambient audio: fade volume with intensity.
+		if _audio_player and not _audio_player.playing:
+			_audio_player.play()
+		if _audio_player:
+			var target_vol: float = lerpf(-40.0, -6.0, _display_intensity)
+			_audio_player.volume_db = lerpf(_audio_player.volume_db, target_vol, delta * 2.0)
 	else:
 		_particles.emitting = false
+		if _audio_player and _audio_player.playing:
+			_audio_player.volume_db = lerpf(_audio_player.volume_db, -60.0, delta * 3.0)
+			if _audio_player.volume_db < -55.0:
+				_audio_player.stop()
 
 # ============================================================================
 # EMITTER CONSTRUCTION
@@ -123,6 +138,18 @@ func _build_emitter() -> void:
 	else:
 		# Fallback: add to the component itself.
 		add_child.call_deferred(_particles)
+
+func _build_audio() -> void:
+	_audio_player = AudioStreamPlayer.new()
+	_audio_player.name = "RainAmbient"
+	_audio_player.stream = _rain_ambient
+	_audio_player.volume_db = -60.0
+	_audio_player.bus = "Master"
+	var entity: Node = get_entity()
+	if entity:
+		entity.add_child.call_deferred(_audio_player)
+	else:
+		add_child.call_deferred(_audio_player)
 
 func _apply_wind_tilt() -> void:
 	if _process_mat == null or _weather_manager == null:

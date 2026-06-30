@@ -18,7 +18,11 @@ extends Component
 # EXPORTS
 # ============================================================================
 ## Array of audio streams to randomly choose from for thunder.
+## Leave empty to use the built-in placeholder rumble.
 @export var thunder_clips: Array[AudioStream] = []
+
+## Built-in placeholder thunder for when no clips are assigned.
+var _placeholder_thunder: AudioStream = preload("res://assets/audio/placeholder_thunder.wav")
 
 ## Volume for a close strike (dB). 0 = loudest typical.
 @export_range(-40.0, 0.0, 0.5) var close_volume: float = -3.0
@@ -30,8 +34,8 @@ extends Component
 @export var pitch_min: float = 0.85
 @export var pitch_max: float = 1.15
 
-## If true and no clips are assigned, generate a procedural rumble.
-@export var synthesize_if_empty: bool = true
+## If true and no clips are assigned, use the built-in placeholder thunder.
+@export var use_placeholder_if_empty: bool = true
 
 # ============================================================================
 # STATE
@@ -67,8 +71,8 @@ func _on_thunder_triggered(distance: float) -> void:
 	if thunder_clips.size() > 0:
 		var clip: AudioStream = thunder_clips[_rng.randi() % thunder_clips.size()]
 		_play_clip(clip, volume, pitch)
-	elif synthesize_if_empty:
-		_play_synthesized(volume, pitch)
+	elif use_placeholder_if_empty:
+		_play_clip(_placeholder_thunder, volume, pitch)
 
 func _play_clip(clip: AudioStream, volume: float, pitch: float) -> void:
 	if _audio_player == null:

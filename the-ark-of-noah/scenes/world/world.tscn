@@ -4,10 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://ba5qhslvdxcx6" path="res://scenes/player/player.tscn" id="1_sl2e5"]
 [ext_resource type="PackedScene" uid="uid://cdqduyosi688t" path="res://scenes/trees/trunks.tscn" id="2_1fp7r"]
 [ext_resource type="PackedScene" uid="uid://drsv8j6gqmer5" path="res://scenes/decor/campfire.tscn" id="3_5qq27"]
-[ext_resource type="PackedScene" uid="uid://e0e6klevtqo0" path="res://scenes/farming/farm_manager.tscn" id="6_farm"]
 [ext_resource type="PackedScene" uid="uid://d4timemgr" path="res://scenes/world/time_manager.tscn" id="7_tm"]
 [ext_resource type="PackedScene" uid="uid://d4lightmgr" path="res://scenes/world/lighting_manager.tscn" id="8_lm"]
-[ext_resource type="PackedScene" uid="uid://dltegagis0l24" path="res://scenes/decor/lamp.tscn" id="10_dlabj"]
 [ext_resource type="PackedScene" uid="uid://d4lamp2base" path="res://scenes/decor/lamp2.tscn" id="11_srmg5"]
 [ext_resource type="PackedScene" uid="uid://c2l7p0tlbh05d" path="res://scenes/ui/resource_orb_bar.tscn" id="12_ui_orbs"]
 [ext_resource type="PackedScene" path="res://scenes/npc/animals/frog1.tscn" id="13_frog1"]
@@ -73,11 +71,15 @@ rain_chance = 1.0
 wind_chance = 1.0
 lightning_chance = 1.0
 thunder_chance = 1.0
-gust_frequency = 4.7
+min_storm_duration = 10.0
+max_storm_duration = 30.0
+min_clear_duration = 5.0
+max_clear_duration = 15.0
+wind_strength = 0.6
+rain_intensity = 0.8
 enable_debug = true
 
-[node name="Rain" parent="." unique_id=864188678 node_paths=PackedStringArray("follow_target") instance=ExtResource("21_rain")]
-follow_target = NodePath("../player")
+[node name="Rain" parent="." unique_id=864188678 instance=ExtResource("21_rain")]
 
 [node name="WeatherFX" type="CanvasLayer" parent="." unique_id=956888538]
 layer = 10
@@ -85,11 +87,6 @@ layer = 10
 [node name="Lightning" parent="WeatherFX" unique_id=1407275035 instance=ExtResource("22_lgt")]
 
 [node name="Thunder" parent="WeatherFX" unique_id=571994076 instance=ExtResource("23_thunder")]
-
-[node name="FarmManager" parent="." unique_id=293512700 instance=ExtResource("6_farm")]
-
-[node name="Lamp" parent="." unique_id=770411211 groups=["chunked"] instance=ExtResource("10_dlabj")]
-position = Vector2(916, 331)
 
 [node name="Lamp2" parent="." unique_id=82349718 groups=["chunked"] instance=ExtResource("11_srmg5")]
 position = Vector2(638, 330)
@@ -155,7 +152,7 @@ position = Vector2(131, 134)
 visible = false
 
 [node name="Blacksmith" parent="." unique_id=951337001 groups=["chunked"] instance=ExtResource("31_blacksmith")]
-position = Vector2(-360, 717)
+position = Vector2(274, 555)
 
 [node name="RockA" parent="." unique_id=2014524853 instance=ExtResource("33_rock")]
 position = Vector2(720, 432)

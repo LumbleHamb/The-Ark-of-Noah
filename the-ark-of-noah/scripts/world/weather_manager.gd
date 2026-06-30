@@ -129,6 +129,7 @@ var _state_duration: float = 120.0
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	add_to_group(&"weather_manager")
+	print("[WEATHER] _ready() called — WeatherManager alive")
 	# Seed RNG.
 	if _random_seed != 0:
 		_rng.seed = _random_seed
@@ -136,6 +137,7 @@ func _ready() -> void:
 		_rng.randomize()
 	# Find the time manager (autoload-safe: search tree).
 	_find_time_manager()
+	print("[WEATHER] time_manager found: %s" % str(time_manager != null))
 	# Try to find a WeatherController in the tree (designer config).
 	call_deferred(&"_find_controller")
 	# Begin in CLEAR with a fresh clear timer.
@@ -147,7 +149,13 @@ func _process(delta: float) -> void:
 	
 	# --- State machine timer ---
 	_state_timer += delta
+	# Print timer progress periodically (every ~5 seconds)
+	var timer_sec: int = int(_state_timer)
+	if timer_sec % 5 == 0 and timer_sec > 0 and delta > 0 and int(_state_timer - delta) % 5 != 0:
+		print("[WEATHER] _process: timer=%.1f/%0.f state=%s effects=%s" % [_state_timer, _state_duration, WeatherState.keys()[current_state], active_effects])
+	
 	if _state_timer >= _state_duration:
+		print("[WEATHER] Timer expired (%.1f >= %.1f) — calling _pick_next_state" % [_state_timer, _state_duration])
 		_pick_next_state()
 	
 	# --- Wind smoothing + gusts ---
@@ -169,6 +177,7 @@ func _enter_state(new_state: WeatherState) -> void:
 	var old: int = current_state
 	current_state = new_state
 	_state_timer = 0.0
+	print("[WEATHER] ENTER STATE: %s (was %s)" % [WeatherState.keys()[new_state], WeatherState.keys()[old]])
 	
 	match new_state:
 		WeatherState.CLEAR:
@@ -240,9 +249,15 @@ func _pick_next_state() -> void:
 			picked = key
 			break
 	
-	_enter_state(WeatherState.TRANSITIONING)
-	# After the short transition, enter the picked state.
-	call_deferred(&"_enter_state", picked)
+	print("[WEATHER] PICK NEXT: from=%s picked=%s wind=%.2f rain=%.2f storm=%.2f clear=%.2f phase_mult=%.2f" % [
+		WeatherState.keys()[current_state], WeatherState.keys()[picked],
+		weights.get(WeatherState.WINDY, 0.0), weights.get(WeatherState.RAINY, 0.0),
+		weights.get(WeatherState.STORMY, 0.0), weights.get(WeatherState.CLEAR, 0.0), phase_mult])
+	
+	# Enter the picked state directly. Smooth ramp-in/out of effects is handled
+	# by _transition_speed in _update_wind() and _update_rain(), so the
+	# TRANSITIONING interstitial is unnecessary here.
+	_enter_state(picked)
 
 # ============================================================================
 # WIND
@@ -362,11 +377,15 @@ func has_effect(effect: WeatherEffect) -> bool:
 # ============================================================================
 func _find_controller() -> void:
 	if get_tree() == null:
+		print("[WEATHER] _find_controller: get_tree() is null")
 		return
 	# Look for a node in the weather_controller group (placed by designer).
 	_controller = get_tree().get_first_node_in_group(&"weather_controller")
 	if _controller:
+		print("[WEATHER] _find_controller: FOUND controller!")
 		_apply_controller_config()
+	else:
+		print("[WEATHER] _find_controller: no controller found (deferring)")
 
 func _apply_controller_config() -> void:
 	if _controller == null:
@@ -398,6 +417,11 @@ func _apply_controller_config() -> void:
 	_debug = _controller.enable_debug
 	if _random_seed != 0:
 		_rng.seed = _random_seed
+	# If we're currently in CLEAR, recalculate the timer with the new duration range
+	# (the initial CLEAR was entered before the controller config was available).
+	if current_state == WeatherState.CLEAR:
+		_state_duration = _rng.randf_range(_min_clear_duration, _max_clear_duration)
+		print("[WEATHER] Recalculated CLEAR duration to %.1f seconds (min=%.0f max=%.0f)" % [_state_duration, _min_clear_duration, _max_clear_duration])
 	if _debug:
 		print("[WeatherManager] Controller config applied: storm=%.2f rain=%.2f wind=%.2f" % [_storm_chance, _rain_chance, _wind_chance])
 
