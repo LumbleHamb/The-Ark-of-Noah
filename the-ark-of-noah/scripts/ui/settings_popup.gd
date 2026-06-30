@@ -37,9 +37,11 @@ func _on_master_changed(value: float) -> void:
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), linear_to_db(clampf(value, 0.001, 1.0)))
 
 func _on_music_changed(value: float) -> void:
-	var bus_index: int = AudioServer.get_bus_index("Master")
-	AudioServer.set_bus_volume_db(bus_index, linear_to_db(clampf(value, 0.001, 1.0)))
+	var bus_index: int = AudioServer.get_bus_index("Music")
+	if bus_index >= 0:
+		AudioServer.set_bus_volume_db(bus_index, linear_to_db(clampf(value, 0.001, 1.0)))
 
 func _on_sfx_changed(value: float) -> void:
-	var bus_index: int = AudioServer.get_bus_index("Master")
-	AudioServer.set_bus_volume_db(bus_index, linear_to_db(clampf(value, 0.001, 1.0)))
+	var bus_index: int = AudioServer.get_bus_index("SFX")
+	if bus_index >= 0:
+		AudioServer.set_bus_volume_db(bus_index, linear_to_db(clampf(value, 0.001, 1.0)))

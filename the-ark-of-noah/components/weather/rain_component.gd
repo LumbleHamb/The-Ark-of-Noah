@@ -144,7 +144,7 @@ func _build_audio() -> void:
 	_audio_player.name = "RainAmbient"
 	_audio_player.stream = _rain_ambient
 	_audio_player.volume_db = -60.0
-	_audio_player.bus = "Master"
+	_audio_player.bus = "SFX"
 	var entity: Node = get_entity()
 	if entity:
 		entity.add_child.call_deferred(_audio_player)

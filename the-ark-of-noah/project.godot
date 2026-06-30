@@ -22,6 +22,10 @@ run/main_scene="uid://dckb0uj0ynn5p"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
 
+[audio]
+
+default_bus_layout="res://audio/default_bus_layout.tres"
+
 [autoload]
 
 save_manager="*res://scripts/world/save_manager.gd"

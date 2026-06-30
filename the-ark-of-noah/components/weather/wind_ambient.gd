@@ -22,7 +22,7 @@ var _weather_manager: WeatherManager = null
 func _ready() -> void:
 	stream = _placeholder_wind
 	volume_db = -60.0
-	bus = "Master"
+	bus = "SFX"
 
 func _process(delta: float) -> void:
 	if _weather_manager == null:

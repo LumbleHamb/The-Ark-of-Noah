@@ -48,7 +48,7 @@ func _component_ready() -> void:
 	_rng.randomize()
 	_audio_player = AudioStreamPlayer.new()
 	_audio_player.name = "ThunderPlayer"
-	_audio_player.bus = "Master"
+	_audio_player.bus = "SFX"
 	add_child.call_deferred(_audio_player)
 	_weather_manager = _find_weather_manager()
 	if _weather_manager:
