@@ -13,7 +13,7 @@ var health: HealthComponent = null
 var fade: FadeComponent = null
 var is_dead: bool = false
 
-@onready var anim_sprite: AnimatedSprite2D = $trunks_animation
+@onready var anim_sprite: Sprite2D = $trunks_animation
 @onready var leaves_container: Node = get_node_or_null("Leaves")
 
 

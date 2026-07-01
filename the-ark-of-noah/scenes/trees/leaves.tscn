@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://dqhr7im6f0qrd"]
+[gd_scene format=3 uid="uid://bs15lvg3eamyr"]
 
-[ext_resource type="Texture2D" uid="uid://cdj1141fhpect" path="res://images/sprites/static/props/props.png" id="1_au8gu"]
+[ext_resource type="Texture2D" uid="uid://coj48buh5kfm8" path="res://images/sprites/static/props/Static props/pine-tree.png" id="2_g6tkt"]
 [ext_resource type="Texture2D" uid="uid://ck4nxw6jmo6qr" path="res://images/sprites/static/props/spring_leaf_particle.png" id="2_qsm3n"]
 [ext_resource type="PackedScene" path="res://components/weather/wind_component.tscn" id="3_wind"]
 
@@ -8,21 +8,6 @@
 lifetime_randomness = 0.19
 particle_flag_disable_z = true
 gravity = Vector3(0, 98, 0)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_qsm3n"]
-atlas = ExtResource("1_au8gu")
-region = Rect2(396, 1144, 99, 143)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_wodrh"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_qsm3n")
-}],
-"loop": 1,
-"name": &"default",
-"speed": 5.0
-}]
 
 [node name="leaves" type="Node2D" unique_id=965971728]
 
@@ -36,10 +21,12 @@ explosiveness = 1.0
 local_coords = true
 process_material = SubResource("ParticleProcessMaterial_wodrh")
 
-[node name="leaves_animation" type="AnimatedSprite2D" parent="." unique_id=1385955121]
-sprite_frames = SubResource("SpriteFrames_wodrh")
+[node name="leaves_animation" type="Sprite2D" parent="." unique_id=223654602]
+texture = ExtResource("2_g6tkt")
+region_enabled = true
+region_rect = Rect2(28, 525, 69, 101)
 
-[node name="WindComponent" parent="." instance=ExtResource("3_wind")]
+[node name="WindComponent" parent="." unique_id=1993611364 instance=ExtResource("3_wind")]
 wind_target = 1
 target_path = NodePath("leaves_animation")
 sway_amplitude = 2.0

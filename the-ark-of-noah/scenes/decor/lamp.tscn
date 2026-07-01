@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dltegagis0l24"]
 
 [ext_resource type="SpriteFrames" uid="uid://d4lampframes" path="res://resources/lamp_frames.tres" id="1_p4d17"]
-[ext_resource type="PackedScene" path="res://components/light_source/light_source_component.tscn" id="light_scene"]
 [ext_resource type="Texture2D" uid="uid://c85fnvclfqom4" path="res://images/generated/light_glow_256.png" id="2_pveee"]
+[ext_resource type="PackedScene" path="res://components/light_source/light_source_component.tscn" id="light_scene"]
 
 [node name="Lamp" type="Node2D" unique_id=770411211]
 y_sort_enabled = true
@@ -12,20 +12,17 @@ z_index = 2
 sprite_frames = ExtResource("1_p4d17")
 animation = &"lamp_idle"
 autoplay = "lamp_idle"
-frame_progress = 0.9593616
+frame_progress = 0.4535656
 centered = false
 
 [node name="PointLight2D" type="PointLight2D" parent="." unique_id=265965459]
 position = Vector2(10, 57)
 enabled = false
-color = Color(1, 0.85, 0.55, 1)
-energy = 1.5
 shadow_enabled = true
 shadow_color = Color(0, 0, 0, 0.8)
 texture = ExtResource("2_pveee")
-texture_scale = 3.0
+texture_scale = 1.3
 
-[node name="LightSource" parent="."  node_paths=PackedStringArray("flame_sprite") instance=ExtResource("light_scene")]
+[node name="LightSource" parent="." unique_id=1988171818 node_paths=PackedStringArray("flame_sprite") instance=ExtResource("light_scene")]
 flame_sprite = NodePath("../LampSprite")
-lit_animation = "lamp_idle"
 base_energy = 1.5

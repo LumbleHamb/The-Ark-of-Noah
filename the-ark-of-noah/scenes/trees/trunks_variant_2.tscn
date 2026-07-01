@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://bn0gofwmb8xek"]
+
+[ext_resource type="Script" uid="uid://bnvvh3r6qtutf" path="res://scripts/trees/trunks.gd" id="1_niljc"]
+[ext_resource type="PackedScene" uid="uid://coahq24bwla7a" path="res://scenes/trees/leaves_variant_2.tscn" id="2_niljc"]
+[ext_resource type="Texture2D" uid="uid://cw4eemlqu1mho" path="res://images/sprites/static/props/Static props/Atlas-Props-sheet1.png" id="3_pvxpb"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_p47bc"]
+radius = 9.0
+
+[node name="trunks" type="StaticBody2D" unique_id=1850040903]
+collision_mask = 4
+script = ExtResource("1_niljc")
+
+[node name="leaves" parent="." unique_id=965971728 instance=ExtResource("2_niljc")]
+position = Vector2(-11, -115)
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1762676046]
+position = Vector2(-13, -21)
+texture = ExtResource("3_pvxpb")
+region_enabled = true
+region_rect = Rect2(1225, 1772, 67, 30)
+
+[node name="trunks_animation" type="Sprite2D" parent="." unique_id=101580297]
+position = Vector2(-4, -1)
+texture = ExtResource("3_pvxpb")
+centered = false
+offset = Vector2(-30, -42)
+region_enabled = true
+region_rect = Rect2(747, 1995, 37, 28)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1341304994]
+position = Vector2(-14, -33)
+shape = SubResource("CapsuleShape2D_p47bc")

@@ -1,18 +1,18 @@
 [gd_scene format=3 uid="uid://mql20hs56okw"]
 
 [ext_resource type="Script" uid="uid://5f8g637vflak" path="res://scripts/trees/logs.gd" id="1_4s4d2"]
-[ext_resource type="Texture2D" uid="uid://cdj1141fhpect" path="res://images/sprites/static/props/props.png" id="1_d6ki3"]
+[ext_resource type="Texture2D" uid="uid://cw4eemlqu1mho" path="res://images/sprites/static/props/Static props/Atlas-Props-sheet1.png" id="2_cqlk5"]
 [ext_resource type="PackedScene" path="res://components/rope/rope_component.tscn" id="rope_scene"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4s4d2"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wodrh"]
-radius = 6.0
-height = 42.0
+radius = 8.0
+height = 52.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mgg3s"]
-radius = 5.0
-height = 40.0
+radius = 9.0
+height = 54.0
 
 [node name="logs" type="RigidBody2D" unique_id=1694807621 groups=["log"]]
 collision_mask = 3
@@ -25,13 +25,12 @@ rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_wodrh")
 
 [node name="logs_sprite" type="Sprite2D" parent="." unique_id=1746196670]
-rotation = 4.712389
-texture = ExtResource("1_d6ki3")
+texture = ExtResource("2_cqlk5")
 region_enabled = true
-region_rect = Rect2(523, 514, 11, 40)
+region_rect = Rect2(196, 2213, 54, 19)
 
 [node name="pull_marker" type="Marker2D" parent="." unique_id=1944301565]
-position = Vector2(16, 0)
+position = Vector2(23, 0)
 
 [node name="push_detector" type="Area2D" parent="." unique_id=802210105]
 collision_layer = 0
@@ -42,4 +41,4 @@ metadata/_edit_group_ = true
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_mgg3s")
 
-[node name="RopeComponent" parent="." instance=ExtResource("rope_scene")]
+[node name="RopeComponent" parent="." unique_id=1171621698 instance=ExtResource("rope_scene")]

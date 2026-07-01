@@ -1,47 +1,40 @@
-[gd_scene format=3 uid="uid://cdqduyosi688t"]
+[gd_scene format=3 uid="uid://dpw02k2p7d4hv"]
 
 [ext_resource type="Script" uid="uid://bnvvh3r6qtutf" path="res://scripts/trees/trunks.gd" id="1_y3rrg"]
-[ext_resource type="Texture2D" uid="uid://cdj1141fhpect" path="res://images/sprites/static/props/props.png" id="2_7pnf0"]
-[ext_resource type="PackedScene" uid="uid://dqhr7im6f0qrd" path="res://scenes/trees/leaves.tscn" id="3_estat"]
+[ext_resource type="Texture2D" uid="uid://coj48buh5kfm8" path="res://images/sprites/static/props/Static props/pine-tree.png" id="2_vqsmq"]
+[ext_resource type="PackedScene" uid="uid://bs15lvg3eamyr" path="res://scenes/trees/leaves.tscn" id="3_estat"]
 [ext_resource type="PackedScene" path="res://components/fade/fade_component.tscn" id="fade_scene"]
 [ext_resource type="PackedScene" path="res://components/health/health_component.tscn" id="health_scene"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_estat"]
-atlas = ExtResource("2_7pnf0")
-region = Rect2(800, 640, 50, 64)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_wodrh"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_estat")
-}],
-"loop": 1,
-"name": &"default",
-"speed": 5.0
-}]
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_p47bc"]
-radius = 7.0
+radius = 8.0
 height = 28.0
 
 [node name="trunks" type="StaticBody2D" unique_id=1850040903]
 collision_mask = 4
 script = ExtResource("1_y3rrg")
 
-[node name="trunks_animation" type="AnimatedSprite2D" parent="." unique_id=806482488]
-position = Vector2(-4, -1)
-sprite_frames = SubResource("SpriteFrames_wodrh")
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1918245370]
+position = Vector2(-21, -20)
+scale = Vector2(0.99333334, 1)
+texture = ExtResource("2_vqsmq")
+region_enabled = true
+region_rect = Rect2(409, 88, 75, 32)
+
+[node name="trunks_animation" type="Sprite2D" parent="." unique_id=101580297]
+position = Vector2(-3, -5)
+texture = ExtResource("2_vqsmq")
 centered = false
 offset = Vector2(-30, -42)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1341304994]
-position = Vector2(-3, -15)
-shape = SubResource("CapsuleShape2D_p47bc")
+region_enabled = true
+region_rect = Rect2(434, 12, 23, 32)
 
 [node name="leaves" parent="." unique_id=965971728 instance=ExtResource("3_estat")]
-visible = false
-position = Vector2(-5, -69)
+position = Vector2(-22, -84)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1341304994]
+position = Vector2(-21, -32)
+shape = SubResource("CapsuleShape2D_p47bc")
 
 [node name="HealthComponent" parent="." unique_id=1749594943 instance=ExtResource("health_scene")]
 min_hp = 1

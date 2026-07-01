@@ -1,80 +1,40 @@
 [gd_scene format=3 uid="uid://bhpcmyxylc1ra"]
 
-[ext_resource type="PackedScene" uid="uid://b0byd7sbi3qa8" path="res://scenes/decor/player_house.tscn" id="1_6m72w"]
 [ext_resource type="PackedScene" uid="uid://ba5qhslvdxcx6" path="res://scenes/player/player.tscn" id="1_sl2e5"]
-[ext_resource type="PackedScene" uid="uid://cdqduyosi688t" path="res://scenes/trees/trunks.tscn" id="2_1fp7r"]
-[ext_resource type="PackedScene" uid="uid://drsv8j6gqmer5" path="res://scenes/decor/campfire.tscn" id="3_5qq27"]
 [ext_resource type="PackedScene" uid="uid://d4timemgr" path="res://scenes/world/time_manager.tscn" id="7_tm"]
 [ext_resource type="PackedScene" uid="uid://d4lightmgr" path="res://scenes/world/lighting_manager.tscn" id="8_lm"]
-[ext_resource type="PackedScene" uid="uid://d4lamp2base" path="res://scenes/decor/lamp2.tscn" id="11_srmg5"]
 [ext_resource type="PackedScene" uid="uid://c2l7p0tlbh05d" path="res://scenes/ui/resource_orb_bar.tscn" id="12_ui_orbs"]
-[ext_resource type="PackedScene" path="res://scenes/npc/animals/frog1.tscn" id="13_frog1"]
-[ext_resource type="PackedScene" path="res://scenes/npc/animals/frog2.tscn" id="13_frog2"]
-[ext_resource type="PackedScene" path="res://scenes/npc/animals/frog3.tscn" id="13_frog3"]
-[ext_resource type="PackedScene" path="res://scenes/npc/animals/frog4.tscn" id="13_frog4"]
-[ext_resource type="PackedScene" path="res://scenes/npc/animals/frog5.tscn" id="13_frog5"]
-[ext_resource type="PackedScene" uid="uid://cgqyxudv4upxg" path="res://scenes/npc/animals/bird1.tscn" id="14_bird1"]
-[ext_resource type="PackedScene" path="res://scenes/npc/animals/bird2.tscn" id="14_bird2"]
-[ext_resource type="PackedScene" path="res://scenes/npc/animals/bird3.tscn" id="14_bird3"]
-[ext_resource type="PackedScene" path="res://scenes/npc/animals/bird4.tscn" id="14_bird4"]
-[ext_resource type="PackedScene" path="res://scenes/npc/animals/duck1.tscn" id="16_duck1"]
-[ext_resource type="PackedScene" path="res://scenes/npc/animals/duck2.tscn" id="16_duck2"]
-[ext_resource type="PackedScene" path="res://scenes/npc/animals/duck3.tscn" id="16_duck3"]
 [ext_resource type="Script" uid="uid://c473dslle7ar" path="res://scripts/world/chunk_manager.gd" id="17_cm"]
 [ext_resource type="PackedScene" path="res://components/weather/weather_controller.tscn" id="20_wc"]
 [ext_resource type="PackedScene" path="res://components/weather/rain_component.tscn" id="21_rain"]
 [ext_resource type="PackedScene" path="res://components/weather/lightning_component.tscn" id="22_lgt"]
 [ext_resource type="PackedScene" path="res://components/weather/thunder_component.tscn" id="23_thunder"]
-[ext_resource type="PackedScene" uid="uid://b234vaedf8y10" path="res://scenes/decor/storage_chest.tscn" id="24_chest"]
 [ext_resource type="PackedScene" uid="uid://btdalj0q64o65" path="res://scenes/construction/boat_construction_area.tscn" id="25_boat"]
-[ext_resource type="PackedScene" path="res://scenes/construction/pitch_source.tscn" id="26_pitch"]
 [ext_resource type="Script" uid="uid://c574peqx8uuv5" path="res://scripts/world/world_flow.gd" id="28_world_flow"]
 [ext_resource type="PackedScene" uid="uid://b53kwop61saw0" path="res://scenes/ui/dev_menu.tscn" id="30_devmenu"]
-[ext_resource type="PackedScene" uid="uid://dek66p0qrerw0" path="res://scenes/npc/blacksmith.tscn" id="31_blacksmith"]
 [ext_resource type="Script" uid="uid://c7ygsndjraxky" path="res://components/weather/wind_component.gd" id="32_wind"]
-[ext_resource type="PackedScene" path="res://scenes/world/breakable_rock.tscn" id="33_rock"]
-[ext_resource type="PackedScene" path="res://scenes/decor/village_house.tscn" id="34_village_house"]
-[ext_resource type="PackedScene" uid="uid://dqhr7im6f0qrd" path="res://scenes/trees/leaves.tscn" id="37_cmg7y"]
 [ext_resource type="PackedScene" uid="uid://ca8thopaex6mt" path="res://scenes/world/map_biomes.tscn" id="38_nqe8x"]
 
 [node name="world" type="Node2D" unique_id=259029940]
 y_sort_enabled = true
 
+[node name="map_biomes" parent="." unique_id=1376531837 instance=ExtResource("38_nqe8x")]
+
 [node name="player" parent="." unique_id=425553129 instance=ExtResource("1_sl2e5")]
-position = Vector2(875, 488)
-
-[node name="Campfire" parent="." unique_id=1358236671 groups=["chunked"] instance=ExtResource("3_5qq27")]
-position = Vector2(1116, 126)
-
-[node name="player_house" parent="." unique_id=443652541 groups=["chunked"] instance=ExtResource("1_6m72w")]
-position = Vector2(859, 287)
-
-[node name="trunks" parent="." unique_id=1850040903 groups=["chunked"] instance=ExtResource("2_1fp7r")]
-position = Vector2(1439, 199)
-
-[node name="trunks2" parent="." unique_id=900827978 groups=["chunked"] instance=ExtResource("2_1fp7r")]
-position = Vector2(1448, 339)
-
-[node name="trunks3" parent="." unique_id=1187470157 groups=["chunked"] instance=ExtResource("2_1fp7r")]
-position = Vector2(1592, 249)
+y_sort_enabled = true
+position = Vector2(2061, 1228)
 
 [node name="TimeManager" parent="." unique_id=1002606171 instance=ExtResource("7_tm")]
+seconds_per_minute = 0.1
 
 [node name="LightingManager" parent="." unique_id=1640264858 instance=ExtResource("8_lm")]
+light_start_phase = 3
+light_scale_multiplier = 1.4
 
 [node name="ChunkManager" type="Node" parent="." unique_id=1896709879]
 script = ExtResource("17_cm")
 
 [node name="WeatherController" parent="." unique_id=1179450645 instance=ExtResource("20_wc")]
-storm_chance = 1.0
-rain_chance = 1.0
-wind_chance = 1.0
-lightning_chance = 1.0
-thunder_chance = 1.0
-min_storm_duration = 10.0
-max_storm_duration = 30.0
-min_clear_duration = 5.0
-max_clear_duration = 15.0
 wind_strength = 0.6
 rain_intensity = 0.8
 enable_debug = true
@@ -88,85 +48,15 @@ layer = 10
 
 [node name="Thunder" parent="WeatherFX" unique_id=571994076 instance=ExtResource("23_thunder")]
 
-[node name="Lamp2" parent="." unique_id=82349718 groups=["chunked"] instance=ExtResource("11_srmg5")]
-position = Vector2(638, 330)
-
 [node name="ResourceOrbBar" parent="." unique_id=1228766831 instance=ExtResource("12_ui_orbs")]
-
-[node name="frog1" parent="." unique_id=1896077463 groups=["chunked"] instance=ExtResource("13_frog1")]
-position = Vector2(1019, 432)
-
-[node name="frog2" parent="." unique_id=1056862721 groups=["chunked"] instance=ExtResource("13_frog2")]
-position = Vector2(760, 540)
-
-[node name="frog3" parent="." unique_id=2060698080 groups=["chunked"] instance=ExtResource("13_frog3")]
-position = Vector2(1400, 420)
-
-[node name="frog4" parent="." unique_id=1562964471 groups=["chunked"] instance=ExtResource("13_frog4")]
-position = Vector2(540, 360)
-
-[node name="frog5" parent="." unique_id=417667746 groups=["chunked"] instance=ExtResource("13_frog5")]
-position = Vector2(1700, 600)
-
-[node name="bird1" parent="." unique_id=370629594 groups=["chunked"] instance=ExtResource("14_bird1")]
-position = Vector2(1282, 476)
-
-[node name="bird2" parent="." unique_id=1596584447 groups=["chunked"] instance=ExtResource("14_bird2")]
-position = Vector2(1112, 232)
-
-[node name="bird3" parent="." unique_id=1234565286 groups=["chunked"] instance=ExtResource("14_bird3")]
-position = Vector2(880, 600)
-
-[node name="bird4" parent="." unique_id=881922940 groups=["chunked"] instance=ExtResource("14_bird4")]
-position = Vector2(420, 200)
-
-[node name="duck1" parent="." unique_id=1644161076 groups=["chunked"] instance=ExtResource("16_duck1")]
-position = Vector2(566, 296)
-near_water = true
-
-[node name="duck2" parent="." unique_id=1067383235 groups=["chunked"] instance=ExtResource("16_duck2")]
-position = Vector2(1036, 60)
-near_water = true
-
-[node name="duck3" parent="." unique_id=748940152 groups=["chunked"] instance=ExtResource("16_duck3")]
-position = Vector2(620, 606)
-near_water = true
-
-[node name="duck4" parent="." unique_id=1205858414 groups=["chunked"] instance=ExtResource("16_duck1")]
-position = Vector2(512, 194)
-near_water = true
 
 [node name="BoatConstructionArea" parent="." unique_id=267884360 instance=ExtResource("25_boat")]
 position = Vector2(1180, 420)
 
-[node name="PitchSource" parent="." unique_id=1402079461 instance=ExtResource("26_pitch")]
-position = Vector2(1050, 420)
-
 [node name="WorldFlow" type="Node" parent="." unique_id=60819934]
 script = ExtResource("28_world_flow")
 
-[node name="StorageChest" parent="." unique_id=460688515 instance=ExtResource("24_chest")]
-position = Vector2(131, 134)
-
 [node name="DevMenu" parent="." unique_id=131877056 instance=ExtResource("30_devmenu")]
-visible = false
-
-[node name="Blacksmith" parent="." unique_id=951337001 groups=["chunked"] instance=ExtResource("31_blacksmith")]
-position = Vector2(274, 555)
-
-[node name="RockA" parent="." unique_id=2014524853 instance=ExtResource("33_rock")]
-position = Vector2(720, 432)
-
-[node name="RockB" parent="." unique_id=801520727 instance=ExtResource("33_rock")]
-position = Vector2(718, 479)
-max_health = 4
-drop_count_max = 4
-
-[node name="VillageHouseA" parent="." unique_id=1450044222 groups=["chunked"] instance=ExtResource("34_village_house")]
-position = Vector2(730, 250)
-
-[node name="VillageHouseB" parent="." unique_id=1223671573 groups=["chunked"] instance=ExtResource("34_village_house")]
-position = Vector2(1488, 286)
 
 [node name="TreeTopWind" type="Node" parent="." unique_id=309157124]
 script = ExtResource("32_wind")
@@ -174,8 +64,3 @@ target_path = NodePath("map/TreeTops")
 sway_amplitude = 13.1
 sway_frequency = 2.67
 rotation_strength = 0.07
-
-[node name="leaves" parent="." unique_id=965971728 instance=ExtResource("37_cmg7y")]
-position = Vector2(511, 541)
-
-[node name="map_biomes" parent="." unique_id=1376531837 instance=ExtResource("38_nqe8x")]

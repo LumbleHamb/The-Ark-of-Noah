@@ -177,124 +177,6 @@ animations = [{
 "speed": 9.0
 }]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_h8tub"]
-atlas = ExtResource("3_p4hm1")
-region = Rect2(0, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_xp2b7"]
-atlas = ExtResource("3_p4hm1")
-region = Rect2(480, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_57nce"]
-atlas = ExtResource("3_p4hm1")
-region = Rect2(960, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_siet4"]
-atlas = ExtResource("3_p4hm1")
-region = Rect2(1440, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_x7h1d"]
-atlas = ExtResource("3_p4hm1")
-region = Rect2(1920, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_j6fn3"]
-atlas = ExtResource("3_p4hm1")
-region = Rect2(2400, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_t3xmd"]
-atlas = ExtResource("3_p4hm1")
-region = Rect2(2880, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_8vc8q"]
-atlas = ExtResource("3_p4hm1")
-region = Rect2(3360, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_08dav"]
-atlas = ExtResource("4_dieq8")
-region = Rect2(0, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ixkyl"]
-atlas = ExtResource("4_dieq8")
-region = Rect2(480, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_yywri"]
-atlas = ExtResource("4_dieq8")
-region = Rect2(960, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_tysud"]
-atlas = ExtResource("4_dieq8")
-region = Rect2(1440, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_c76b4"]
-atlas = ExtResource("4_dieq8")
-region = Rect2(1920, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_05dm3"]
-atlas = ExtResource("4_dieq8")
-region = Rect2(2400, 0, 480, 352)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_b4hya"]
-atlas = ExtResource("4_dieq8")
-region = Rect2(2880, 0, 480, 352)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_xpsms"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_h8tub")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_xp2b7")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_57nce")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_siet4")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_x7h1d")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_j6fn3")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_t3xmd")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_8vc8q")
-}],
-"loop": 0,
-"name": &"roof_closing",
-"speed": 9.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_08dav")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ixkyl")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_yywri")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_tysud")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_c76b4")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_05dm3")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_b4hya")
-}],
-"loop": 0,
-"name": &"roof_opening",
-"speed": 9.0
-}]
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_rex6v"]
 atlas = ExtResource("7_a4qv5")
 region = Rect2(0, 0, 96, 64)
@@ -413,6 +295,124 @@ animations = [{
 "loop": 1,
 "name": &"smoke",
 "speed": 7.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h8tub"]
+atlas = ExtResource("3_p4hm1")
+region = Rect2(0, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xp2b7"]
+atlas = ExtResource("3_p4hm1")
+region = Rect2(480, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_57nce"]
+atlas = ExtResource("3_p4hm1")
+region = Rect2(960, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_siet4"]
+atlas = ExtResource("3_p4hm1")
+region = Rect2(1440, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x7h1d"]
+atlas = ExtResource("3_p4hm1")
+region = Rect2(1920, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j6fn3"]
+atlas = ExtResource("3_p4hm1")
+region = Rect2(2400, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t3xmd"]
+atlas = ExtResource("3_p4hm1")
+region = Rect2(2880, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8vc8q"]
+atlas = ExtResource("3_p4hm1")
+region = Rect2(3360, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_08dav"]
+atlas = ExtResource("4_dieq8")
+region = Rect2(0, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ixkyl"]
+atlas = ExtResource("4_dieq8")
+region = Rect2(480, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yywri"]
+atlas = ExtResource("4_dieq8")
+region = Rect2(960, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tysud"]
+atlas = ExtResource("4_dieq8")
+region = Rect2(1440, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c76b4"]
+atlas = ExtResource("4_dieq8")
+region = Rect2(1920, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_05dm3"]
+atlas = ExtResource("4_dieq8")
+region = Rect2(2400, 0, 480, 352)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b4hya"]
+atlas = ExtResource("4_dieq8")
+region = Rect2(2880, 0, 480, 352)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xpsms"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h8tub")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xp2b7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_57nce")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_siet4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x7h1d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j6fn3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t3xmd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8vc8q")
+}],
+"loop": 0,
+"name": &"roof_closing",
+"speed": 9.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_08dav")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ixkyl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yywri")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tysud")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c76b4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_05dm3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b4hya")
+}],
+"loop": 0,
+"name": &"roof_opening",
+"speed": 9.0
 }]
 
 [sub_resource type="Animation" id="Animation_rex6v"]
@@ -539,8 +539,8 @@ size = Vector2(102, 3.75)
 script = ExtResource("1_k5ju1")
 
 [node name="doorway" type="Area2D" parent="." unique_id=598194746]
-collision_layer = 2
-collision_mask = 1
+collision_layer = 7
+collision_mask = 7
 metadata/_edit_lock_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="doorway" unique_id=1116398520]
@@ -549,64 +549,65 @@ shape = SubResource("RectangleShape2D_t5ptc")
 metadata/_edit_lock_ = true
 
 [node name="CabinInterior" type="Sprite2D" parent="." unique_id=1744015674]
+z_index = -1
 y_sort_enabled = true
 position = Vector2(0, -111)
 texture = ExtResource("1_dieq8")
 metadata/_edit_lock_ = true
 
 [node name="front_wall" type="Sprite2D" parent="." unique_id=408525203]
-z_index = 18
+z_index = 1
 texture = ExtResource("2_k5ju1")
 metadata/_edit_lock_ = true
 
 [node name="porch" type="Sprite2D" parent="." unique_id=913738329]
-z_index = 1
-y_sort_enabled = true
+z_index = -10
 texture = ExtResource("4_txtq5")
 metadata/_edit_lock_ = true
 
 [node name="door" type="AnimatedSprite2D" parent="." unique_id=872595682]
+z_index = 1
 sprite_frames = SubResource("SpriteFrames_hk1my")
 animation = &"door_opening"
 frame = 1
 metadata/_edit_lock_ = true
 
+[node name="chimney_smoke" type="AnimatedSprite2D" parent="." unique_id=871190212]
+z_index = 3
+position = Vector2(-95, -212)
+sprite_frames = SubResource("SpriteFrames_gmar3")
+animation = &"smoke"
+autoplay = "smoke"
+frame_progress = 0.6591674
+metadata/_edit_lock_ = true
+
 [node name="roof" type="AnimatedSprite2D" parent="." unique_id=1136022037]
-z_index = 20
+z_index = 2
 position = Vector2(0, -112)
 sprite_frames = SubResource("SpriteFrames_xpsms")
 animation = &"roof_opening"
 frame = 1
 metadata/_edit_lock_ = true
 
-[node name="chimney_smoke" type="AnimatedSprite2D" parent="." unique_id=871190212]
-position = Vector2(-95, -212)
-sprite_frames = SubResource("SpriteFrames_gmar3")
-animation = &"smoke"
-autoplay = "smoke"
-frame_progress = 0.006272217
-metadata/_edit_lock_ = true
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=356341816]
 libraries/ = SubResource("AnimationLibrary_o2kqc")
 
 [node name="fence_left" type="Sprite2D" parent="." unique_id=1803869408]
-z_index = 5
+z_index = 1
 y_sort_enabled = true
 position = Vector2(-125, 33)
 texture = ExtResource("10_2blk4")
 metadata/_edit_lock_ = true
 
 [node name="fence_right" type="Sprite2D" parent="." unique_id=1688986003]
-z_index = 5
+z_index = 1
 y_sort_enabled = true
 position = Vector2(126, 35)
 texture = ExtResource("11_mm860")
 metadata/_edit_lock_ = true
 
 [node name="grass" type="Sprite2D" parent="." unique_id=1273041425]
-z_index = 2
-y_sort_enabled = true
+z_index = -9
 position = Vector2(16, 66)
 texture = ExtResource("12_2blk4")
 metadata/_edit_lock_ = true
@@ -619,8 +620,7 @@ texture = ExtResource("13_mm860")
 metadata/_edit_lock_ = true
 
 [node name="walls" type="StaticBody2D" parent="." unique_id=153947008]
-collision_layer = 1
-collision_mask = 1
+visible = false
 physics_material_override = SubResource("PhysicsMaterial_wodrh")
 
 [node name="left_wall" type="CollisionShape2D" parent="walls" unique_id=1169270209]

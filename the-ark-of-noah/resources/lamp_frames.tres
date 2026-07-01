@@ -133,5 +133,5 @@ animations = [{
 }],
 "loop": 1,
 "name": &"lamp_idle",
-"speed": 8.0
+"speed": 3.0
 }]

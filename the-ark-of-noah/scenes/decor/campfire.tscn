@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://drsv8j6gqmer5"]
 
-[ext_resource type="PackedScene" path="res://components/light_source/light_source_component.tscn" id="light_scene"]
 [ext_resource type="SpriteFrames" uid="uid://cuhu64o0bqix3" path="res://resources/campfire_frames.tres" id="2_fireframes"]
 [ext_resource type="Texture2D" uid="uid://c85fnvclfqom4" path="res://images/generated/light_glow_256.png" id="2_mblim"]
+[ext_resource type="Texture2D" uid="uid://cw4eemlqu1mho" path="res://images/sprites/static/props/Static props/Atlas-Props-sheet1.png" id="4_lpowd"]
+[ext_resource type="PackedScene" path="res://components/light_source/light_source_component.tscn" id="light_scene"]
 
 [node name="Campfire" type="Node2D" unique_id=1358236671]
 y_sort_enabled = true
@@ -12,22 +13,26 @@ z_index = 3
 sprite_frames = ExtResource("2_fireframes")
 animation = &"fire"
 autoplay = "fire"
-frame_progress = 0.25278765
+frame_progress = 0.9600911
 centered = false
 
 [node name="PointLight2D" type="PointLight2D" parent="." unique_id=2063947228]
 position = Vector2(77, 78)
 enabled = false
-color = Color(1, 0.78, 0.4, 1)
-energy = 2.0
+energy = 0.75
 shadow_enabled = true
 shadow_color = Color(0, 0, 0, 0.8)
 shadow_filter = 1
 shadow_filter_smooth = 4.0
 texture = ExtResource("2_mblim")
-texture_scale = 4.0
+texture_scale = 0.8
 
-[node name="LightSource" parent="." instance=ExtResource("light_scene")]
+[node name="LightSource" parent="." unique_id=1586078843 instance=ExtResource("light_scene")]
 flame_sprite = NodePath("../FireSprite")
 lit_animation = "fire"
-base_energy = 2.0
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=998135973]
+position = Vector2(77, 82)
+texture = ExtResource("4_lpowd")
+region_enabled = true
+region_rect = Rect2(8, 2037, 77, 59)
