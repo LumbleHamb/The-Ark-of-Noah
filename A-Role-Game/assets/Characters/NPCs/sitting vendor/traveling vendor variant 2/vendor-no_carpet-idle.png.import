@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://5utw36xpff05"
-path="res://.godot/imported/vendor-no_carpet-idle.png-3d7639a3dd0aea91f4f50bfe2324d8b9.ctex"
+path="res://.godot/imported/vendor-no_carpet-idle.png-6d52c7ab5ba94ed6312a78cb76dd99dc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Characters/NPCs/traveling vendor/traveling vendor variant 2/vendor-no_carpet-idle.png"
-dest_files=["res://.godot/imported/vendor-no_carpet-idle.png-3d7639a3dd0aea91f4f50bfe2324d8b9.ctex"]
+source_file="res://assets/Characters/NPCs/sitting vendor/traveling vendor variant 2/vendor-no_carpet-idle.png"
+dest_files=["res://.godot/imported/vendor-no_carpet-idle.png-6d52c7ab5ba94ed6312a78cb76dd99dc.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://deft6i5c55ekq"
-path="res://.godot/imported/vendor-no_carpet-hurt.png-29039c4b91bd521a1caa137569f76930.ctex"
+path="res://.godot/imported/vendor-no_carpet-hurt.png-f262d2c0c033788b50002610c93c36cc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Characters/NPCs/traveling vendor/traveling vendor variant 2/vendor-no_carpet-hurt.png"
-dest_files=["res://.godot/imported/vendor-no_carpet-hurt.png-29039c4b91bd521a1caa137569f76930.ctex"]
+source_file="res://assets/Characters/NPCs/sitting vendor/traveling vendor variant 2/vendor-no_carpet-hurt.png"
+dest_files=["res://.godot/imported/vendor-no_carpet-hurt.png-f262d2c0c033788b50002610c93c36cc.ctex"]
 
 [params]
 

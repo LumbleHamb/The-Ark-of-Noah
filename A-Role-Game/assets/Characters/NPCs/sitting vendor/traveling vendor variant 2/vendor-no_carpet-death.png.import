@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dvfhvq2j3vol5"
-path="res://.godot/imported/vendor-no_carpet-death.png-d99ca0ab24b96c61858888188124faf2.ctex"
+path="res://.godot/imported/vendor-no_carpet-death.png-2a9fe40d09eeb453924a5c370f4cf4ac.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Characters/NPCs/traveling vendor/traveling vendor variant 2/vendor-no_carpet-death.png"
-dest_files=["res://.godot/imported/vendor-no_carpet-death.png-d99ca0ab24b96c61858888188124faf2.ctex"]
+source_file="res://assets/Characters/NPCs/sitting vendor/traveling vendor variant 2/vendor-no_carpet-death.png"
+dest_files=["res://.godot/imported/vendor-no_carpet-death.png-2a9fe40d09eeb453924a5c370f4cf4ac.ctex"]
 
 [params]
 
