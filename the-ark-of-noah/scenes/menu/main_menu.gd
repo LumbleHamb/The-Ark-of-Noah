@@ -42,6 +42,17 @@ func _on_new_game_pressed() -> void:
 
 func _on_continue_pressed() -> void:
 	_slot_mode = "continue"
+	var save_manager_node: Node = get_node_or_null("/root/save_manager")
+	if save_manager_node == null:
+		return
+	var latest_slot: int = int(save_manager_node.call("get_latest_slot")) if save_manager_node.has_method("get_latest_slot") else -1
+	if latest_slot > 0:
+		save_manager_node.call("set_active_slot", latest_slot)
+		await _transition_to(WORLD_SCENE_PATH)
+		await get_tree().process_frame
+		save_manager_node.call("load_game")
+		_slot_mode = ""
+		return
 	save_selection_menu.visible = true
 
 func _on_settings_pressed() -> void:

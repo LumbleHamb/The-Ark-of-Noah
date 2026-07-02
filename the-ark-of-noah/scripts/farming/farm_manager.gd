@@ -124,7 +124,7 @@ func till_tile(tile_pos: Vector2i) -> bool:
 	var tile_data: Dictionary = get_tile_data(tile_pos)
 	tile_data["tilled"] = true
 	tile_data["tilled_at_day"] = time_manager.current_day if time_manager != null else 0
-	tilled_layer.set_cells_terrain_connect([tile_pos], 0, 0, false)
+	_paint_tilled_tile(tile_pos)
 	tile_tilled.emit(tile_pos)
 	return true
 
@@ -132,6 +132,16 @@ func clear_soil_tile(tile_pos: Vector2i) -> void:
 	if tilled_layer == null:
 		return
 	tilled_layer.set_cell(tile_pos, -1)
+
+func _paint_tilled_tile(tile_pos: Vector2i) -> void:
+	if tilled_layer == null:
+		return
+	var current_source_id: int = tilled_layer.get_cell_source_id(tile_pos)
+	if current_source_id != -1:
+		return
+	var source_id: int = 0
+	var atlas_coords: Vector2i = Vector2i(21, 2)
+	tilled_layer.set_cell(tile_pos, source_id, atlas_coords, 0)
 
 func _load_crop_registry() -> void:
 	var crop_dir: String = "res://resources/crops/"
@@ -355,7 +365,7 @@ func load_from_save(farm_data: Dictionary) -> void:
 		tile_data["harvestable"] = bool(saved.get("harvestable", false))
 		tile_data["regrow_count"] = int(saved.get("regrow_count", 0))
 		if bool(saved.get("tilled", false)):
-			tilled_layer.set_cells_terrain_connect([tile_pos], 0, 0, false)
+			_paint_tilled_tile(tile_pos)
 		if String(saved.get("crop_id", "")) != "":
 			var crop: CropData = crop_registry.get(String(saved.get("crop_id", "")))
 			if crop != null:

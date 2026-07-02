@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3]
+
+[ext_resource type="Script" path="res://resources/items/item_definition.gd" id="1_scrp"]
+[ext_resource type="Texture2D" path="res://images/sprites/static/props/Static props/items-flowers-mushrooms-sprites/items-mushrooms1_1.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_scrp")
+item_id = "spotted_redcap"
+item_name = "Spotted Redcap"
+description = "A red mushroom with white spots."
+icon = ExtResource("2_tex")
+category = 3
+max_stack_size = 99
+sell_value = 4

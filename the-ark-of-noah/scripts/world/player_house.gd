@@ -35,14 +35,16 @@ func _on_doorway_body_exited(body: Node2D) -> void:
 		_apply_layer_state(false)
 
 func _apply_layer_state(player_inside: bool) -> void:
-	# Outside: roof/front wall draw above player. Inside: reveal interior floor.
+	# Keep the front wall visible at all times so passing through the doorway
+	# does not pop/disappear the façade. Layering is handled via z_index only.
 	if player_inside:
 		if roof != null:
 			roof.z_index = 0
 		if front_wall != null:
-			front_wall.visible = false
+			front_wall.visible = true
+			front_wall.z_index = 6
 		if cabin_interior != null:
-			cabin_interior.z_index = 2
+			cabin_interior.z_index = -1
 		if porch != null:
 			porch.z_index = 1
 	else:
@@ -50,7 +52,8 @@ func _apply_layer_state(player_inside: bool) -> void:
 			roof.z_index = 20
 		if front_wall != null:
 			front_wall.visible = true
+			front_wall.z_index = 6
 		if cabin_interior != null:
-			cabin_interior.z_index = 0
+			cabin_interior.z_index = -1
 		if porch != null:
 			porch.z_index = 1

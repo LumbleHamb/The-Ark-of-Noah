@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PlaceholderAssetCatalog" format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/data/placeholder_asset_catalog.gd" id="1_catalog"]
+
+[resource]
+script = ExtResource("1_catalog")
+sprite_placeholders = Array[String](["res://assets/placeholders/sprites/placeholder_crop_stage1.png", "res://assets/placeholders/sprites/placeholder_crop_stage2.png", "res://assets/placeholders/sprites/placeholder_crop_stage3.png", "res://assets/placeholders/sprites/placeholder_tree_top.png"])
+animation_placeholders = Array[String](["res://assets/placeholders/animations/placeholder_tree_fall.anim", "res://assets/placeholders/animations/placeholder_harvest.anim", "res://assets/placeholders/animations/placeholder_menu_bg.anim"])
+particle_placeholders = Array[String](["res://assets/placeholders/particles/placeholder_harvest_puff.tres", "res://assets/placeholders/particles/placeholder_rain_splash.tres"])
+icon_placeholders = Array[String](["res://assets/placeholders/icons/placeholder_seed_icon.png", "res://assets/placeholders/icons/placeholder_log_icon.png", "res://assets/placeholders/icons/placeholder_pitch_icon.png"])
+ui_placeholders = Array[String](["res://assets/placeholders/ui/placeholder_settings_panel.png", "res://assets/placeholders/ui/placeholder_slot_card.png"])
+portrait_placeholders = Array[String](["res://assets/placeholders/portraits/placeholder_npc_elder.png", "res://assets/placeholders/portraits/placeholder_noah.png"])
+cutscene_placeholders = Array[String](["res://assets/placeholders/cutscenes/placeholder_intro_frame.png", "res://assets/placeholders/cutscenes/placeholder_phase2_frame.png"])

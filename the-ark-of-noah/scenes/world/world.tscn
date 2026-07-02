@@ -13,7 +13,7 @@
 [ext_resource type="Script" uid="uid://c574peqx8uuv5" path="res://scripts/world/world_flow.gd" id="28_world_flow"]
 [ext_resource type="PackedScene" uid="uid://b53kwop61saw0" path="res://scenes/ui/dev_menu.tscn" id="30_devmenu"]
 [ext_resource type="Script" uid="uid://c7ygsndjraxky" path="res://components/weather/wind_component.gd" id="32_wind"]
-[ext_resource type="PackedScene" uid="uid://ca8thopaex6mt" path="res://scenes/world/map_biomes.tscn" id="38_nqe8x"]
+[ext_resource type="PackedScene" path="res://scenes/world/map_biomes.tscn" id="38_nqe8x"]
 
 [node name="world" type="Node2D" unique_id=259029940]
 y_sort_enabled = true
@@ -60,7 +60,7 @@ script = ExtResource("28_world_flow")
 
 [node name="TreeTopWind" type="Node" parent="." unique_id=309157124]
 script = ExtResource("32_wind")
-target_path = NodePath("map/TreeTops")
+target_path = NodePath("../map_biomes/TreeTops")
 sway_amplitude = 13.1
 sway_frequency = 2.67
 rotation_strength = 0.07

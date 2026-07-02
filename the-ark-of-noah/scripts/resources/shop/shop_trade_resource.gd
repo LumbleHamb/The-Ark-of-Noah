@@ -48,7 +48,7 @@ func rewards_crop() -> bool:
 ## Returns a human-readable summary of the reward.
 func get_reward_summary() -> String:
 	if rewards_item():
-		var reg: Node = ItemRegistry
+		var reg: Node = Engine.get_singleton(&"ItemRegistry")
 		if reg and reg.has_method("get_item"):
 			var def: ItemDefinition = reg.get_item(reward_item_id)
 			if def:

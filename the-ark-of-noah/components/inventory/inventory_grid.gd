@@ -186,13 +186,10 @@ func _on_slot_gui_input(event: InputEvent, index: int, slot: TextureRect) -> voi
 
 func _start_drag(index: int, _slot: TextureRect) -> void:
 	var stack: ItemStack = _stack_at(index)
-	print("InventoryGrid._start_drag(", index, "): stack=", stack, " icon=", stack.icon if stack else null, " name=", stack.item_name if stack else "null")
 	if stack == null or stack.icon == null:
 		# Clicking an empty slot with nothing in hand = nothing.
-		print("  -> ABORT: stack or icon is null")
 		_dragging_from = -1
 		return
-	print("  -> STARTED drag from index ", index)
 	_dragging_from = index
 	# Show the floating drag-preview sprite.
 	_drag_preview.texture = stack.icon
@@ -261,7 +258,7 @@ func _split_stack(index: int) -> void:
 # ---------------------------------------------------------------------------
 func _on_slot_mouse_entered(index: int) -> void:
 	var stack: ItemStack = _stack_at(index)
-	if stack:
+	if stack != null and stack.icon != null and stack.item_name.strip_edges() != "":
 		_tooltip_label.text = "%s  (x%d)" % [stack.item_name, stack.count]
 		_tooltip_label.visible = true
 		_position_tooltip()
@@ -271,7 +268,7 @@ func _on_slot_mouse_exited() -> void:
 
 func _show_drag_tooltip(index: int) -> void:
 	var stack: ItemStack = _stack_at(index)
-	if stack:
+	if stack != null and stack.icon != null and stack.item_name.strip_edges() != "":
 		_tooltip_label.text = "%s  (x%d)" % [stack.item_name, stack.count]
 		_tooltip_label.visible = true
 		_position_tooltip()
