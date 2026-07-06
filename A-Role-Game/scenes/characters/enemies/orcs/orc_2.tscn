@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://clavdcl52xd2l"]
 
 [ext_resource type="Texture2D" uid="uid://8qejrmgdjaa2" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-atk1 with fx.png" id="1_v1bpt"]
+[ext_resource type="Texture2D" uid="uid://p6u7f4bc81kf" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-atk2-ending spin with fx.png" id="2_kkcsp"]
 [ext_resource type="Texture2D" uid="uid://xx2xd5t70um6" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-death.png" id="2_oe0xo"]
+[ext_resource type="Texture2D" uid="uid://coesi8d6xqx2q" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-atk2-prep with fx.png" id="3_kffdk"]
 [ext_resource type="Texture2D" uid="uid://drsj02te8yc5d" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-hurt.png" id="3_n04jy"]
+[ext_resource type="Texture2D" uid="uid://bvehtg74rcqkb" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-atk2 - loop with fx.png" id="4_iovfq"]
 [ext_resource type="Texture2D" uid="uid://bofbb11omgx1h" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-idle.png" id="4_kkcsp"]
 [ext_resource type="Texture2D" uid="uid://dglbv1bn8fj2i" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-idle to walk transition.png" id="5_kffdk"]
 [ext_resource type="Texture2D" uid="uid://c0loyvojo8e5i" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-walk.png" id="6_iovfq"]
@@ -70,6 +73,86 @@ region = Rect2(3584, 0, 256, 256)
 [sub_resource type="AtlasTexture" id="AtlasTexture_en0va"]
 atlas = ExtResource("1_v1bpt")
 region = Rect2(3840, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_js03t"]
+atlas = ExtResource("2_kkcsp")
+region = Rect2(0, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_66psn"]
+atlas = ExtResource("2_kkcsp")
+region = Rect2(256, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6jc4c"]
+atlas = ExtResource("2_kkcsp")
+region = Rect2(512, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6vivu"]
+atlas = ExtResource("2_kkcsp")
+region = Rect2(768, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t8uet"]
+atlas = ExtResource("2_kkcsp")
+region = Rect2(1024, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0e7vy"]
+atlas = ExtResource("3_kffdk")
+region = Rect2(0, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6xhe3"]
+atlas = ExtResource("3_kffdk")
+region = Rect2(256, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bcnio"]
+atlas = ExtResource("3_kffdk")
+region = Rect2(512, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jeymc"]
+atlas = ExtResource("3_kffdk")
+region = Rect2(768, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slif7"]
+atlas = ExtResource("3_kffdk")
+region = Rect2(1024, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xaxu4"]
+atlas = ExtResource("3_kffdk")
+region = Rect2(1280, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4i76m"]
+atlas = ExtResource("3_kffdk")
+region = Rect2(1536, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ect38"]
+atlas = ExtResource("3_kffdk")
+region = Rect2(1792, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_upoya"]
+atlas = ExtResource("3_kffdk")
+region = Rect2(2048, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_akgsa"]
+atlas = ExtResource("3_kffdk")
+region = Rect2(2304, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6hog1"]
+atlas = ExtResource("3_kffdk")
+region = Rect2(2560, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8q768"]
+atlas = ExtResource("4_iovfq")
+region = Rect2(0, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s0w7m"]
+atlas = ExtResource("4_iovfq")
+region = Rect2(256, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l45fl"]
+atlas = ExtResource("4_iovfq")
+region = Rect2(512, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pvwf0"]
+atlas = ExtResource("4_iovfq")
+region = Rect2(768, 0, 256, 256)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7mcfl"]
 atlas = ExtResource("2_oe0xo")
@@ -276,6 +359,81 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_js03t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_66psn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6jc4c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6vivu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t8uet")
+}],
+"loop": 0,
+"name": &"orc 2 attack 2 ending spin",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0e7vy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6xhe3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bcnio")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jeymc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slif7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xaxu4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4i76m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ect38")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_upoya")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_akgsa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6hog1")
+}],
+"loop": 0,
+"name": &"orc 2 attack 2 prep spin",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8q768")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s0w7m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l45fl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pvwf0")
+}],
+"loop": 1,
+"name": &"orc 2 attack 2 spin",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_7mcfl")
 }, {
 "duration": 1.0,
@@ -419,7 +577,8 @@ height = 38.0
 
 [node name="orc 2 animation" type="AnimatedSprite2D" parent="." unique_id=967812934]
 sprite_frames = SubResource("SpriteFrames_wodrh")
-animation = &"orc 2 idle walk trans"
+animation = &"orc 2 attack 2 spin"
+frame_progress = 0.56891793
 
 [node name="orc 2 hitbox" type="CollisionShape2D" parent="." unique_id=1150959906]
 position = Vector2(0, 1)
