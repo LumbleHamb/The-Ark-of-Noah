@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://vq6d6amvxcfn"]
+
+[ext_resource type="TileSet" uid="uid://bc6saavof3s13" path="res://resources/tilesets/biomes/meadows/meadows.tres" id="1_hgvpo"]
+
+[node name="Meadows Biome" type="Node2D" unique_id=1666991547]
+
+[node name="Props" type="Node2D" parent="." unique_id=1279965686]
+
+[node name="Decorations" type="Node2D" parent="." unique_id=109455308]
+
+[node name="Buildings" type="Node2D" parent="." unique_id=439401220]
+
+[node name="Terrain" type="Node2D" parent="." unique_id=1285770179]
+
+[node name="fields" type="TileMapLayer" parent="Terrain" unique_id=292075072]
+
+[node name="rivers_waterfalls" type="TileMapLayer" parent="Terrain" unique_id=1437638428]
+tile_set = ExtResource("1_hgvpo")
