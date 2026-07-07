@@ -9,6 +9,9 @@
 [ext_resource type="Texture2D" uid="uid://bofbb11omgx1h" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-idle.png" id="4_kkcsp"]
 [ext_resource type="Texture2D" uid="uid://dglbv1bn8fj2i" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-idle to walk transition.png" id="5_kffdk"]
 [ext_resource type="Texture2D" uid="uid://c0loyvojo8e5i" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-walk.png" id="6_iovfq"]
+[ext_resource type="PackedScene" path="res://components/attack/attack_component.tscn" id="10_h82du"]
+[ext_resource type="PackedScene" path="res://components/health/health_component.tscn" id="11_qgd51"]
+[ext_resource type="PackedScene" uid="uid://dwvgxexymy6is" path="res://components/enemies/enemyAI.tscn" id="12_08dh3"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_h82du"]
 atlas = ExtResource("1_v1bpt")
@@ -573,13 +576,41 @@ animations = [{
 radius = 16.0
 height = 38.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0b61b"]
+size = Vector2(74, 25)
+
 [node name="orc 2" type="CharacterBody2D" unique_id=1527895450]
+collision_layer = 7
+collision_mask = 7
 
 [node name="orc 2 animation" type="AnimatedSprite2D" parent="." unique_id=967812934]
 sprite_frames = SubResource("SpriteFrames_wodrh")
-animation = &"orc 2 attack 2 spin"
-frame_progress = 0.56891793
+animation = &"orc 2 attack"
+frame = 15
+frame_progress = 1.0
 
-[node name="orc 2 hitbox" type="CollisionShape2D" parent="." unique_id=1150959906]
+[node name="orc 2 collision" type="CollisionShape2D" parent="." unique_id=1150959906]
 position = Vector2(0, 1)
 shape = SubResource("CapsuleShape2D_wodrh")
+
+[node name="AttackComponent" parent="." unique_id=902689918 node_paths=PackedStringArray("hitbox") instance=ExtResource("10_h82du")]
+hitbox = NodePath("../hitbox")
+
+[node name="HealthComponent" parent="." unique_id=1251344618 instance=ExtResource("11_qgd51")]
+start_hp = 10
+
+[node name="enemyAI" parent="." unique_id=836135547 node_paths=PackedStringArray("sprite") instance=ExtResource("12_08dh3")]
+sprite = NodePath("../orc 2 animation")
+idle_animation = "orc 2 idle"
+walk_animation = "orc 2 walk"
+attack_animation = "orc 2 attack"
+hurt_animation = "orc 2 hurt"
+death_animation = "orc 2 death"
+
+[node name="hitbox" type="Area2D" parent="." unique_id=429804961]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox" unique_id=686464474]
+position = Vector2(60, 2)
+shape = SubResource("RectangleShape2D_0b61b")

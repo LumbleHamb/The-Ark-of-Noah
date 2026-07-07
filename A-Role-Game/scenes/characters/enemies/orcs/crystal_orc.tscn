@@ -505,6 +505,9 @@ animations = [{
 radius = 16.0
 height = 38.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0b61b"]
+size = Vector2(33, 29)
+
 [node name="crystal orc" type="CharacterBody2D" unique_id=1527895450]
 
 [node name="crystal orc animation" type="AnimatedSprite2D" parent="." unique_id=967812934]
@@ -514,3 +517,9 @@ animation = &"crystal orc walk"
 [node name="crystal orc hitbox" type="CollisionShape2D" parent="." unique_id=1150959906]
 position = Vector2(-14, -7)
 shape = SubResource("CapsuleShape2D_wodrh")
+
+[node name="hitbox" type="Area2D" parent="." unique_id=1776667433]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox" unique_id=1539772422]
+position = Vector2(25, -7)
+shape = SubResource("RectangleShape2D_0b61b")

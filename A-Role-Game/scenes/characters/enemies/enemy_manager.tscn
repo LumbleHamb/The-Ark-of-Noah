@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://b86ksj6k477ud"]
+
+[ext_resource type="Script" uid="uid://di8wr5b00dubd" path="res://scripts/characters/enemies/enemy_manager.gd" id="1_juqy5"]
+[ext_resource type="PackedScene" uid="uid://dfyx8tnrnj5ii" path="res://scenes/characters/enemies/orcs/orc_1.tscn" id="2_deioy"]
+[ext_resource type="PackedScene" uid="uid://clavdcl52xd2l" path="res://scenes/characters/enemies/orcs/orc_2.tscn" id="3_lr8io"]
+
+[node name="EnemyManager" type="Node2D" unique_id=1433186845]
+script = ExtResource("1_juqy5")
+enemy_scenes = Array[PackedScene]([ExtResource("2_deioy"), ExtResource("3_lr8io"), null, null])
+max_enemies = 10
+starting_enemy_count = 10

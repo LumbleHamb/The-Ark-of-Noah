@@ -5,6 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://6tcq75csgt1w" path="res://assets/Characters/Enemies/Enemy 1/variation1/enemy 1 var1-hurt.png" id="3_qnbdn"]
 [ext_resource type="Texture2D" uid="uid://bqf3tfws5lp0m" path="res://assets/Characters/Enemies/Enemy 1/variation1/enemy 1 var1-idle.png" id="4_g50ob"]
 [ext_resource type="Texture2D" uid="uid://yfj6xx74yqb8" path="res://assets/Characters/Enemies/Enemy 1/variation1/enemy 1 var1-walk.png" id="5_ojsl5"]
+[ext_resource type="PackedScene" path="res://components/attack/attack_component.tscn" id="6_5futs"]
+[ext_resource type="PackedScene" path="res://components/health/health_component.tscn" id="7_qnbdn"]
+[ext_resource type="PackedScene" uid="uid://dwvgxexymy6is" path="res://components/enemies/enemyAI.tscn" id="9_ojsl5"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_igguu"]
 atlas = ExtResource("1_nhfcj")
@@ -385,17 +388,38 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wodrh"]
-radius = 16.0
+radius = 9.0
 height = 38.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0b61b"]
+size = Vector2(26, 35)
+
 [node name="orc 1" type="CharacterBody2D" unique_id=1527895450]
+collision_layer = 7
+collision_mask = 7
 
 [node name="orc 1 animation" type="AnimatedSprite2D" parent="." unique_id=967812934]
 sprite_frames = SubResource("SpriteFrames_wodrh")
-animation = &"orc 1 death"
-frame = 10
-frame_progress = 1.0
+animation = &"orc 1 attack"
 
-[node name="orc 1 hitbox" type="CollisionShape2D" parent="." unique_id=1150959906]
+[node name="orc 1 collision" type="CollisionShape2D" parent="." unique_id=1150959906]
 position = Vector2(-14, -7)
 shape = SubResource("CapsuleShape2D_wodrh")
+
+[node name="hitbox" type="Area2D" parent="." unique_id=700326313]
+collision_layer = 7
+collision_mask = 7
+
+[node name="attack" type="CollisionShape2D" parent="hitbox" unique_id=2144033546]
+position = Vector2(19, -7.5)
+shape = SubResource("RectangleShape2D_0b61b")
+
+[node name="AttackComponent" parent="." unique_id=505067519 node_paths=PackedStringArray("hitbox") instance=ExtResource("6_5futs")]
+hitbox = NodePath("../hitbox")
+knockback_force = 75.0
+
+[node name="HealthComponent" parent="." unique_id=1833183971 instance=ExtResource("7_qnbdn")]
+start_hp = 10
+
+[node name="enemyAI" parent="." unique_id=836135547 node_paths=PackedStringArray("sprite") instance=ExtResource("9_ojsl5")]
+sprite = NodePath("../orc 1 animation")

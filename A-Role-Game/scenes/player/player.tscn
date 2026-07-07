@@ -6,11 +6,10 @@
 [ext_resource type="Texture2D" uid="uid://5l14mek37061" path="res://assets/player/player_walk.png" id="4_0owmy"]
 [ext_resource type="Script" uid="uid://c0gwmwmvm6gds" path="res://scripts/player/player.gd" id="5_p47bc"]
 [ext_resource type="Texture2D" uid="uid://chssjx5t2jjbp" path="res://assets/ui/Resource orbs/Orb_HP.png" id="7_light"]
-[ext_resource type="PackedScene" path="res://components/movement/movement_component.tscn" id="8_mov_scene"]
-[ext_resource type="PackedScene" path="res://components/animation/player_animation_component.tscn" id="9_anim_scene"]
+[ext_resource type="PackedScene" uid="uid://on61cna3jb6b" path="res://components/movement/movement_component.tscn" id="8_mov_scene"]
+[ext_resource type="PackedScene" uid="uid://fmhng711o68k" path="res://components/animation/player_animation_component.tscn" id="9_anim_scene"]
 [ext_resource type="PackedScene" path="res://components/attack/attack_component.tscn" id="10_att_scene"]
-[ext_resource type="PackedScene" path="res://components/inventory/inventory_component.tscn" id="11_inv_scene"]
-[ext_resource type="PackedScene" path="res://components/farming/farming_component.tscn" id="12_farm_scene"]
+[ext_resource type="PackedScene" path="res://components/health/health_component.tscn" id="10_ugbui"]
 [ext_resource type="Texture2D" uid="uid://b0frm3u6n3o2b" path="res://assets/ui/Sliders & Bars/Slider01_Box.png" id="14_box"]
 [ext_resource type="Script" uid="uid://dxi8bgn17egrd" path="res://components/stamina/stamina_bar.gd" id="15_fcs02"]
 [ext_resource type="Script" uid="uid://b0t3m7xxvenel" path="res://components/stamina/stamina_component.gd" id="15_stamina"]
@@ -2146,13 +2145,11 @@ height = 22.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wodrh"]
 size = Vector2(24, 27)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_wodrh"]
-radius = 11.0
-
-[node name="player" type="CharacterBody2D" unique_id=1661681255 groups=["Player"]]
+[node name="player" type="CharacterBody2D" unique_id=1661681255 groups=["player"]]
 z_index = 5
 scale = Vector2(1.5, 1.5)
-collision_layer = 2
+collision_layer = 7
+collision_mask = 7
 script = ExtResource("5_p47bc")
 
 [node name="player_animation" type="AnimatedSprite2D" parent="." unique_id=475524584]
@@ -2172,32 +2169,15 @@ zoom = Vector2(3, 3)
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 
-[node name="hitbox" type="Area2D" parent="." unique_id=1307241203]
+[node name="hitbox" type="Area2D" parent="." unique_id=1307241203 groups=["player"]]
 position = Vector2(-4, 1)
-collision_layer = 4
-collision_mask = 4
+collision_layer = 7
+collision_mask = 7
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox" unique_id=1155194552]
 position = Vector2(3, 3.5)
 shape = SubResource("RectangleShape2D_wodrh")
-
-[node name="rope_range" type="Area2D" parent="." unique_id=474351622]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="rope_range" unique_id=2037572743]
-position = Vector2(0, -11)
-shape = SubResource("CircleShape2D_wodrh")
-
-[node name="rope_line" type="Line2D" parent="." unique_id=1885249428]
-z_index = 9
-y_sort_enabled = true
-width = 2.0
-default_color = Color(0.4402557, 0.232636, 0.13219273, 1)
-
-[node name="tool_sprite" type="Sprite2D" parent="." unique_id=1626921594]
-visible = false
-z_index = 10
-scale = Vector2(0.4, 0.4)
 
 [node name="PlayerLight" type="PointLight2D" parent="." unique_id=228434386]
 enabled = false
@@ -2209,14 +2189,21 @@ texture = ExtResource("7_light")
 texture_scale = 4.0
 
 [node name="MovementComponent" parent="." unique_id=1339332317 instance=ExtResource("8_mov_scene")]
+walk_speed = 80.0
+run_speed = 140.0
+analog_walk_threshold = 0.18
+analog_run_threshold = 0.72
+active = true
 
 [node name="PlayerAnimationComponent" parent="." unique_id=147972089 instance=ExtResource("9_anim_scene")]
 
-[node name="AttackComponent" parent="." unique_id=1175547543 instance=ExtResource("10_att_scene")]
+[node name="AttackComponent" parent="." unique_id=1175547543 node_paths=PackedStringArray("hitbox") instance=ExtResource("10_att_scene")]
+hitbox = NodePath("../hitbox")
+attack_damage = 10
 
-[node name="InventoryComponent" parent="." unique_id=305377032 instance=ExtResource("11_inv_scene")]
-
-[node name="FarmingComponent" parent="." unique_id=516671975 instance=ExtResource("12_farm_scene")]
+[node name="HealthComponent" parent="." unique_id=577866862 instance=ExtResource("10_ugbui")]
+max_hp = 100
+start_hp = 100
 
 [node name="StaminaComponent" type="Node" parent="." unique_id=531966348]
 script = ExtResource("15_stamina")

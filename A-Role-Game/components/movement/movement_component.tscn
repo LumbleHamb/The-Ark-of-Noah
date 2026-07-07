@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://on61cna3jb6b"]
 
-[ext_resource type="Script" path="res://components/movement/movement_component.gd" id="1_x"]
+[ext_resource type="Script" uid="uid://cbytl6onaju85" path="res://components/movement/movement_component.gd" id="1_x"]
 
-[node name="MovementComponent" type="Node"]
+[node name="MovementComponent" type="Node" unique_id=255232977]
 script = ExtResource("1_x")
+walk_speed = null
+run_speed = null
+analog_walk_threshold = null
+analog_run_threshold = null
+active = null

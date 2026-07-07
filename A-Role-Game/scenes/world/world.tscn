@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cpt47ir67c0nb"]
+
+[ext_resource type="PackedScene" uid="uid://vq6d6amvxcfn" path="res://scenes/world/Biomes/meadows_biome.tscn" id="1_dphjl"]
+[ext_resource type="PackedScene" uid="uid://ba5qhslvdxcx6" path="res://scenes/player/player.tscn" id="2_sl2e5"]
+[ext_resource type="PackedScene" uid="uid://b86ksj6k477ud" path="res://scenes/characters/enemies/enemy_manager.tscn" id="3_1fp7r"]
+
+[node name="world" type="Node2D" unique_id=2065244320]
+
+[node name="biomes" type="Node2D" parent="." unique_id=377298911]
+
+[node name="Meadows Biome" parent="biomes" unique_id=1666991547 instance=ExtResource("1_dphjl")]
+
+[node name="characters" type="Node2D" parent="." unique_id=645592681]
+
+[node name="player" parent="." unique_id=1661681255 instance=ExtResource("2_sl2e5")]
+
+[node name="EnemyManager" parent="." unique_id=1433186845 instance=ExtResource("3_1fp7r")]
+max_enemies = 100
+spawn_radius = 500.0
+starting_enemy_count = 50
