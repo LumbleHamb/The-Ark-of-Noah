@@ -176,10 +176,17 @@ func _on_enemy_removed(enemy: Node) -> void:
 func _schedule_respawn() -> void:
 
 
+	if get_tree() == null:
+		return
+
 	await get_tree().create_timer(
 		respawn_delay
 	).timeout
 
+
+	# Guard: manager might have been removed from tree during the await
+	if get_tree() == null:
+		return
 
 
 	spawn_enemy()

@@ -80,6 +80,16 @@ var direction_switch_timer: float = 999.0
 const BACKDASH_WINDOW: float = 0.3
 
 
+# ==================================================
+# DASH / ROLL COOLDOWN
+# ==================================================
+
+## Minimum delay (seconds) before dash/roll can be used again after one ends.
+@export var dash_cooldown: float = 0.3
+
+## Countdown timer for the dash/roll cooldown (0 = ready).
+var dash_cooldown_timer: float = 0.0
+
 
 # ==================================================
 # READY
@@ -279,6 +289,10 @@ func _process(delta: float) -> void:
 
 		direction_switch_timer += delta
 
+	if dash_cooldown_timer > 0:
+
+		dash_cooldown_timer = max(0.0, dash_cooldown_timer - delta)
+
 
 
 # ==================================================
@@ -476,6 +490,11 @@ func _start_dash() -> void:
 		return
 
 
+	if dash_cooldown_timer > 0:
+
+		return
+
+
 	# Can interrupt attack with a dash
 	if state == State.ATTACK:
 
@@ -526,6 +545,11 @@ func _start_roll() -> void:
 		return
 
 
+	if dash_cooldown_timer > 0:
+
+		return
+
+
 	# Can interrupt attack with a roll
 	if state == State.ATTACK:
 
@@ -563,6 +587,8 @@ func _on_player_animation_finished() -> void:
 
 		state = State.IDLE
 
+		dash_cooldown_timer = dash_cooldown
+
 		if movement:
 
 			movement.end_special()
@@ -571,6 +597,8 @@ func _on_player_animation_finished() -> void:
 	elif state == State.ROLL:
 
 		state = State.IDLE
+
+		dash_cooldown_timer = dash_cooldown
 
 		if movement:
 
@@ -668,7 +696,7 @@ func _is_invincible_frame() -> bool:
 		anim_name
 	)
 
-	var half_frames: int = total_frames / 2
+	var half_frames: int = int(total_frames / 2.0)
 
 
 	# First half of the animation = invincible
@@ -702,13 +730,71 @@ func _on_died() -> void:
 
 
 
-	if animator and animator.has_method("play_death"):
+	# Hide the player — they disappear on death
+	visible = false
 
-		animator.play_death(
-			animator.get_dir_from_vector(
-				last_direction
-			)
-		)
+
+
+	# Disable collision so the player doesn't interact while dead
+	# Use set_deferred to avoid 'Can't change this state while flushing queries'
+	$CollisionShape2D.set_deferred(&"disabled", true)
+
+
+
+	# Start the respawn timer
+	_start_respawn()
+
+
+
+func _start_respawn() -> void:
+
+	# Wait ~3.5 seconds before respawning
+	await get_tree().create_timer(3.5).timeout
+
+
+
+	# Don't proceed if the node was freed while we were waiting
+	if not is_instance_valid(self):
+
+		return
+
+
+
+	# Teleport the player to the world origin
+	global_position = Vector2.ZERO
+
+
+
+	# Reset health component
+	if health:
+
+		health.current_hp = health.max_hp
+
+		health.is_dead = false
+
+		health.is_invincible = false
+
+		health.invincibility_timer = 0.0
+
+
+
+	# Reset state
+	state = State.IDLE
+
+
+
+	# Re-enable collision
+	$CollisionShape2D.disabled = false
+
+
+
+	# Show the player again
+	visible = true
+
+
+
+	# Camera2D has position_smoothing_enabled = true with speed 8.0,
+	# so it will smoothly travel from the death location to the spawn point.
 
 
 

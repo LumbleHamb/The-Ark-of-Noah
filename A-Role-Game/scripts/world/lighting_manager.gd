@@ -89,11 +89,7 @@ var _last_night: bool = false          # lights-on state (dusk → dawn)
 var _last_deep_night: bool = false     # full-night boost state
 var _player_light_base_energy: float = 1.2
 var _player_light_base_scale: float = 4.0
-## Current rain intensity (0..1), fed by the WeatherManager. Rain darkens
-## the ambient colour and cools its tint.
-var _rain_intensity: float = 0.0
-## Whether we have successfully connected to the WeatherManager.
-var _weather_connected: bool = false
+# Weather integration removed
 
 # Ambient colour curve: key = day_progress (0.0 – 1.0), value = Color
 # Key points match the time phases.
@@ -143,9 +139,7 @@ func _ready() -> void:
 	_update_lights(_last_night)
 	get_tree().node_added.connect(_on_node_added)
 	get_tree().node_removed.connect(_on_node_removed)
-	# Hook into the weather system for rain darkening. Deferred so the
-	# WeatherManager autoload is ready before we connect.
-	call_deferred(&"_connect_weather")
+	# Weather system integration removed
 
 func _process(delta: float) -> void:
 	_flicker_offset += delta * flicker_speed
@@ -175,9 +169,7 @@ func _process(delta: float) -> void:
 		# Still apply flicker every frame while lamps are on.
 		_apply_flicker(_last_night)
 	
-	# Lazy-connect to the weather system if it wasn't ready at _ready time.
-	if not _weather_connected:
-		_connect_weather()
+	# Weather system lazy-connect removed
 
 ## Returns true when light sources should be enabled.
 ## Spans from the configured light_start_phase through pre-dawn / sunrise.
@@ -236,14 +228,7 @@ func _update_ambient(progress: float) -> void:
 				var extra: float = clampf(night_darkness - 1.0, 0.0, 1.0)
 				color = color.lerp(Color.BLACK, extra)
 	
-	# ========================================================================
-	# RAIN DARKENING — rain cools and dims the ambient colour. The WeatherManager
-	# pushes rain intensity (0..1) here; we blend toward a cool grey-blue so the
-	# world feels overcast during rain and stormy during full storms.
-	# ========================================================================
-	if _rain_intensity > 0.01:
-		var rain_tint: Color = Color(0.45, 0.5, 0.6, 1.0)  # cool overcast grey-blue
-		color = color.lerp(rain_tint, _rain_intensity * 0.5)
+	# Rain darkening removed
 	
 	modulate.color = color
 	ambient_color_changed.emit(color)
@@ -257,23 +242,7 @@ func _on_phase_changed(_phase: TimeManager.TimePhase) -> void:
 	# a brief transition animation). Subclasses can override.
 	pass
 
-# ============================================================================
-# WEATHER INTEGRATION — rain darkens ambient, driven by WeatherManager
-# ============================================================================
-func _connect_weather() -> void:
-	if _weather_connected:
-		return
-	if get_tree() == null:
-		return
-	var wm: WeatherManager = get_tree().get_first_node_in_group(&"weather_manager") as WeatherManager
-	if wm == null:
-		return  # No weather system in this scene — that's fine, rain stays 0.
-	_weather_connected = true
-	wm.rain_intensity_changed.connect(_on_rain_intensity_changed)
-
-## Called by WeatherManager with the smoothed rain intensity (0..1).
-func _on_rain_intensity_changed(intensity: float) -> void:
-	_rain_intensity = intensity
+# Weather integration removed
 
 # ============================================================================
 # LIGHT SOURCE MANAGEMENT

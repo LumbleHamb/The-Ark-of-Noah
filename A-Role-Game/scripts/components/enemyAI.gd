@@ -73,6 +73,27 @@ enum State {
 
 
 # ==================================================
+# LINE OF SIGHT
+# ==================================================
+
+@export_category("Line of Sight")
+
+## Master toggle for line-of-sight checks. When enabled, enemies need
+## clear LoS to the player (or a breadcrumb) to chase and attack.
+@export var los_enabled: bool = true
+
+## Physics layers to check as obstacles for LoS raycasts.
+## Layer 1 is typically terrain/walls. Characters are layer 7.
+@export var los_collision_mask: int = 1
+
+## Maximum number of breadcrumbs an enemy will follow before giving up.
+@export var max_breadcrumb_steps: int = 5
+
+## Range to search for breadcrumbs. If 0, uses detection_range.
+@export var breadcrumb_search_range: float = 0.0
+
+
+# ==================================================
 # COMBAT
 # ==================================================
 
@@ -209,6 +230,20 @@ var chase_idle_cycle: float = 0.0
 ## True when the enemy was blocked during chase (stuck on other enemies).
 ## Used to force idle instead of running in place.
 var _was_blocked: bool = false
+
+
+# Breadcrumb following state
+## Index of the breadcrumb the enemy is currently following (-1 = none).
+var _breadcrumb_target_index: int = -1
+
+## How many breadcrumbs the enemy has followed on this trail (resets on new trail).
+var _breadcrumb_steps_taken: int = 0
+
+## Cooldown timer to prevent per-frame breadcrumb re-evaluation.
+var _breadcrumb_update_timer: float = 0.0
+
+## How often (seconds) to re-check LoS when following a breadcrumb.
+const BREADCRUMB_UPDATE_INTERVAL: float = 0.25
 
 
 # Special attack state machine
@@ -415,6 +450,23 @@ func _process_chase() -> void:
 	if not player or not is_instance_valid(player):
 		state = State.IDLE
 		return
+
+	# --- Line of sight check ---
+	if los_enabled and not has_los_to(player.global_position):
+		# No LoS to player — try following breadcrumbs
+		if _try_breadcrumb_chase():
+			return
+		# No breadcrumbs reachable — give up
+		_breadcrumb_target_index = -1
+		_breadcrumb_steps_taken = 0
+		chase_idle_cycle = -999
+		state = State.IDLE
+		return
+
+	# Direct LoS to player — reset breadcrumb tracking
+	_breadcrumb_target_index = -1
+	_breadcrumb_steps_taken = 0
+	_breadcrumb_update_timer = 0.0
 
 	var distance := distance_to_player()
 
@@ -991,3 +1043,153 @@ func update_facing(direction: Vector2) -> void:
 	if sprite and direction.x != 0:
 
 		sprite.flip_h = direction.x < 0
+
+
+
+# ==================================================
+# LINE OF SIGHT
+# ==================================================
+
+## Returns true if there's a clear line of sight from this enemy
+## to the given target position (no terrain/wall obstacles).
+func has_los_to(target_pos: Vector2) -> bool:
+
+	if entity == null:
+		return false
+
+	var space_state: PhysicsDirectSpaceState2D = (
+		entity.get_world_2d().direct_space_state
+	)
+
+	var query := PhysicsRayQueryParameters2D.create(
+		entity.global_position,
+		target_pos,
+		los_collision_mask,
+		[entity]  # Exclude self from collision
+	)
+
+	# Also exclude the player so the ray doesn't stop on them
+	if player and is_instance_valid(player):
+		query.exclude.append(player)
+
+	var result: Dictionary = space_state.intersect_ray(query)
+
+	# If nothing was hit, LoS is clear
+	return result.is_empty()
+
+
+
+# ==================================================
+# BREADCRUMB FOLLOWING
+# ==================================================
+
+## Attempt to follow the player's breadcrumb trail.
+## Returns true if a breadcrumb was found and the enemy is moving toward it.
+func _try_breadcrumb_chase() -> bool:
+
+	var trail: Array[Vector2] = BreadcrumbManager.get_trail()
+
+	if trail.is_empty():
+		return false
+
+	# --- Timer-based re-evaluation ---
+	# Only check LoS / advance to next breadcrumb every ~0.25s
+	# to prevent per-frame jitter from geometry edge flicker.
+	_breadcrumb_update_timer -= entity.get_physics_process_delta_time()
+	var should_update: bool = _breadcrumb_update_timer <= 0.0
+
+	# Already following a breadcrumb
+	if _breadcrumb_target_index >= 0 and _breadcrumb_target_index < trail.size():
+
+		var target: Vector2 = trail[_breadcrumb_target_index]
+
+		# Periodically re-check LoS to the current breadcrumb
+		if should_update:
+			_breadcrumb_update_timer = BREADCRUMB_UPDATE_INTERVAL
+
+			if not has_los_to(target):
+				# Lost LoS during update window — give up
+				_breadcrumb_target_index = -1
+				_breadcrumb_steps_taken = 0
+				return false
+
+			var dist: float = entity.global_position.distance_to(target)
+
+			if dist <= 16.0:
+				# Reached the breadcrumb — advance to the next one
+				_breadcrumb_steps_taken += 1
+
+				# Check if we've exceeded the max follow steps
+				if _breadcrumb_steps_taken > max_breadcrumb_steps:
+					_breadcrumb_target_index = -1
+					_breadcrumb_steps_taken = 0
+					return false
+
+				# Try to go to the next breadcrumb (newer = closer to player)
+				var next_idx: int = _breadcrumb_target_index + 1
+
+				if next_idx >= trail.size():
+					# Caught up to the trail end — check direct LoS to player
+					if has_los_to(player.global_position):
+						_breadcrumb_target_index = -1
+						_breadcrumb_steps_taken = 0
+						return false
+					else:
+						_breadcrumb_target_index = -1
+						_breadcrumb_steps_taken = 0
+						return false
+
+				# Check LoS to the next breadcrumb
+				if has_los_to(trail[next_idx]):
+					_breadcrumb_target_index = next_idx
+				else:
+					_breadcrumb_target_index = -1
+					_breadcrumb_steps_taken = 0
+					return false
+
+		# Move toward the target (or current breadcrumb if index changed)
+		var move_target: Vector2 = trail[_breadcrumb_target_index]
+		_move_toward(move_target)
+		return true
+
+	# --- Find a breadcrumb to start following ---
+	if should_update:
+		_breadcrumb_update_timer = BREADCRUMB_UPDATE_INTERVAL
+
+		var search_range: float = (
+			breadcrumb_search_range
+			if breadcrumb_search_range > 0.0
+			else detection_range
+		)
+
+		# Search from newest (closest to player) backward to oldest
+		for i in range(trail.size() - 1, -1, -1):
+			var crumb: Vector2 = trail[i]
+			var crumb_dist: float = entity.global_position.distance_to(crumb)
+
+			if crumb_dist <= search_range and has_los_to(crumb):
+				_breadcrumb_target_index = i
+				_breadcrumb_steps_taken = 0
+				_move_toward(crumb)
+				return true
+
+	return false
+
+
+## Move the enemy toward a target position with velocity smoothing
+## (lerp) to prevent jittery per-frame direction snaps.
+func _move_toward(target: Vector2) -> void:
+
+	var desired_dir: Vector2 = (
+		target - entity.global_position
+	).normalized()
+
+	# Smooth velocity changes instead of snapping instantly
+	var desired_vel: Vector2 = desired_dir * move_speed
+	entity.velocity = entity.velocity.lerp(desired_vel, 0.15)
+
+	update_facing(desired_dir)
+
+	# Only play animation if actually moving (prevent flickering)
+	if entity.velocity.length_squared() > 1.0:
+		play_animation(walk_animation)

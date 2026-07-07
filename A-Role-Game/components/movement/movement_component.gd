@@ -41,7 +41,6 @@ signal movement_state_changed(state: MoveState)
 
 
 
-
 var current_speed_mod: float = 1.0
 
 
@@ -61,7 +60,6 @@ var special_dir: Vector2 = Vector2.ZERO
 
 ## True when the current DASH state is a backdash (uses backdash_speed + backdash animation).
 var is_backdash: bool = false
-
 
 
 
@@ -91,7 +89,6 @@ var move_state: MoveState = MoveState.IDLE:
 
 
 
-
 # ==================================================
 # SPEED
 # ==================================================
@@ -102,7 +99,6 @@ func set_speed_modifier(
 
 
 	current_speed_mod = mod
-
 
 
 
@@ -167,7 +163,6 @@ func read_input() -> void:
 
 
 
-
 # ==================================================
 # VELOCITY
 # ==================================================
@@ -200,8 +195,6 @@ func calculate_velocity() -> Vector2:
 
 
 
-
-
 	var joystick := _get_joystick()
 
 
@@ -219,11 +212,11 @@ func calculate_velocity() -> Vector2:
 	if using_joystick:
 
 
-		var sprinting := Input.is_action_pressed("sprint")
+		var joystick_sprint := Input.is_action_pressed("sprint")
 
 
 
-		if sprinting and input_strength >= analog_run_threshold:
+		if joystick_sprint and input_strength >= analog_run_threshold:
 
 
 			move_state = MoveState.SPRINT
@@ -258,8 +251,6 @@ func calculate_velocity() -> Vector2:
 
 
 		)
-
-
 
 
 		return (
@@ -308,7 +299,6 @@ func calculate_velocity() -> Vector2:
 
 
 
-
 	var speed := (
 		sprint_speed
 		if move_state == MoveState.SPRINT
@@ -332,7 +322,6 @@ func calculate_velocity() -> Vector2:
 
 
 
-
 # ==================================================
 # PUBLIC
 # ==================================================
@@ -341,7 +330,6 @@ func get_last_dir() -> Vector2:
 
 
 	return last_dir
-
 
 
 
@@ -435,7 +423,6 @@ func _read_movement_input() -> Vector2:
 
 
 
-
 	return Vector2(
 		Input.get_action_strength("right")
 		-
@@ -446,7 +433,6 @@ func _read_movement_input() -> Vector2:
 		-
 		Input.get_action_strength("up")
 	)
-
 
 
 

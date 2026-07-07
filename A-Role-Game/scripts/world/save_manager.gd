@@ -39,7 +39,7 @@ func save_game() -> void:
 	var player_inventory: InventoryComponent = _find_player_inventory()
 	if player_inventory != null:
 		data["player_inventory"] = player_inventory.get_save_data()
-	data["weather"] = _get_weather_save_data()
+	# Weather save data removed
 	var player_node: Player = _find_player()
 	if player_node != null:
 		data["player"] = {
@@ -80,8 +80,7 @@ func load_game() -> void:
 		var time_manager_node: TimeManager = _find_time_manager()
 		if time_manager_node != null and time_manager_node.has_method("load_from_save"):
 			time_manager_node.load_from_save(data["time"] as Dictionary)
-	if data.has("weather"):
-		_load_weather_save_data(data["weather"] as Dictionary)
+	# Weather load data removed
 	if data.has("player"):
 		var player_data: Dictionary = data["player"] as Dictionary
 		var player_node: Player = _find_player()
@@ -279,24 +278,4 @@ func _load_breakable_rock_save_data(rock_data: Dictionary) -> void:
 		if rock_node != null and rock_node.has_method("load_from_save"):
 			rock_node.call("load_from_save", rock_data[key] as Dictionary)
 
-func _get_weather_save_data() -> Dictionary:
-	if get_tree() == null:
-		return {}
-	var weather_node: Node = get_tree().get_first_node_in_group(&"weather_manager")
-	if weather_node == null:
-		return {}
-	var intensity: float = 1.0
-	if weather_node.has_method("get_weather_intensity"):
-		intensity = float(weather_node.call("get_weather_intensity"))
-	return {
-		"weather_intensity": intensity
-	}
-
-func _load_weather_save_data(weather_data: Dictionary) -> void:
-	if get_tree() == null:
-		return
-	var weather_node: Node = get_tree().get_first_node_in_group(&"weather_manager")
-	if weather_node == null:
-		return
-	if weather_node.has_method("set_weather_intensity"):
-		weather_node.call("set_weather_intensity", float(weather_data.get("weather_intensity", 1.0)))
+# Weather save/load functions removed

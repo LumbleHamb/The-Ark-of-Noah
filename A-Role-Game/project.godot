@@ -37,6 +37,7 @@ InventoryUI="*res://scenes/ui/inventory_window.tscn"
 game_stats="*res://scripts/world/game_stats.gd"
 ItemRegistry="*res://scripts/items/item_registry.gd"
 AudioManager="*res://scripts/audio/audio_manager.gd"
+BreadcrumbManager="*res://scripts/world/breadcrumb_manager.gd"
 
 [display]
 
