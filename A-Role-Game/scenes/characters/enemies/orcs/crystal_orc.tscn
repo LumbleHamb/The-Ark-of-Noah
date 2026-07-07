@@ -529,6 +529,7 @@ shape = SubResource("RectangleShape2D_0b61b")
 
 [node name="AttackComponent" parent="." unique_id=1959478086 node_paths=PackedStringArray("hitbox") instance=ExtResource("8_dg3ev")]
 hitbox = NodePath("../hitbox")
+attack_damage = 100
 
 [node name="enemyAI" parent="." unique_id=836135547 node_paths=PackedStringArray("sprite") instance=ExtResource("9_t70fo")]
 sprite = NodePath("../crystal orc animation")

@@ -33,8 +33,6 @@ extends CharacterBody2D
 
 @onready var stamina: StaminaComponent = $StaminaComponent
 
-var block_comp: Node
-
 
 # ==================================================
 # STATE
@@ -45,13 +43,11 @@ enum State
 	IDLE,
 	WALK,
 	RUN,
+	SPRINT,
 	ATTACK,
-	HURT,
 	DEAD,
 	DASH,
-	BLOCK,
-	SQUAT,
-	JUMP
+	ROLL
 }
 
 
@@ -60,6 +56,28 @@ var state: State = State.IDLE
 var last_direction: Vector2 = Vector2.DOWN
 
 var input_enabled: bool = true
+
+
+# ==================================================
+# ATTACK COMBO
+# ==================================================
+
+var combo_step: int = 0
+
+var combo_timer: float = 0.0
+
+const COMBO_WINDOW: float = 0.6
+
+
+# ==================================================
+# BACKDASH
+# ==================================================
+
+var previous_direction: Vector2 = Vector2.DOWN
+
+var direction_switch_timer: float = 999.0
+
+const BACKDASH_WINDOW: float = 0.3
 
 
 
@@ -73,17 +91,29 @@ func _ready() -> void:
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 
 
-	block_comp = get_node("BlockComponent")
-
-
 	if attack:
 
 		attack.attack_started.connect(
 			_on_attack_started
 		)
 
-		attack.attack_finished.connect(
-			_on_attack_finished
+
+	if animator:
+
+		animator.attack_animation_finished.connect(
+			_on_attack_animation_finished
+		)
+
+
+	# Connect to the animated sprite directly to handle dash/roll/walktorun end
+	var anim_sprite: AnimatedSprite2D = $player_animation
+
+	if anim_sprite and not anim_sprite.animation_finished.is_connected(
+		_on_player_animation_finished
+	):
+
+		anim_sprite.animation_finished.connect(
+			_on_player_animation_finished
 		)
 
 
@@ -100,16 +130,7 @@ func _ready() -> void:
 
 
 
-	if block_comp:
-
-		block_comp.block_started.connect(
-			_on_block_started
-		)
-
-		block_comp.block_ended.connect(
-			_on_block_ended
-		)
-
+	# Block component removed
 
 
 # ==================================================
@@ -143,20 +164,24 @@ func _physics_process(_delta: float) -> void:
 
 
 
-	# Attack and hurt override movement input, but preserve velocity
-	# so the player slides through hits instead of dead-stopping.
+	# Attack, dash, and roll override movement input.
+	# Attack zeros velocity (no movement during attack).
+	# Dash/roll preserve their own velocity set by movement.calculate_velocity().
 	var overrides_movement: bool = (
 		state == State.ATTACK
-		or state == State.HURT
 		or state == State.DASH
-		or state == State.BLOCK
-		or state == State.SQUAT
-		or state == State.JUMP
+		or state == State.ROLL
 	)
 
 	if not overrides_movement:
 
 		_process_movement()
+
+
+
+	if state == State.ATTACK:
+
+		velocity = Vector2.ZERO
 
 
 
@@ -191,7 +216,15 @@ func _process_movement() -> void:
 
 	if movement.input_dir != Vector2.ZERO:
 
-		last_direction = movement.input_dir.normalized()
+		var new_dir: Vector2 = movement.input_dir.normalized()
+
+		if new_dir != last_direction:
+
+			previous_direction = last_direction
+
+			direction_switch_timer = 0.0
+
+		last_direction = new_dir
 
 
 
@@ -217,6 +250,34 @@ func _process_movement() -> void:
 			state = State.RUN
 
 
+		MovementComponent.MoveState.SPRINT:
+
+			state = State.SPRINT
+
+
+
+
+
+# ==================================================
+# PROCESS (combo timer, direction switch timer)
+# ==================================================
+
+func _process(delta: float) -> void:
+
+	# Only count combo timer outside of attack state
+	# During attack, combo is tracked via the buffered input system
+	if combo_step > 0 and state != State.ATTACK:
+
+		combo_timer += delta
+
+		if combo_timer > COMBO_WINDOW:
+
+			_reset_combo()
+
+
+	if direction_switch_timer < BACKDASH_WINDOW:
+
+		direction_switch_timer += delta
 
 
 
@@ -224,12 +285,25 @@ func _process_movement() -> void:
 # INPUT
 # ==================================================
 
+var combo_buffered: bool = false
+
 func _process_input() -> void:
 
 
 	if Input.is_action_just_pressed("attack"):
 
-		_start_attack()
+		if state == State.ATTACK:
+
+			# Buffer the combo input — will advance when current attack animation finishes
+			combo_buffered = true
+
+		elif combo_step > 0 and combo_timer < COMBO_WINDOW:
+
+			_advance_combo()
+
+		else:
+
+			_start_attack()
 
 
 	if Input.is_action_just_pressed("dash"):
@@ -237,19 +311,12 @@ func _process_input() -> void:
 		_start_dash()
 
 
-	if Input.is_action_just_pressed("block"):
+	if Input.is_action_just_pressed("roll"):
 
-		_start_block()
-
-
-	if Input.is_action_just_pressed("squat"):
-
-		_start_squat()
+		_start_roll()
 
 
-	if Input.is_action_just_pressed("jump"):
-
-		_start_jump()
+	# Block, squat, and jump removed
 
 
 
@@ -276,7 +343,10 @@ func _start_attack() -> void:
 
 	state = State.ATTACK
 
-	velocity = Vector2.ZERO
+	# Don't zero velocity — let player slide naturally during attack
+	combo_step = 1
+
+	combo_timer = 0.0
 
 
 
@@ -301,6 +371,97 @@ func _start_attack() -> void:
 	)
 
 
+func _advance_combo() -> void:
+
+
+	if not attack:
+
+		return
+
+
+
+	combo_step += 1
+
+	combo_timer = 0.0
+
+
+
+	if combo_step > 3:
+
+		combo_step = 1
+
+
+
+	var direction: String = "S"
+
+	if animator:
+
+		direction = animator.get_dir_from_vector(
+			last_direction
+		)
+
+
+
+	state = State.ATTACK
+
+	# Don't zero velocity — let player slide during combo
+
+
+
+	match combo_step:
+
+		2:
+
+			animator.play_attack2(direction)
+
+			attack.start_attack_forced(direction)
+
+		3:
+
+			animator.play_attack3(direction)
+
+			attack.start_attack_forced(direction)
+
+			combo_step = 0  # Reset after final hit
+
+		_:
+
+			# Shouldn't happen, but fallback
+			combo_step = 1
+
+			animator.play_attack(direction)
+
+			attack.start_attack_forced(direction)
+
+
+func _reset_combo() -> void:
+
+	combo_step = 0
+
+	combo_timer = 0.0
+
+
+
+func _cancel_attack_state() -> void:
+
+
+	if attack:
+
+		attack.end_attack()
+
+
+	if animator:
+
+		animator.cancel_attack()
+
+
+	combo_step = 0
+
+	combo_timer = 0.0
+
+	combo_buffered = false
+
+
 
 func _start_dash() -> void:
 
@@ -310,105 +471,124 @@ func _start_dash() -> void:
 		return
 
 
-	if state == State.DASH or state == State.ATTACK or state == State.HURT or state == State.DEAD:
+	if state == State.DASH or state == State.ROLL or state == State.DEAD:
 
 		return
+
+
+	# Can interrupt attack with a dash
+	if state == State.ATTACK:
+
+		_cancel_attack_state()
 
 
 	state = State.DASH
 
-	movement.start_dash(last_direction)
+
+	# Backdash check: if player recently changed direction, dash backward instead
+	if direction_switch_timer < BACKDASH_WINDOW and previous_direction != Vector2.ZERO:
+
+		movement.start_backdash(previous_direction)
+
+		if animator:
+
+			animator.play_backdash(
+				animator.get_dir_from_vector(previous_direction)
+			)
+
+	else:
+
+		movement.start_dash(last_direction)
+
+		if animator:
+
+			animator.play_dash(
+				animator.get_dir_from_vector(last_direction)
+			)
+
 
 	velocity = movement.calculate_velocity()
 
 
-	await get_tree().create_timer(movement.dash_duration).timeout
+	# Dash duration is frame-dependent; animation_finished signal handles ending it
 
 
+func _start_roll() -> void:
+
+
+	if not movement:
+
+		return
+
+
+	if state == State.DASH or state == State.ROLL or state == State.DEAD:
+
+		return
+
+
+	# Can interrupt attack with a roll
+	if state == State.ATTACK:
+
+		_cancel_attack_state()
+
+
+	state = State.ROLL
+
+	movement.start_roll(last_direction)
+
+	velocity = movement.calculate_velocity()
+
+
+	if animator:
+
+		animator.play_roll(
+			animator.get_dir_from_vector(last_direction)
+		)
+
+
+	# Roll duration is frame-dependent; animation_finished signal handles ending it
+
+
+
+# Block, squat, and jump removed
+
+
+
+
+
+func _on_player_animation_finished() -> void:
+
+	# Handle dash/roll end — these are frame-dependent, not timer-based
 	if state == State.DASH:
 
 		state = State.IDLE
 
-		movement.end_special()
+		if movement:
+
+			movement.end_special()
 
 
-
-func _start_block() -> void:
-
-
-	if not block_comp:
-
-		return
-
-
-	if state == State.ATTACK or state == State.HURT or state == State.DEAD:
-
-		return
-
-
-	block_comp.toggle_block()
-
-
-
-func _start_squat() -> void:
-
-
-	if state == State.ATTACK or state == State.HURT or state == State.DEAD:
-
-		return
-
-
-	if state == State.SQUAT:
+	elif state == State.ROLL:
 
 		state = State.IDLE
 
-		movement.end_special()
+		if movement:
 
-		return
-
-
-	state = State.SQUAT
-
-	movement.start_squat()
-
-	velocity = Vector2.ZERO
+			movement.end_special()
 
 
-
-func _start_jump() -> void:
-
-
-	if state == State.ATTACK or state == State.HURT or state == State.DEAD:
-
-		return
-
-
-	if state == State.JUMP:
-
-		return
-
-
-	state = State.JUMP
-
-	movement.start_jump(last_direction)
-
-	velocity = movement.calculate_velocity()
-
-
-	await get_tree().create_timer(movement.jump_duration).timeout
-
-
-	if state == State.JUMP:
-
-		state = State.IDLE
-
-		movement.end_special()
-
-
-
+	# Walktorun is handled by the animation component's play_run detection
+	# ATTACK is handled by attack_animation_finished signal
 
 
 func _on_attack_started(direction: String) -> void:
+
+
+	# Don't override combo attack animations (attack2/attack3 handled by _advance_combo)
+	if combo_step > 0:
+
+		return
+
 
 
 	if animator:
@@ -421,12 +601,30 @@ func _on_attack_started(direction: String) -> void:
 
 
 
-func _on_attack_finished() -> void:
+func _on_attack_animation_finished(completed_combo_step: int) -> void:
+
+	# End the attack component's attack state
+	if attack:
+
+		attack.end_attack()
 
 
-	if state == State.ATTACK:
+	# If combo was buffered during this attack animation, advance immediately
+	if combo_buffered and completed_combo_step < 3:
 
-		state = State.IDLE
+		combo_buffered = false
+
+		_advance_combo()
+
+		return
+
+
+	# No further combo — return to idle
+	combo_step = 0
+
+	combo_timer = 0.0
+
+	state = State.IDLE
 
 
 
@@ -436,39 +634,60 @@ func _on_attack_finished() -> void:
 # DAMAGE
 # ==================================================
 
+func _is_invincible_frame() -> bool:
+
+
+	# Always invincible when dead
+	if state == State.DEAD:
+
+		return true
+
+
+	# Only dash/roll/backdash have invincibility windows
+	if state != State.DASH and state != State.ROLL:
+
+		return false
+
+
+	var anim_sprite: AnimatedSprite2D = $player_animation
+
+	if not anim_sprite or not anim_sprite.is_playing():
+
+		return false
+
+
+	var anim_name: String = anim_sprite.animation
+
+	if not anim_name.begins_with("dash_") and not anim_name.begins_with("roll_") and not anim_name.begins_with("backdash_"):
+
+		return false
+
+
+	var total_frames: int = anim_sprite.sprite_frames.get_frame_count(
+
+		anim_name
+	)
+
+	var half_frames: int = total_frames / 2
+
+
+	# First half of the animation = invincible
+	return anim_sprite.frame < half_frames
+
+
+
 func _on_damaged(
 	_amount: int,
 	_remaining: int
 ) -> void:
 
 
-	if state == State.DEAD:
+	if _is_invincible_frame():
 
 		return
 
-	state = State.HURT
-
-
-
-	if animator and animator.has_method("play_hurt"):
-
-		animator.play_hurt(
-			animator.get_dir_from_vector(
-				last_direction
-			)
-		)
-
-
-
-	await get_tree().create_timer(
-		0.25
-	).timeout
-
-
-
-	if state != State.DEAD:
-
-		state = State.IDLE
+	# Hurt animation removed — player uses visual hit indicator later
+	# For now, just let the player continue whatever they were doing
 
 
 
@@ -520,26 +739,7 @@ func _push_colliding_enemies() -> void:
 
 
 
-# ==================================================
-# BLOCK CALLBACKS
-# ==================================================
-
-func _on_block_started() -> void:
-
-	state = State.BLOCK
-
-	velocity = Vector2.ZERO
-
-	last_direction = movement.get_last_dir()
-
-
-
-func _on_block_ended() -> void:
-
-	if state == State.BLOCK:
-
-		state = State.IDLE
-
+# Block callbacks removed
 
 
 # ==================================================
@@ -589,14 +789,14 @@ func _update_animation() -> void:
 
 			animator.play_run(
 				direction
-
-
 			)
 
 
-		State.HURT:
+		State.SPRINT:
 
-			pass
+			animator.play_sprint(
+				direction
+			)
 
 
 		State.DEAD:
@@ -604,34 +804,11 @@ func _update_animation() -> void:
 			pass
 
 
-		State.DASH:
+		# DASH and ROLL are handled by the animation component's
+		# _on_movement_state_changed signal handler, not here.
+		# This avoids re-starting their animations every physics frame.
 
-			animator.play_dash(
-				direction
-			)
-
-
-		State.BLOCK:
-
-			if block_comp and block_comp.get_is_blocking():
-
-				animator.play_block(
-					direction
-				)
-
-
-		State.SQUAT:
-
-			animator.play_squat(
-				direction
-			)
-
-
-		State.JUMP:
-
-			animator.play_jump(
-				direction
-			)
+		# Block removed
 
 
 

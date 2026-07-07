@@ -19,7 +19,8 @@ signal stamina_regenerated()
 
 # Inspector-accessible properties — tweak per entity in the editor.
 @export var max_stamina: float = 100.0
-@export var depletion_rate: float = 20.0              # points lost per second while sprinting
+@export var depletion_rate: float = 20.0              # points lost per second while running
+@export var sprint_depletion_rate: float = 35.0        # points lost per second while sprinting
 @export var regeneration_rate: float = 25.0            # points gained per second while resting
 @export var regen_delay: float = 1.0                   # seconds before regen begins after sprinting
 @export var min_speed_ratio: float = 0.5               # speed multiplier when stamina = 0 (0.5 ≈ walk speed / run speed)
@@ -49,12 +50,19 @@ func _process(delta: float) -> void:
 	if not active or _movement == null:
 		return
 
-	# Determine if the player is actively sprinting.
-	var is_sprinting: bool = _movement.move_state == MovementComponent.MoveState.RUN
+	# Determine if the player is running or sprinting.
+	var move_state: int = _movement.move_state
 
-	if is_sprinting and current_stamina > 0.0:
+	var is_running: bool = move_state == MovementComponent.MoveState.RUN
+
+	var is_sprinting: bool = move_state == MovementComponent.MoveState.SPRINT
+
+	var depleting: bool = is_running or is_sprinting
+
+	if depleting and current_stamina > 0.0:
 		# --- Deplete ---
-		current_stamina = maxf(0.0, current_stamina - depletion_rate * delta)
+		var rate: float = sprint_depletion_rate if is_sprinting else depletion_rate
+		current_stamina = maxf(0.0, current_stamina - rate * delta)
 		_regen_timer = 0.0
 
 		if current_stamina <= 0.0 and not _is_empty:

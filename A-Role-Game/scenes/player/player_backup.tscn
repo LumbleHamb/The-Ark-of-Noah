@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://ba5qhslvdxcx6"]
+[gd_scene format=3]
 
 [ext_resource type="Texture2D" uid="uid://7c4gcnxfltgp" path="res://assets/player/player_attack.png" id="1_lvxji"]
 [ext_resource type="Texture2D" uid="uid://du0nakt4337al" path="res://assets/player/player_idle.png" id="2_p47bc"]

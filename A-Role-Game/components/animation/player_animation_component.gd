@@ -10,6 +10,9 @@ extends Component
 ## run_W
 ## attack_NE
 
+## Emitted when an attack animation (attack/attack2/attack3) finishes playing all frames.
+signal attack_animation_finished(combo_step: int)
+
 
 @export_category("References")
 
@@ -20,15 +23,11 @@ extends Component
 
 @export var base_offset: Vector2 = Vector2(-64, -86)
 
-@export var attack_offset: Vector2 = Vector2(-96, -118)
+@export var attack_offset: Vector2 = Vector2(-64, -86)
 
 @export var dash_offset: Vector2 = Vector2(-64, -86)
 
 @export var block_offset: Vector2 = Vector2(-64, -86)
-
-@export var squat_offset: Vector2 = Vector2(-64, -86)
-
-@export var jump_offset: Vector2 = Vector2(-64, -86)
 
 
 
@@ -40,9 +39,15 @@ var current_direction: String = "S"
 
 var is_attacking: bool = false
 
-var is_hurt: bool = false
-
 var is_dead: bool = false
+
+# Set to true when walk→run transition plays walktorun instead of run.
+# Cleared when walktorun animation finishes and run actually plays.
+var _walktorun_pending: bool = false
+
+# Set to true when run→walk transition plays walktorun in reverse (runtowalk).
+# Cleared when the reversed walktorun animation finishes.
+var _runtowalk_pending: bool = false
 
 
 
@@ -70,6 +75,15 @@ func _component_ready() -> void:
 	if anim_sprite:
 
 		anim_sprite.offset = base_offset
+
+		# Connect once instead of per-call
+		if not anim_sprite.animation_finished.is_connected(
+			_on_any_animation_finished
+		):
+
+			anim_sprite.animation_finished.connect(
+				_on_any_animation_finished
+			)
 
 
 
@@ -101,8 +115,6 @@ func setup(sprite: AnimatedSprite2D) -> void:
 
 
 
-
-
 # ==================================================
 # MOVEMENT ANIMATIONS
 # ==================================================
@@ -112,7 +124,7 @@ func _on_movement_state_changed(
 ) -> void:
 
 
-	if is_attacking or is_hurt or is_dead:
+	if is_attacking or is_dead:
 
 		return
 
@@ -139,22 +151,26 @@ func _on_movement_state_changed(
 
 
 
+		MovementComponent.MoveState.SPRINT:
+
+			play_sprint(current_direction)
+
+
+
 		MovementComponent.MoveState.DASH:
 
-			play_dash(current_direction)
+			if movement and movement.is_backdash:
+
+				play_backdash(current_direction)
+
+			else:
+
+				play_dash(current_direction)
 
 
+		MovementComponent.MoveState.ROLL:
 
-		MovementComponent.MoveState.JUMP:
-
-			play_jump(current_direction)
-
-
-
-		MovementComponent.MoveState.SQUAT:
-
-			play_squat(current_direction)
-
+			play_roll(current_direction)
 
 
 
@@ -170,10 +186,9 @@ func _on_direction_changed(
 
 
 
-	if not is_attacking and not is_hurt and not is_dead:
+	if not is_attacking and not is_dead:
 
 		_update_current_animation()
-
 
 
 
@@ -207,19 +222,28 @@ func _update_current_animation() -> void:
 			play_run(current_direction)
 
 
+
+		MovementComponent.MoveState.SPRINT:
+
+			play_sprint(current_direction)
+
+
+
 		MovementComponent.MoveState.DASH:
 
-			play_dash(current_direction)
+			if movement and movement.is_backdash:
+
+				play_backdash(current_direction)
+
+			else:
+
+				play_dash(current_direction)
 
 
-		MovementComponent.MoveState.JUMP:
 
-			play_jump(current_direction)
+		MovementComponent.MoveState.ROLL:
 
-
-		MovementComponent.MoveState.SQUAT:
-
-			play_squat(current_direction)
+			play_roll(current_direction)
 
 
 
@@ -250,46 +274,86 @@ func play_attack(dir_key: String) -> void:
 	anim_sprite.frame = 0
 
 
+	anim_sprite.speed_scale = 1.0
+
 	anim_sprite.play(
 		"attack_" + dir_key
+	)
+func play_attack2(dir_key: String) -> void:
+
+
+	if not anim_sprite:
+
+		return
+
+
+
+	is_attacking = true
+
+
+	current_direction = dir_key
+
+
+	anim_sprite.offset = attack_offset
+
+
+	anim_sprite.stop()
+
+	anim_sprite.frame = 0
+
+
+	anim_sprite.speed_scale = 1.0
+
+	anim_sprite.play(
+		"attack2_" + dir_key
 	)
 
 
 
-	if not anim_sprite.animation_finished.is_connected(
-		_on_attack_finished
-	):
+func play_attack3(dir_key: String) -> void:
 
-		anim_sprite.animation_finished.connect(
-			_on_attack_finished
-		)
 
+	if not anim_sprite:
+
+		return
 
 
 
+	is_attacking = true
 
-func _on_attack_finished() -> void:
+
+	current_direction = dir_key
+
+
+	anim_sprite.offset = attack_offset
+
+
+	anim_sprite.stop()
+
+	anim_sprite.frame = 0
+
+
+	anim_sprite.speed_scale = 1.0
+
+	anim_sprite.play(
+		"attack3_" + dir_key
+	)
+
+
+
+func cancel_attack() -> void:
 
 
 	is_attacking = false
 
 
-	if is_dead or is_hurt:
+	if anim_sprite:
 
-		return
-
-
-
-	anim_sprite.offset = base_offset
-
-
-	_update_current_animation()
+		anim_sprite.offset = base_offset
 
 
 
-
-
-func play_hurt(dir_key: String = "") -> void:
+func _on_any_animation_finished() -> void:
 
 
 	if not anim_sprite:
@@ -297,76 +361,73 @@ func play_hurt(dir_key: String = "") -> void:
 		return
 
 
-
-	is_hurt = true
-
+	var anim_name: String = anim_sprite.animation
 
 
-	if dir_key != "":
+	# Handle attack animation finishes — emit signal for attack combo
+	if anim_name.begins_with("attack"):
 
-		current_direction = dir_key
+		is_attacking = false
 
+		anim_sprite.offset = base_offset
 
-
-	anim_sprite.offset = base_offset
-
-
-	anim_sprite.play(
-		"hurt_" + current_direction
-	)
-
-
-
-
-
-func finish_hurt() -> void:
-
-
-	is_hurt = false
-
-
-	if not is_attacking and not is_dead:
-
-		_update_current_animation()
-
-
-
-
-
-func play_death(dir_key: String = "") -> void:
-
-
-	if not anim_sprite:
+		attack_animation_finished.emit(_combo_step_from_name(anim_name))
 
 		return
 
 
+	# Handle walktorun -> run transition (forward) or runtowalk (reverse)
+	if anim_name.begins_with("walktorun"):
 
-	is_dead = true
+		anim_sprite.speed_scale = 1.0
+
+		if _runtowalk_pending:
+
+			_runtowalk_pending = false
+
+			if movement:
+
+				_update_current_animation()
+
+			return
 
 
-	if dir_key != "":
+		_walktorun_pending = false
 
-		current_direction = dir_key
+		if movement:
+
+			match movement.move_state:
+
+				MovementComponent.MoveState.RUN:
+
+					play_run(current_direction)
+
+				_:
+
+					_update_current_animation()
+
+		return
 
 
-
+	# For one-shot action animations (dash, roll, backdash), just restore offset.
+	# The player's own animation_finished handler will end those states.
 	anim_sprite.offset = base_offset
 
 
-	anim_sprite.play(
-		"death_" + current_direction
-	)
+func _combo_step_from_name(anim_name: String) -> int:
+
+	if anim_name.begins_with("attack2"):
+
+		return 2
+
+	if anim_name.begins_with("attack3"):
+
+		return 3
+
+	return 1
 
 
-
-
-
-# ==================================================
-# BASIC ANIMATIONS
-# ==================================================
-
-func play_idle(dir_key: String) -> void:
+func play_walktorun(dir_key: String) -> void:
 
 
 	if not anim_sprite:
@@ -379,14 +440,12 @@ func play_idle(dir_key: String) -> void:
 
 
 	_play_if_changed(
-		"idle_" + dir_key
+		"walktorun_" + dir_key
 	)
 
 
 
-
-
-func play_walk(dir_key: String) -> void:
+func play_runtowalk(dir_key: String) -> void:
 
 
 	if not anim_sprite:
@@ -398,29 +457,21 @@ func play_walk(dir_key: String) -> void:
 	anim_sprite.offset = base_offset
 
 
-	_play_if_changed(
-		"walk_" + dir_key
-	)
+	var anim_name: String = "walktorun_" + dir_key
+
+	if not _has_animation(anim_name):
+
+		anim_name = "walktorun_E"
 
 
+	var frame_count: int = anim_sprite.sprite_frames.get_frame_count(anim_name) - 1
 
 
+	anim_sprite.frame = frame_count
 
-func play_run(dir_key: String) -> void:
+	anim_sprite.speed_scale = -1.0
 
-
-	if not anim_sprite:
-
-		return
-
-
-
-	anim_sprite.offset = base_offset
-
-
-	_play_if_changed(
-		"run_" + dir_key
-	)
+	anim_sprite.play()
 
 
 
@@ -435,13 +486,73 @@ func play_dash(dir_key: String) -> void:
 
 	anim_sprite.offset = dash_offset
 
-	anim_sprite.stop()
 
-	anim_sprite.frame = 0
+	var final_dir: String = dir_key
+
+	if not _has_animation("dash_" + dir_key):
+
+		final_dir = "E" if dir_key in ["E", "SE", "NE"] else "W"
 
 
-	anim_sprite.play(
-		"dash_" + dir_key
+	_play_if_changed(
+
+		"dash_" + final_dir
+
+	)
+
+
+
+func play_roll(dir_key: String) -> void:
+
+
+	if not anim_sprite:
+
+		return
+
+
+
+	anim_sprite.offset = dash_offset
+
+
+	var final_dir: String = dir_key
+
+	if not _has_animation("roll_" + dir_key):
+
+		final_dir = "E" if dir_key in ["E", "SE", "NE"] else "W"
+
+
+	_play_if_changed(
+
+		"roll_" + final_dir
+
+	)
+
+
+
+func play_backdash(dir_key: String) -> void:
+
+
+	if not anim_sprite:
+
+		return
+
+
+
+	anim_sprite.offset = dash_offset
+
+
+	var final_dir: String = dir_key
+
+	if not _has_animation("backdash_" + dir_key):
+
+		final_dir = "E" if dir_key in ["E", "SE", "NE"] else "W"
+
+
+
+	_play_if_changed(
+
+		"backdash_" + final_dir
+
 	)
 
 
@@ -464,52 +575,12 @@ func play_block(dir_key: String) -> void:
 
 
 
-func play_squat(dir_key: String) -> void:
-
-
-	if not anim_sprite:
-
-		return
-
-
-
-	anim_sprite.offset = squat_offset
-
-
-	_play_if_changed(
-		"squat_" + dir_key
-	)
-
-
-
-func play_jump(dir_key: String) -> void:
-
-
-	if not anim_sprite:
-
-		return
-
-
-
-	anim_sprite.offset = jump_offset
-
-	anim_sprite.stop()
-
-	anim_sprite.frame = 0
-
-
-	anim_sprite.play(
-		"jump_" + dir_key
-	)
-
-
-
-
-
 func _play_if_changed(animation_name: String) -> void:
 
 
 	if anim_sprite.animation != animation_name:
+
+		anim_sprite.speed_scale = 1.0
 
 		anim_sprite.play(
 			animation_name
@@ -518,10 +589,34 @@ func _play_if_changed(animation_name: String) -> void:
 
 
 
-
 # ==================================================
 # HELPERS
 # ==================================================
+
+func _has_animation(anim_name: String) -> bool:
+
+
+	if not anim_sprite:
+
+		return false
+
+
+
+	return anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation(anim_name)
+
+
+
+
+func _fallback_dir(dir_key: String) -> String:
+
+
+	if _has_animation("dash_" + dir_key):
+
+		return dir_key
+
+
+	return "E" if dir_key in ["E", "SE", "NE"] else "W"
+
 
 func stop_animation() -> void:
 
@@ -533,7 +628,6 @@ func stop_animation() -> void:
 
 
 
-
 func is_playing() -> bool:
 
 
@@ -541,7 +635,6 @@ func is_playing() -> bool:
 		anim_sprite != null
 		and anim_sprite.is_playing()
 	)
-
 
 
 
@@ -601,3 +694,167 @@ func get_dir_from_vector(v: Vector2) -> String:
 	else:
 
 		return "NE"
+
+
+# ==================================================
+# BASIC ANIMATIONS
+# ==================================================
+
+func play_idle(dir_key: String) -> void:
+
+
+	if not anim_sprite:
+
+		return
+
+
+	_walktorun_pending = false
+
+	_runtowalk_pending = false
+
+	anim_sprite.speed_scale = 1.0
+
+
+	anim_sprite.offset = base_offset
+
+
+	_play_if_changed(
+		"idle_" + dir_key
+	)
+
+
+
+
+func play_walk(dir_key: String) -> void:
+
+
+	if not anim_sprite:
+
+		return
+
+
+
+	# If walktorun was pending, clear it — shift was released mid-transition
+	_walktorun_pending = false
+
+
+	# If currently playing a run animation, transition through runtowalk first
+	var cur: String = anim_sprite.animation
+
+	if not _runtowalk_pending and cur.begins_with("run_"):
+
+		_runtowalk_pending = true
+
+		play_runtowalk(dir_key)
+
+		return
+
+
+	# If a runtowalk transition is still in progress, don't override it
+	if _runtowalk_pending:
+
+		return
+
+
+
+	anim_sprite.offset = base_offset
+
+
+	_play_if_changed(
+		"walk_" + dir_key
+	)
+
+
+
+
+func play_run(dir_key: String) -> void:
+
+
+	if not anim_sprite:
+
+		return
+
+
+	# Cancel any runtowalk transition (shift pressed again during reverse)
+	_runtowalk_pending = false
+
+	anim_sprite.speed_scale = 1.0
+
+
+	# If currently playing a walk animation, transition through walktorun first
+	var cur: String = anim_sprite.animation
+
+	if not _walktorun_pending and cur.begins_with("walk_"):
+
+		_walktorun_pending = true
+
+		play_walktorun(dir_key)
+
+		return
+
+
+	# If a walktorun transition is still in progress, don't override it
+	if _walktorun_pending:
+
+		return
+
+
+
+	anim_sprite.offset = base_offset
+
+
+	_play_if_changed(
+		"run_" + dir_key
+	)
+
+
+
+func play_sprint(dir_key: String) -> void:
+
+
+	if not anim_sprite:
+
+		return
+
+
+	_walktorun_pending = false
+
+	_runtowalk_pending = false
+
+	anim_sprite.speed_scale = 1.0
+
+
+	anim_sprite.offset = base_offset
+
+
+	_play_if_changed(
+		"sprint_" + dir_key
+	)
+
+
+
+func play_death(dir_key: String = "") -> void:
+
+
+	if not anim_sprite:
+
+		return
+
+
+
+	is_dead = true
+
+
+	if dir_key != "":
+
+		current_direction = dir_key
+
+
+
+	anim_sprite.offset = base_offset
+
+	anim_sprite.speed_scale = 1.0
+
+	anim_sprite.play(
+		"death_" + current_direction
+	)

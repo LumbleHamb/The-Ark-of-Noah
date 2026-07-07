@@ -21,17 +21,17 @@ signal movement_state_changed(state: MoveState)
 
 @export var run_speed: float = 140.0
 
-## Multiplier applied when dashing (base speed × dash_mult).
-@export var dash_mult: float = 2.5
+## Speed when sprinting (faster than run_speed).
+@export var sprint_speed: float = 220.0
 
-## Multiplier applied when jumping/lunging.
-@export var jump_mult: float = 1.5
+## Forward dash speed.
+@export var dash_speed: float = 350.0
 
-## Duration (seconds) of a dash before returning to normal movement.
-@export var dash_duration: float = 0.3
+## Backward dash speed (often slower than forward dash).
+@export var backdash_speed: float = 280.0
 
-## Duration (seconds) of a jump lunge.
-@export var jump_duration: float = 0.2
+## Speed when rolling.
+@export var roll_speed: float = 180.0
 
 
 @export var analog_walk_threshold: float = 0.18
@@ -59,6 +59,9 @@ var input_enabled: bool = true
 ## Direction this entity is dashing / jumping toward.
 var special_dir: Vector2 = Vector2.ZERO
 
+## True when the current DASH state is a backdash (uses backdash_speed + backdash animation).
+var is_backdash: bool = false
+
 
 
 
@@ -68,9 +71,9 @@ enum MoveState
 	IDLE,
 	WALK,
 	RUN,
+	SPRINT,
 	DASH,
-	JUMP,
-	SQUAT
+	ROLL,
 }
 
 
@@ -112,7 +115,7 @@ func read_input() -> void:
 
 
 	# Don't override special states (DASH, JUMP, SQUAT) with normal movement.
-	if move_state == MoveState.DASH or move_state == MoveState.JUMP or move_state == MoveState.SQUAT:
+	if move_state == MoveState.DASH or move_state == MoveState.ROLL:
 
 		return
 
@@ -176,15 +179,15 @@ func calculate_velocity() -> Vector2:
 
 		MoveState.DASH:
 
-			return special_dir * run_speed * dash_mult * current_speed_mod
+			var dash_spd: float = backdash_speed if is_backdash else dash_speed
 
-		MoveState.JUMP:
+			return special_dir * dash_spd * current_speed_mod
 
-			return special_dir * run_speed * jump_mult * current_speed_mod
+		MoveState.ROLL:
 
-		MoveState.SQUAT:
+			return special_dir * roll_speed * current_speed_mod
 
-			return Vector2.ZERO
+		# JUMP and SQUAT removed
 
 
 	if input_dir == Vector2.ZERO or not input_enabled:
@@ -216,46 +219,85 @@ func calculate_velocity() -> Vector2:
 	if using_joystick:
 
 
-		if input_strength >= analog_run_threshold:
+		var sprinting := Input.is_action_pressed("sprint")
+
+
+
+		if sprinting and input_strength >= analog_run_threshold:
+
+
+			move_state = MoveState.SPRINT
+
+
+
+		elif input_strength >= analog_run_threshold:
+
 
 			move_state = MoveState.RUN
 
 
+
 		else:
+
 
 			move_state = MoveState.WALK
 
 
 
 
+		var spd: float = (
 
-		var analog_speed := lerpf(
-			walk_speed * 0.35,
-			run_speed,
-			input_strength
+
+			sprint_speed
+
+
+			if move_state == MoveState.SPRINT
+
+
+			else lerpf(walk_speed * 0.35, run_speed, input_strength)
+
+
 		)
+
 
 
 
 		return (
+
+
 			input_dir.normalized()
+
+
 			*
-			analog_speed
+
+
+			spd
+
+
 			*
+
+
 			current_speed_mod
+
+
 		)
-
-
-
 
 
 	var running := Input.is_action_pressed(
 		"run"
 	)
 
+	var sprinting := Input.is_action_pressed(
+		"sprint"
+	)
 
 
-	if running:
+
+	if running and sprinting:
+
+		move_state = MoveState.SPRINT
+
+	elif running:
 
 		move_state = MoveState.RUN
 
@@ -268,9 +310,13 @@ func calculate_velocity() -> Vector2:
 
 
 	var speed := (
-		run_speed
-		if running
-		else walk_speed
+		sprint_speed
+		if move_state == MoveState.SPRINT
+		else (
+			run_speed
+			if running
+			else walk_speed
+		)
 	)
 
 
@@ -320,30 +366,38 @@ func set_input_enabled(
 # SPECIAL MOVEMENT STATES
 # ==================================================
 
-## Start a dash in the given direction.
+## Start a forward dash in the given direction.
 func start_dash(dir: Vector2) -> void:
+
+	is_backdash = false
 
 	special_dir = dir
 
 	move_state = MoveState.DASH
 
 
-## Start a jump/lunge in the given direction.
-func start_jump(dir: Vector2) -> void:
+## Start a backward dash (backdash) in the given direction.
+func start_backdash(dir: Vector2) -> void:
+
+	is_backdash = true
 
 	special_dir = dir
 
-	move_state = MoveState.JUMP
+	move_state = MoveState.DASH
 
 
-## Toggle squat state on/off.
-func start_squat() -> void:
+## Start a roll in the given direction.
+func start_roll(dir: Vector2) -> void:
 
-	move_state = MoveState.SQUAT
+	special_dir = dir
+
+	move_state = MoveState.ROLL
 
 
 ## Return to IDLE from any special movement state.
 func end_special() -> void:
+
+	is_backdash = false
 
 	move_state = MoveState.IDLE
 
@@ -353,8 +407,7 @@ func is_in_special_state() -> bool:
 
 	return (
 		move_state == MoveState.DASH
-		or move_state == MoveState.JUMP
-		or move_state == MoveState.SQUAT
+		or move_state == MoveState.ROLL
 	)
 
 

@@ -248,9 +248,34 @@ func end_attack() -> void:
 
 	hit_targets.clear()
 
-
-
 	attack_finished.emit()
+
+
+## Force-start an attack, bypassing can_attack checks.
+## Used by combo systems where attacks must chain without cooldown.
+func start_attack_forced(direction: String = "S") -> void:
+
+	is_attacking = true
+
+	current_direction = direction
+
+	attack_timer = attack_duration
+
+	cooldown_timer = attack_cooldown
+
+	hit_targets.clear()
+
+
+
+	if hitbox:
+
+		hitbox.position = hitbox_offsets.get(direction, Vector2.ZERO)
+
+		hitbox.monitoring = true
+
+
+
+	attack_started.emit(direction)
 
 
 
