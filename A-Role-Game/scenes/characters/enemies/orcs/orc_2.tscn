@@ -579,15 +579,18 @@ height = 38.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0b61b"]
 size = Vector2(74, 25)
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ojsl5"]
+radius = 53.0
+height = 154.0
+
 [node name="orc 2" type="CharacterBody2D" unique_id=1527895450]
 collision_layer = 7
 collision_mask = 7
 
 [node name="orc 2 animation" type="AnimatedSprite2D" parent="." unique_id=967812934]
 sprite_frames = SubResource("SpriteFrames_wodrh")
-animation = &"orc 2 attack"
-frame = 15
-frame_progress = 1.0
+animation = &"orc 2 attack 2 spin"
+frame_progress = 0.4840402
 
 [node name="orc 2 collision" type="CollisionShape2D" parent="." unique_id=1150959906]
 position = Vector2(0, 1)
@@ -601,6 +604,12 @@ start_hp = 10
 
 [node name="enemyAI" parent="." unique_id=836135547 node_paths=PackedStringArray("sprite") instance=ExtResource("12_08dh3")]
 sprite = NodePath("../orc 2 animation")
+special_attack_enabled = true
+special_attack_chance = 1.0
+special_prep_animation = "orc 2 attack 2 prep spin"
+special_spin_animation = "orc 2 attack 2 spin"
+special_end_animation = "orc 2 attack 2 ending spin"
+hitbox_spin_path = NodePath("../hitbox_spin")
 idle_animation = "orc 2 idle"
 walk_animation = "orc 2 walk"
 attack_animation = "orc 2 attack"
@@ -614,3 +623,12 @@ collision_mask = 7
 [node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox" unique_id=686464474]
 position = Vector2(60, 2)
 shape = SubResource("RectangleShape2D_0b61b")
+
+[node name="hitbox_spin" type="Area2D" parent="." unique_id=526659450]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox_spin" unique_id=1389247153]
+position = Vector2(-11, -2)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_ojsl5")

@@ -7,6 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://cifa0utp6w4pd" path="res://assets/Characters/Enemies/Enemy 1/enemy 1-hurt.png" id="5_d713t"]
 [ext_resource type="Texture2D" uid="uid://ca1fdsfxl8juh" path="res://assets/Characters/Enemies/Enemy 1/enemy 1-idle.png" id="6_k3wdx"]
 [ext_resource type="Texture2D" uid="uid://bo1wix24hoo1k" path="res://assets/Characters/Enemies/Enemy 1/enemy 1-walk.png" id="7_abltw"]
+[ext_resource type="PackedScene" path="res://components/attack/attack_component.tscn" id="8_dg3ev"]
+[ext_resource type="PackedScene" uid="uid://dwvgxexymy6is" path="res://components/enemies/enemyAI.tscn" id="9_t70fo"]
+[ext_resource type="PackedScene" path="res://components/health/health_component.tscn" id="10_21u0k"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wap1b"]
 atlas = ExtResource("1_b7rk5")
@@ -512,7 +515,7 @@ size = Vector2(33, 29)
 
 [node name="crystal orc animation" type="AnimatedSprite2D" parent="." unique_id=967812934]
 sprite_frames = SubResource("SpriteFrames_wodrh")
-animation = &"crystal orc walk"
+animation = &"crystal orc attack 2 projectiles"
 
 [node name="crystal orc hitbox" type="CollisionShape2D" parent="." unique_id=1150959906]
 position = Vector2(-14, -7)
@@ -523,3 +526,41 @@ shape = SubResource("CapsuleShape2D_wodrh")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox" unique_id=1539772422]
 position = Vector2(25, -7)
 shape = SubResource("RectangleShape2D_0b61b")
+
+[node name="AttackComponent" parent="." unique_id=1959478086 node_paths=PackedStringArray("hitbox") instance=ExtResource("8_dg3ev")]
+hitbox = NodePath("../hitbox")
+
+[node name="enemyAI" parent="." unique_id=836135547 node_paths=PackedStringArray("sprite") instance=ExtResource("9_t70fo")]
+sprite = NodePath("../crystal orc animation")
+move_speed = null
+detection_range = null
+personal_space = null
+push_away_strength = null
+attack_range = null
+attack_cooldown = null
+special_attack_enabled = true
+special_attack_chance = null
+special_prep_animation = null
+special_spin_animation = null
+special_end_animation = null
+special_charge_speed = null
+special_prep_duration = 0.6
+special_spin_duration = 0.4
+special_end_duration = 0.5
+hitbox_spin_path = null
+spin_attack_damage = null
+projectile_fx_animation = "crystal orc attack 2 projectiles"
+projectile_custom_prep = "crystal orc attack 2"
+projectile_spawn_offset = null
+projectile_damage = null
+projectile_hitbox_size = null
+ranged_attack_range = null
+idle_animation = "crystal orc idle"
+walk_animation = "crystal orc walk"
+attack_animation = "crystal orc attack"
+hurt_animation = "crystal orc hurt"
+death_animation = "crystal orc death"
+
+[node name="HealthComponent" parent="." unique_id=1751957089 instance=ExtResource("10_21u0k")]
+max_hp = 100
+start_hp = 10

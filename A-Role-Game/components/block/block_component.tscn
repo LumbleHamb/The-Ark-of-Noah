@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://b3l0ckc0mp0n3nt"]
+
+[ext_resource type="Script" path="res://components/block/block_component.gd" id="1_x"]
+
+[node name="BlockComponent" type="Node"]
+script = ExtResource("1_x")

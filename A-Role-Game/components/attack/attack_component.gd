@@ -44,6 +44,10 @@ signal body_hit(body: Node)
 
 @export var attack_damage: int = 1
 
+## If true, this entity's attacks can also damage non-player entities (allies/enemies).
+## Default false: enemies only damage the player.
+@export var can_hit_allies: bool = false
+
 @export var knockback_force: float = 80.0
 
 
@@ -275,10 +279,12 @@ func _on_hitbox_body_entered(body: Node) -> void:
 
 
 	if body == get_entity():
-
 		return
 
-
+	# Prevent friendly fire: enemies only damage the player unless can_hit_allies is true
+	if not get_entity().is_in_group("player") and not body.is_in_group("player"):
+		if not can_hit_allies:
+			return
 
 	if body in hit_targets:
 

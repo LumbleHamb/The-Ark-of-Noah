@@ -16,6 +16,7 @@ extends CharacterBody2D
 ## - AttackComponent
 ## - HealthComponent
 ## - StaminaComponent
+## - BlockComponent
 
 
 # ==================================================
@@ -32,6 +33,7 @@ extends CharacterBody2D
 
 @onready var stamina: StaminaComponent = $StaminaComponent
 
+var block_comp: Node
 
 
 # ==================================================
@@ -45,7 +47,11 @@ enum State
 	RUN,
 	ATTACK,
 	HURT,
-	DEAD
+	DEAD,
+	DASH,
+	BLOCK,
+	SQUAT,
+	JUMP
 }
 
 
@@ -62,6 +68,12 @@ var input_enabled: bool = true
 # ==================================================
 
 func _ready() -> void:
+
+	# Set FLOATING motion mode for top-down physics (better push behavior)
+	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+
+
+	block_comp = get_node("BlockComponent")
 
 
 	if attack:
@@ -87,6 +99,16 @@ func _ready() -> void:
 		)
 
 
+
+	if block_comp:
+
+		block_comp.block_started.connect(
+			_on_block_started
+		)
+
+		block_comp.block_ended.connect(
+			_on_block_ended
+		)
 
 
 
@@ -121,19 +143,27 @@ func _physics_process(_delta: float) -> void:
 
 
 
-	# Attack and hurt override movement
-	if state != State.ATTACK and state != State.HURT:
+	# Attack and hurt override movement input, but preserve velocity
+	# so the player slides through hits instead of dead-stopping.
+	var overrides_movement: bool = (
+		state == State.ATTACK
+		or state == State.HURT
+		or state == State.DASH
+		or state == State.BLOCK
+		or state == State.SQUAT
+		or state == State.JUMP
+	)
+
+	if not overrides_movement:
 
 		_process_movement()
-
-	else:
-
-		velocity = Vector2.ZERO
 
 
 
 	move_and_slide()
 
+	# Push enemies when colliding with them (prevents getting stuck)
+	_push_colliding_enemies()
 
 
 	_update_animation()
@@ -202,6 +232,26 @@ func _process_input() -> void:
 		_start_attack()
 
 
+	if Input.is_action_just_pressed("dash"):
+
+		_start_dash()
+
+
+	if Input.is_action_just_pressed("block"):
+
+		_start_block()
+
+
+	if Input.is_action_just_pressed("squat"):
+
+		_start_squat()
+
+
+	if Input.is_action_just_pressed("jump"):
+
+		_start_jump()
+
+
 
 
 
@@ -252,6 +302,110 @@ func _start_attack() -> void:
 
 
 
+func _start_dash() -> void:
+
+
+	if not movement:
+
+		return
+
+
+	if state == State.DASH or state == State.ATTACK or state == State.HURT or state == State.DEAD:
+
+		return
+
+
+	state = State.DASH
+
+	movement.start_dash(last_direction)
+
+	velocity = movement.calculate_velocity()
+
+
+	await get_tree().create_timer(movement.dash_duration).timeout
+
+
+	if state == State.DASH:
+
+		state = State.IDLE
+
+		movement.end_special()
+
+
+
+func _start_block() -> void:
+
+
+	if not block_comp:
+
+		return
+
+
+	if state == State.ATTACK or state == State.HURT or state == State.DEAD:
+
+		return
+
+
+	block_comp.toggle_block()
+
+
+
+func _start_squat() -> void:
+
+
+	if state == State.ATTACK or state == State.HURT or state == State.DEAD:
+
+		return
+
+
+	if state == State.SQUAT:
+
+		state = State.IDLE
+
+		movement.end_special()
+
+		return
+
+
+	state = State.SQUAT
+
+	movement.start_squat()
+
+	velocity = Vector2.ZERO
+
+
+
+func _start_jump() -> void:
+
+
+	if state == State.ATTACK or state == State.HURT or state == State.DEAD:
+
+		return
+
+
+	if state == State.JUMP:
+
+		return
+
+
+	state = State.JUMP
+
+	movement.start_jump(last_direction)
+
+	velocity = movement.calculate_velocity()
+
+
+	await get_tree().create_timer(movement.jump_duration).timeout
+
+
+	if state == State.JUMP:
+
+		state = State.IDLE
+
+		movement.end_special()
+
+
+
 
 
 func _on_attack_started(direction: String) -> void:
@@ -292,11 +446,7 @@ func _on_damaged(
 
 		return
 
-
-
 	state = State.HURT
-
-	velocity = Vector2.ZERO
 
 
 
@@ -342,6 +492,53 @@ func _on_died() -> void:
 		)
 
 
+
+
+
+# ==================================================
+# ENEMY PUSH
+# ==================================================
+
+func _push_colliding_enemies() -> void:
+
+	# When the player collides with enemies, push them away
+	# to prevent the 'getting stuck' problem.
+	for i in range(get_slide_collision_count()):
+		var collision := get_slide_collision(i)
+		if not collision:
+			continue
+		var collider := collision.get_collider()
+		if collider is CharacterBody2D and collider != self:
+			# Check if this has a HealthComponent (it is an enemy)
+			if collider.get_node_or_null("HealthComponent") != null:
+				# Push the enemy away from the player
+				var push_dir: Vector2 = (collider.global_position - global_position).normalized()
+				var dot_product: float = collider.velocity.dot(push_dir)
+				# Only add push if enemy is not already moving away fast enough
+				if dot_product < 80.0:
+					collider.velocity += push_dir * 200.0
+
+
+
+# ==================================================
+# BLOCK CALLBACKS
+# ==================================================
+
+func _on_block_started() -> void:
+
+	state = State.BLOCK
+
+	velocity = Vector2.ZERO
+
+	last_direction = movement.get_last_dir()
+
+
+
+func _on_block_ended() -> void:
+
+	if state == State.BLOCK:
+
+		state = State.IDLE
 
 
 
@@ -405,6 +602,36 @@ func _update_animation() -> void:
 		State.DEAD:
 
 			pass
+
+
+		State.DASH:
+
+			animator.play_dash(
+				direction
+			)
+
+
+		State.BLOCK:
+
+			if block_comp and block_comp.get_is_blocking():
+
+				animator.play_block(
+					direction
+				)
+
+
+		State.SQUAT:
+
+			animator.play_squat(
+				direction
+			)
+
+
+		State.JUMP:
+
+			animator.play_jump(
+				direction
+			)
 
 
 

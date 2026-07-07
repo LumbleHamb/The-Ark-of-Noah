@@ -4,6 +4,7 @@ extends Component
 
 ## Handles player movement input and velocity calculation.
 ## Sends movement updates to animation components.
+## Also manages special movement states: DASH, JUMP, SQUAT.
 
 
 
@@ -19,6 +20,18 @@ signal movement_state_changed(state: MoveState)
 @export var walk_speed: float = 80.0
 
 @export var run_speed: float = 140.0
+
+## Multiplier applied when dashing (base speed × dash_mult).
+@export var dash_mult: float = 2.5
+
+## Multiplier applied when jumping/lunging.
+@export var jump_mult: float = 1.5
+
+## Duration (seconds) of a dash before returning to normal movement.
+@export var dash_duration: float = 0.3
+
+## Duration (seconds) of a jump lunge.
+@export var jump_duration: float = 0.2
 
 
 @export var analog_walk_threshold: float = 0.18
@@ -43,6 +56,9 @@ var last_dir: Vector2 = Vector2.DOWN
 
 var input_enabled: bool = true
 
+## Direction this entity is dashing / jumping toward.
+var special_dir: Vector2 = Vector2.ZERO
+
 
 
 
@@ -51,7 +67,10 @@ enum MoveState
 {
 	IDLE,
 	WALK,
-	RUN
+	RUN,
+	DASH,
+	JUMP,
+	SQUAT
 }
 
 
@@ -90,6 +109,12 @@ func set_speed_modifier(
 # ==================================================
 
 func read_input() -> void:
+
+
+	# Don't override special states (DASH, JUMP, SQUAT) with normal movement.
+	if move_state == MoveState.DASH or move_state == MoveState.JUMP or move_state == MoveState.SQUAT:
+
+		return
 
 
 	if not input_enabled:
@@ -145,6 +170,21 @@ func read_input() -> void:
 # ==================================================
 
 func calculate_velocity() -> Vector2:
+
+
+	match move_state:
+
+		MoveState.DASH:
+
+			return special_dir * run_speed * dash_mult * current_speed_mod
+
+		MoveState.JUMP:
+
+			return special_dir * run_speed * jump_mult * current_speed_mod
+
+		MoveState.SQUAT:
+
+			return Vector2.ZERO
 
 
 	if input_dir == Vector2.ZERO or not input_enabled:
@@ -274,6 +314,48 @@ func set_input_enabled(
 		input_dir = Vector2.ZERO
 
 
+
+
+# ==================================================
+# SPECIAL MOVEMENT STATES
+# ==================================================
+
+## Start a dash in the given direction.
+func start_dash(dir: Vector2) -> void:
+
+	special_dir = dir
+
+	move_state = MoveState.DASH
+
+
+## Start a jump/lunge in the given direction.
+func start_jump(dir: Vector2) -> void:
+
+	special_dir = dir
+
+	move_state = MoveState.JUMP
+
+
+## Toggle squat state on/off.
+func start_squat() -> void:
+
+	move_state = MoveState.SQUAT
+
+
+## Return to IDLE from any special movement state.
+func end_special() -> void:
+
+	move_state = MoveState.IDLE
+
+
+## Returns true if currently in a special movement state.
+func is_in_special_state() -> bool:
+
+	return (
+		move_state == MoveState.DASH
+		or move_state == MoveState.JUMP
+		or move_state == MoveState.SQUAT
+	)
 
 
 

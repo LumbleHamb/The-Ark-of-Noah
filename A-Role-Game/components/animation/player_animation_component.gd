@@ -18,9 +18,17 @@ extends Component
 
 @export_category("Sprite Offsets")
 
-@export var base_offset: Vector2 = Vector2(-32, -43)
+@export var base_offset: Vector2 = Vector2(-64, -86)
 
-@export var attack_offset: Vector2 = Vector2(-48, -59)
+@export var attack_offset: Vector2 = Vector2(-96, -118)
+
+@export var dash_offset: Vector2 = Vector2(-64, -86)
+
+@export var block_offset: Vector2 = Vector2(-64, -86)
+
+@export var squat_offset: Vector2 = Vector2(-64, -86)
+
+@export var jump_offset: Vector2 = Vector2(-64, -86)
 
 
 
@@ -131,6 +139,24 @@ func _on_movement_state_changed(
 
 
 
+		MovementComponent.MoveState.DASH:
+
+			play_dash(current_direction)
+
+
+
+		MovementComponent.MoveState.JUMP:
+
+			play_jump(current_direction)
+
+
+
+		MovementComponent.MoveState.SQUAT:
+
+			play_squat(current_direction)
+
+
+
 
 
 func _on_direction_changed(
@@ -181,6 +207,19 @@ func _update_current_animation() -> void:
 			play_run(current_direction)
 
 
+		MovementComponent.MoveState.DASH:
+
+			play_dash(current_direction)
+
+
+		MovementComponent.MoveState.JUMP:
+
+			play_jump(current_direction)
+
+
+		MovementComponent.MoveState.SQUAT:
+
+			play_squat(current_direction)
 
 
 
@@ -381,6 +420,86 @@ func play_run(dir_key: String) -> void:
 
 	_play_if_changed(
 		"run_" + dir_key
+	)
+
+
+
+func play_dash(dir_key: String) -> void:
+
+
+	if not anim_sprite:
+
+		return
+
+
+
+	anim_sprite.offset = dash_offset
+
+	anim_sprite.stop()
+
+	anim_sprite.frame = 0
+
+
+	anim_sprite.play(
+		"dash_" + dir_key
+	)
+
+
+
+func play_block(dir_key: String) -> void:
+
+
+	if not anim_sprite:
+
+		return
+
+
+
+	anim_sprite.offset = block_offset
+
+
+	_play_if_changed(
+		"block_" + dir_key
+	)
+
+
+
+func play_squat(dir_key: String) -> void:
+
+
+	if not anim_sprite:
+
+		return
+
+
+
+	anim_sprite.offset = squat_offset
+
+
+	_play_if_changed(
+		"squat_" + dir_key
+	)
+
+
+
+func play_jump(dir_key: String) -> void:
+
+
+	if not anim_sprite:
+
+		return
+
+
+
+	anim_sprite.offset = jump_offset
+
+	anim_sprite.stop()
+
+	anim_sprite.frame = 0
+
+
+	anim_sprite.play(
+		"jump_" + dir_key
 	)
 
 

@@ -9,6 +9,9 @@
 [ext_resource type="Texture2D" uid="uid://gulr803h4aof" path="res://assets/Characters/Enemies/orc warrior/orc2/orc melee - anims color2-idle.png" id="7_1bbd3"]
 [ext_resource type="Texture2D" uid="uid://y56w3fh1n4q7" path="res://assets/Characters/Enemies/orc warrior/orc2/orc melee - anims color2-idle to walk transition.png" id="8_jt80x"]
 [ext_resource type="Texture2D" uid="uid://h22bam40ryw6" path="res://assets/Characters/Enemies/orc warrior/orc2/orc melee - anims color2-walk.png" id="9_x6ths"]
+[ext_resource type="PackedScene" path="res://components/attack/attack_component.tscn" id="10_vj4gq"]
+[ext_resource type="PackedScene" uid="uid://dwvgxexymy6is" path="res://components/enemies/enemyAI.tscn" id="11_v4rno"]
+[ext_resource type="PackedScene" path="res://components/health/health_component.tscn" id="12_0soqs"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ibg3v"]
 atlas = ExtResource("1_fl2g0")
@@ -573,14 +576,56 @@ animations = [{
 radius = 16.0
 height = 38.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0soqs"]
+size = Vector2(75, 20)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0soqs"]
+radius = 54.0
+height = 176.0
+
 [node name="orc 3" type="CharacterBody2D" unique_id=1527895450]
+collision_layer = 7
+collision_mask = 7
 
 [node name="orc 3 animation" type="AnimatedSprite2D" parent="." unique_id=967812934]
 sprite_frames = SubResource("SpriteFrames_wodrh")
-animation = &"orc 3 attack 2 prep spin"
-frame = 10
-frame_progress = 1.0
+animation = &"orc 3 attack 2 spin"
 
 [node name="orc 3 hitbox" type="CollisionShape2D" parent="." unique_id=1150959906]
 position = Vector2(0, 1)
 shape = SubResource("CapsuleShape2D_wodrh")
+
+[node name="AttackComponent" parent="." unique_id=174765648 node_paths=PackedStringArray("hitbox") instance=ExtResource("10_vj4gq")]
+hitbox = NodePath("../hitbox")
+
+[node name="enemyAI" parent="." unique_id=836135547 node_paths=PackedStringArray("sprite") instance=ExtResource("11_v4rno")]
+sprite = NodePath("../orc 3 animation")
+special_attack_enabled = true
+special_prep_animation = "orc 3 attack 2 prep spin"
+special_spin_animation = "orc 3 attack 2 spin"
+special_end_animation = "orc 3 attack 2 ending spin"
+hitbox_spin_path = NodePath("../hitbox_spin")
+idle_animation = "orc 3 idle"
+walk_animation = "orc 3 walk"
+attack_animation = "orc 3 attack"
+hurt_animation = "orc 3 hurt"
+death_animation = "orc 3 death"
+
+[node name="HealthComponent" parent="." unique_id=1818841471 instance=ExtResource("12_0soqs")]
+
+[node name="hitbox" type="Area2D" parent="." unique_id=1136477530]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox" unique_id=640678225]
+position = Vector2(57.5, 0)
+shape = SubResource("RectangleShape2D_0soqs")
+
+[node name="hitbox_spin" type="Area2D" parent="." unique_id=1907611648]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox_spin" unique_id=1543032965]
+position = Vector2(-7, -1)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_0soqs")
