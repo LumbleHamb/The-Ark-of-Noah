@@ -92,6 +92,10 @@ enum State {
 ## Range to search for breadcrumbs. If 0, uses detection_range.
 @export var breadcrumb_search_range: float = 0.0
 
+## When enabled, draws a colored line showing the LOS ray.
+## Green = clear LOS, Red = blocked.
+@export var debug_draw_los: bool = false
+
 
 # ==================================================
 # COMBAT
@@ -242,6 +246,12 @@ var _breadcrumb_steps_taken: int = 0
 ## Cooldown timer to prevent per-frame breadcrumb re-evaluation.
 var _breadcrumb_update_timer: float = 0.0
 
+## Debug Line2D node for visualizing the LOS ray.
+var _debug_los_line: Line2D = null
+
+## Debug: logs the exact coordinates being set on the LOS line.
+var _debug_last_coords: String = ""
+
 ## How often (seconds) to re-check LoS when following a breadcrumb.
 const BREADCRUMB_UPDATE_INTERVAL: float = 0.25
 
@@ -322,6 +332,23 @@ func _component_ready() -> void:
 		)
 
 
+
+	# Create debug LOS line if enabled.
+	# MUST use call_deferred — entity is still setting up children during
+	# _component_ready(), so direct add_child() fails silently.
+	if debug_draw_los:
+		_debug_los_line = Line2D.new()
+		_debug_los_line.name = "DebugLOSLine"
+		_debug_los_line.width = 4.0
+		_debug_los_line.default_color = Color.YELLOW
+		_debug_los_line.antialiased = true
+		# Set test points immediately so it shows as soon as it's parented
+		_debug_los_line.points = PackedVector2Array([
+			Vector2.ZERO,
+			Vector2(50, 0)
+		])
+		entity.add_child.call_deferred(_debug_los_line)
+		print("[ENEMY AI] Debug LOS line created for: ", entity.name)
 
 	play_animation(idle_animation)
 
@@ -1073,6 +1100,26 @@ func has_los_to(target_pos: Vector2) -> bool:
 		query.exclude.append(player)
 
 	var result: Dictionary = space_state.intersect_ray(query)
+
+	# --- Debug LOS visualization ---
+	# Line2D is a child of the entity, so use LOCAL coordinates
+	if debug_draw_los and _debug_los_line:
+		var clear_los: bool = result.is_empty()
+		var local_target: Vector2 = entity.to_local(target_pos)
+		_debug_los_line.points = PackedVector2Array([
+			Vector2.ZERO,
+			local_target
+		])
+		_debug_los_line.default_color = Color.GREEN if clear_los else Color.RED
+		# Log coordinates every 30 frames so we can see what's happening
+		var coords_str: String = "pts=[0,0 → %.1f,%.1f] %s dist=%.0f" % [
+			local_target.x, local_target.y,
+			"CLEAR" if clear_los else "BLOCKED",
+			entity.global_position.distance_to(target_pos)
+		]
+		if coords_str != _debug_last_coords:
+			_debug_last_coords = coords_str
+			print("[LOS DBG] ", entity.name, " ", coords_str)
 
 	# If nothing was hit, LoS is clear
 	return result.is_empty()

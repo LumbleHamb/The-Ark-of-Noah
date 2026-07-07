@@ -515,7 +515,8 @@ size = Vector2(33, 29)
 
 [node name="crystal orc animation" type="AnimatedSprite2D" parent="." unique_id=967812934]
 sprite_frames = SubResource("SpriteFrames_wodrh")
-animation = &"crystal orc attack 2 projectiles"
+animation = &"crystal orc idle"
+offset = Vector2(-14, -7)
 
 [node name="crystal orc hitbox" type="CollisionShape2D" parent="." unique_id=1150959906]
 position = Vector2(-14, -7)
@@ -537,6 +538,7 @@ move_speed = null
 detection_range = null
 personal_space = null
 push_away_strength = null
+debug_draw_los = true
 attack_range = null
 attack_cooldown = null
 special_attack_enabled = true
