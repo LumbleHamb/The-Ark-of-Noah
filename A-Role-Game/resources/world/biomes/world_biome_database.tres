@@ -1,0 +1,10 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/world/biome_database.gd" id="1_script"]
+[ext_resource type="Resource" path="res://resources/world/biomes/meadows_biome_def.tres" id="2_b1"]
+[ext_resource type="Resource" path="res://resources/world/biomes/forest_biome_def.tres" id="3_b2"]
+[ext_resource type="Resource" path="res://resources/world/biomes/caves_biome_def.tres" id="4_b3"]
+
+[resource]
+script = ExtResource("1_script")
+biomes = Array[Resource]([ExtResource("2_b1"), ExtResource("3_b2"), ExtResource("4_b3")])

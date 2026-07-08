@@ -1,0 +1,45 @@
+[gd_resource type="Resource" format=3 uid="uid://d1ilg6vuaokuu"]
+
+[ext_resource type="Script" uid="uid://bwebm0hsnxu0g" path="res://scripts/world/biome_definition.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://b1xn3w0la85fx" path="res://scripts/world/biome_enemy_entry.gd" id="2_entry_script"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/stone_golem.tscn" id="2_g1"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/stone_golem_2.tscn" id="3_g2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/orcs/crystal_orc.tscn" id="4_c"]
+
+[sub_resource type="Resource" id="BiomeEnemyEntry_golem1"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("2_g1")
+weight = 1.2
+min_difficulty = 1.0
+max_difficulty = 6.0
+group_tag = "tank"
+
+[sub_resource type="Resource" id="BiomeEnemyEntry_golem2"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("3_g2")
+weight = 0.8
+min_difficulty = 1.5
+max_difficulty = 7.0
+group_tag = "tank"
+
+[sub_resource type="Resource" id="BiomeEnemyEntry_crys"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("4_c")
+weight = 0.4
+min_difficulty = 2.0
+max_difficulty = 8.0
+group_tag = "elite"
+
+[resource]
+script = ExtResource("1_script")
+biome_id = "caves"
+display_name = "Caves"
+enemy_entries = Array[ExtResource("2_entry_script")]([SubResource("BiomeEnemyEntry_golem1"), SubResource("BiomeEnemyEntry_golem2"), SubResource("BiomeEnemyEntry_crys")])
+loot_table_ids = PackedStringArray("caves_common", "caves_ore", "caves_elite")
+music_event = "music_caves"
+ambient_event = "ambience_caves"
+lighting_tint = Color(0.82, 0.88, 1, 1)
+lighting_energy_multiplier = 0.82
+difficulty_multiplier = 1.35
+encounter_density_multiplier = 0.9
+movement_speed_multiplier = 0.95

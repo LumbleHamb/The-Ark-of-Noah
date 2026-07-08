@@ -1,0 +1,22 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/world/biome_definition.gd" id="1_script"]
+[ext_resource type="Resource" path="res://resources/world/biomes/entries/meadows_goblin.tres" id="2_e1"]
+[ext_resource type="Resource" path="res://resources/world/biomes/entries/meadows_orc1.tres" id="3_e2"]
+[ext_resource type="Resource" path="res://resources/world/biomes/entries/meadows_orc2.tres" id="4_e3"]
+[ext_resource type="Resource" path="res://resources/world/biomes/entries/meadows_moose1.tres" id="5_e4"]
+[ext_resource type="Resource" path="res://resources/world/biomes/entries/meadows_pot.tres" id="6_e5"]
+
+[resource]
+script = ExtResource("1_script")
+biome_id = "meadows"
+display_name = "Meadows"
+enemy_entries = Array[Resource]([ExtResource("2_e1"), ExtResource("3_e2"), ExtResource("4_e3"), ExtResource("5_e4"), ExtResource("6_e5")])
+loot_table_ids = PackedStringArray("meadows_common", "meadows_rare")
+music_event = "music_meadows_day"
+ambient_event = "ambience_meadows"
+lighting_tint = Color(1, 1, 1, 1)
+lighting_energy_multiplier = 1.0
+difficulty_multiplier = 1.0
+encounter_density_multiplier = 1.0
+movement_speed_multiplier = 1.0

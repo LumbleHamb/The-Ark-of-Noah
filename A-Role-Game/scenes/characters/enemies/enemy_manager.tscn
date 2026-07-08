@@ -1,11 +1,27 @@
 [gd_scene format=3 uid="uid://b86ksj6k477ud"]
 
-[ext_resource type="Script" uid="uid://di8wr5b00dubd" path="res://scripts/characters/enemies/enemy_manager.gd" id="1_juqy5"]
+[ext_resource type="Script" path="res://scripts/characters/enemies/enemy_manager.gd" id="1_juqy5"]
 [ext_resource type="PackedScene" uid="uid://dfyx8tnrnj5ii" path="res://scenes/characters/enemies/orcs/orc_1.tscn" id="2_deioy"]
 [ext_resource type="PackedScene" uid="uid://clavdcl52xd2l" path="res://scenes/characters/enemies/orcs/orc_2.tscn" id="3_lr8io"]
+[ext_resource type="PackedScene" uid="uid://bn6rx2odc4whs" path="res://scenes/characters/enemies/Creatures/pot_enemy.tscn" id="4_pot"]
+[ext_resource type="PackedScene" uid="uid://bsetk7yhtvere" path="res://scenes/characters/enemies/Creatures/goblin.tscn" id="5_gob"]
+[ext_resource type="PackedScene" uid="uid://copbyjxlr3kul" path="res://scenes/characters/enemies/Creatures/stone_golem.tscn" id="6_sg1"]
+[ext_resource type="PackedScene" uid="uid://cbcuthlaorqpv" path="res://scenes/characters/enemies/Creatures/stone_golem_2.tscn" id="7_sg2"]
+[ext_resource type="PackedScene" uid="uid://curvx7babr27f" path="res://scenes/characters/enemies/Creatures/moose_beast.tscn" id="8_mb1"]
+[ext_resource type="PackedScene" uid="uid://cx6rrc3gfvf7s" path="res://scenes/characters/enemies/Creatures/moose_beast_2.tscn" id="9_mb2"]
+[ext_resource type="PackedScene" uid="uid://b171m7sjo0a4s" path="res://scenes/characters/enemies/Creatures/moose_beast_3.tscn" id="10_mb3"]
+[ext_resource type="PackedScene" uid="uid://xjf1xqqnpu87" path="res://scenes/characters/enemies/orcs/crystal_orc.tscn" id="11_crys"]
+[ext_resource type="PackedScene" uid="uid://bqenga3ea56qy" path="res://scenes/characters/enemies/orcs/orc_mage_1.tscn" id="12_om1"]
+[ext_resource type="PackedScene" uid="uid://dhr2qc2g3p3iw" path="res://scenes/characters/enemies/orcs/orc_mage_2.tscn" id="13_om2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/orcs/orc_3.tscn" id="14_orc3"]
+[ext_resource type="Resource" path="res://resources/loot/enemy_loot_database.tres" id="15_loot_db"]
 
 [node name="EnemyManager" type="Node2D" unique_id=1433186845]
 script = ExtResource("1_juqy5")
-enemy_scenes = Array[PackedScene]([ExtResource("2_deioy"), ExtResource("3_lr8io"), null, null])
-max_enemies = 10
-starting_enemy_count = 10
+enemy_scenes = Array[PackedScene]([ExtResource("2_deioy"), ExtResource("3_lr8io"), ExtResource("14_orc3"), ExtResource("11_crys"), ExtResource("12_om1"), ExtResource("13_om2"), ExtResource("5_gob"), ExtResource("8_mb1"), ExtResource("9_mb2"), ExtResource("10_mb3"), ExtResource("4_pot"), ExtResource("6_sg1"), ExtResource("7_sg2")])
+enemy_weights = Array[float]([1.2, 1.0, 0.95, 0.3, 0.45, 0.45, 1.6, 0.55, 0.5, 0.45, 0.8, 0.35, 0.3])
+max_enemies = 20
+spawn_radius = 420.0
+starting_enemy_count = 8
+respawn_delay = 2.2
+loot_database = ExtResource("15_loot_db")

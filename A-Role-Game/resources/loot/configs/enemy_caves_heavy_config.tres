@@ -1,0 +1,20 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/loot/enemy_loot_config.gd" id="1_config_script"]
+[ext_resource type="Resource" path="res://resources/loot/tables/enemy_caves_ores.tres" id="2_ores"]
+[ext_resource type="Resource" path="res://resources/loot/tables/enemy_rare_gems.tres" id="3_rare"]
+
+[resource]
+script = ExtResource("1_config_script")
+config_id = "enemy_caves_heavy"
+guaranteed_tables = Array[Resource]([ExtResource("2_ores")])
+weighted_tables = Array[Resource]([ExtResource("2_ores"), ExtResource("3_rare")])
+weighted_table_weights = Array[float]([1.0, 0.35])
+bonus_rolls = 1
+despawn_after_seconds = 24.0
+biome_chance_multiplier = {
+"caves": 1.25,
+"forest": 0.95,
+"meadows": 0.9
+}
+difficulty_chance_multiplier = 1.1

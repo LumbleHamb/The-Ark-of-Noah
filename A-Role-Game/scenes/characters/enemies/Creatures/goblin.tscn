@@ -1,13 +1,19 @@
-[gd_scene format=3 uid="uid://bsetk7yhtvere"]
+[gd_scene format=3]
 
-[ext_resource type="Texture2D" uid="uid://jm1hbt34fh2r" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-atk1-no combo.png" id="1_hrjan"]
-[ext_resource type="Texture2D" uid="uid://chgvvbvotpcpf" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-atk1.png" id="2_c2tkd"]
-[ext_resource type="Texture2D" uid="uid://biegbani6ppwa" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-atk2.png" id="3_qwrs0"]
-[ext_resource type="Texture2D" uid="uid://c603i46pgsc20" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-atk1-return neutral pose.png" id="4_d713t"]
-[ext_resource type="Texture2D" uid="uid://mjmlynxhtvkq" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-death.png" id="5_k3wdx"]
-[ext_resource type="Texture2D" uid="uid://dr6s144i8wlht" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-hurt.png" id="6_abltw"]
-[ext_resource type="Texture2D" uid="uid://cw745i0e216ie" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-idle.png" id="7_wap1b"]
-[ext_resource type="Texture2D" uid="uid://b2weatg74ykdh" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-walk.png" id="8_ikkus"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-atk1-no combo.png" id="1_hrjan"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-atk1.png" id="2_c2tkd"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-atk2.png" id="3_qwrs0"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-atk1-return neutral pose.png" id="4_d713t"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-death.png" id="5_k3wdx"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-hurt.png" id="6_abltw"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-idle.png" id="7_wap1b"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Enemy 2/enemy 2-walk.png" id="8_ikkus"]
+[ext_resource type="PackedScene" path="res://components/attack/attack_component.tscn" id="9_d8a1i"]
+[ext_resource type="Script" path="res://components/attack/attack_component.gd" id="10_drrt4"]
+[ext_resource type="PackedScene" path="res://components/health/health_component.tscn" id="11_3iaox"]
+[ext_resource type="Script" path="res://components/health/health_component.gd" id="12_ausdl"]
+[ext_resource type="PackedScene" path="res://components/enemies/enemyAI.tscn" id="13_6lwwm"]
+[ext_resource type="Script" path="res://scripts/components/enemyAI.gd" id="14_vm3hm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4hwjs"]
 atlas = ExtResource("1_hrjan")
@@ -483,7 +489,12 @@ animations = [{
 radius = 7.0
 height = 32.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k2obu"]
+size = Vector2(36, 24)
+
 [node name="goblin" type="CharacterBody2D" unique_id=1527895450]
+collision_layer = 7
+collision_mask = 7
 
 [node name="goblin animation" type="AnimatedSprite2D" parent="." unique_id=967812934]
 sprite_frames = SubResource("SpriteFrames_wodrh")
@@ -494,3 +505,33 @@ frame_progress = 1.0
 [node name="goblin hitbox" type="CollisionShape2D" parent="." unique_id=1150959906]
 position = Vector2(-1, 13)
 shape = SubResource("CapsuleShape2D_wodrh")
+
+[node name="hitbox" type="Area2D" parent="." unique_id=455423797]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox" unique_id=794526581]
+shape = SubResource("RectangleShape2D_k2obu")
+
+[node name="AttackComponent" type="Node" parent="." unique_id=410508506 instance=ExtResource("9_d8a1i")]
+script = ExtResource("10_drrt4")
+
+[node name="HealthComponent" type="Node" parent="." unique_id=1527995196 instance=ExtResource("11_3iaox")]
+script = ExtResource("12_ausdl")
+max_hp = 50
+start_hp = 50
+
+[node name="enemyAI" type="Node" parent="." unique_id=836135547 instance=ExtResource("13_6lwwm")]
+script = ExtResource("14_vm3hm")
+move_speed = 78.0
+attack_range = 30.0
+attack_cooldown = 0.75
+special_attack_enabled = true
+special_attack_chance = 0.25
+special_prep_animation = "goblin attack no combo"
+projectile_custom_prep = "goblin combo attack 1"
+idle_animation = "goblin combo end to idle"
+walk_animation = "goblin walk"
+attack_animation = "goblin attack no combo"
+hurt_animation = "goblin hurt"
+death_animation = "goblin death"

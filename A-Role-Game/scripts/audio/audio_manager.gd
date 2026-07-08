@@ -114,6 +114,17 @@ func _process(_delta: float) -> void:
 		_game_stats.set_meta(&"last_audio_cue", &"")
 		_play_cue(cue as String)
 
+	# Biome audio hook integration (event values are currently metadata-driven,
+	# to be consumed by future music/ambient buses).
+	var biome_music: Variant = get_meta(&"biome_music_event", &"")
+	if biome_music is String and not (biome_music as String).is_empty():
+		_game_stats.set_meta(&"last_music_event", biome_music)
+		set_meta(&"biome_music_event", &"")
+	var biome_ambient: Variant = get_meta(&"biome_ambient_event", &"")
+	if biome_ambient is String and not (biome_ambient as String).is_empty():
+		_game_stats.set_meta(&"last_ambient_event", biome_ambient)
+		set_meta(&"biome_ambient_event", &"")
+
 
 # ============================================================================
 # PUBLIC API

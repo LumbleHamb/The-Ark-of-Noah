@@ -76,6 +76,9 @@ signal ambient_color_changed(color: Color)
 		if is_inside_tree():
 			_apply_size()
 
+@export var biome_tint: Color = Color(1.0, 1.0, 1.0, 1.0)
+@export var biome_energy_multiplier: float = 1.0
+
 # ============================================================================
 # STATE
 # ============================================================================
@@ -230,8 +233,14 @@ func _update_ambient(progress: float) -> void:
 	
 	# Rain darkening removed
 	
-	modulate.color = color
-	ambient_color_changed.emit(color)
+	var tinted_color: Color = Color(
+		color.r * biome_tint.r,
+		color.g * biome_tint.g,
+		color.b * biome_tint.b,
+		color.a
+	)
+	modulate.color = tinted_color
+	ambient_color_changed.emit(tinted_color)
 
 # ============================================================================
 # PHASE TRANSITION CALLBACKS
@@ -297,14 +306,14 @@ func _update_lights(is_night: bool) -> void:
 				var base_scale: float = light.get_meta(&"base_texture_scale", light.texture_scale)
 				light.texture_scale = base_scale * light_scale_multiplier
 				var base_energy: float = light.get_meta(&"base_energy", light.energy)
-				light.energy = base_energy * light_energy_multiplier
+				light.energy = base_energy * light_energy_multiplier * biome_energy_multiplier
 	
 	# Handle player light separately.
 	if player_light and is_instance_valid(player_light):
 		player_light.enabled = is_night
 		if is_night:
 			player_light.texture_scale = _player_light_base_scale * light_scale_multiplier
-			player_light.energy = _player_light_base_energy * light_energy_multiplier
+			player_light.energy = _player_light_base_energy * light_energy_multiplier * biome_energy_multiplier
 
 func _apply_flicker(is_night: bool) -> void:
 	# Apply subtle energy flicker to all active lights.
@@ -322,12 +331,12 @@ func _apply_flicker(is_night: bool) -> void:
 				continue
 			var base: float = light.get_meta(&"base_energy", 1.0)
 			var flicker: float = sin(_flicker_offset + light.global_position.length() * 0.1) * flicker_strength
-			light.energy = (base + flicker) * light_energy_multiplier * boost
+			light.energy = (base + flicker) * light_energy_multiplier * biome_energy_multiplier * boost
 	
 	# Player light flicker.
 	if player_light and is_instance_valid(player_light) and player_light.enabled:
 		var flicker: float = sin(_flicker_offset * 1.5) * (flicker_strength * 1.5)
-		player_light.energy = (_player_light_base_energy + flicker) * light_energy_multiplier * boost
+		player_light.energy = (_player_light_base_energy + flicker) * light_energy_multiplier * biome_energy_multiplier * boost
 
 ## Reapply texture_scale to all active lights using current multiplier.
 ## Called when the user tweaks light_scale_multiplier in the inspector.
@@ -373,6 +382,13 @@ func _on_node_removed(node: Node) -> void:
 	# Auto-unregister removed light sources.
 	if node.is_in_group(&"light_source") or node is PointLight2D or node is LightSourceComponent:
 		call_deferred(&"_refresh_light_sources")
+
+func set_biome_modifiers(tint: Color, energy_multiplier: float) -> void:
+	biome_tint = tint
+	biome_energy_multiplier = maxf(0.1, energy_multiplier)
+	if time_manager != null:
+		_update_ambient(time_manager.get_day_progress())
+		_update_lights(_last_night)
 
 # Refreshes the light source list then applies the current night/day state.
 func _refresh_and_apply_lights() -> void:

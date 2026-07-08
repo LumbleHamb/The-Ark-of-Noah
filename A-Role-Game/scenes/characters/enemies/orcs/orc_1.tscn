@@ -1,13 +1,16 @@
-[gd_scene format=3 uid="uid://dfyx8tnrnj5ii"]
+[gd_scene format=3]
 
-[ext_resource type="Texture2D" uid="uid://bdadtt8aet1ej" path="res://assets/Characters/Enemies/Enemy 1/variation1/enemy 1 var1-atk1.png" id="1_nhfcj"]
-[ext_resource type="Texture2D" uid="uid://bv3xf2of6nrwp" path="res://assets/Characters/Enemies/Enemy 1/variation1/enemy 1 var1-death.png" id="2_5futs"]
-[ext_resource type="Texture2D" uid="uid://6tcq75csgt1w" path="res://assets/Characters/Enemies/Enemy 1/variation1/enemy 1 var1-hurt.png" id="3_qnbdn"]
-[ext_resource type="Texture2D" uid="uid://bqf3tfws5lp0m" path="res://assets/Characters/Enemies/Enemy 1/variation1/enemy 1 var1-idle.png" id="4_g50ob"]
-[ext_resource type="Texture2D" uid="uid://yfj6xx74yqb8" path="res://assets/Characters/Enemies/Enemy 1/variation1/enemy 1 var1-walk.png" id="5_ojsl5"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Enemy 1/variation1/enemy 1 var1-atk1.png" id="1_nhfcj"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Enemy 1/variation1/enemy 1 var1-death.png" id="2_5futs"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Enemy 1/variation1/enemy 1 var1-hurt.png" id="3_qnbdn"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Enemy 1/variation1/enemy 1 var1-idle.png" id="4_g50ob"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Enemy 1/variation1/enemy 1 var1-walk.png" id="5_ojsl5"]
 [ext_resource type="PackedScene" path="res://components/attack/attack_component.tscn" id="6_5futs"]
 [ext_resource type="PackedScene" path="res://components/health/health_component.tscn" id="7_qnbdn"]
-[ext_resource type="PackedScene" uid="uid://dwvgxexymy6is" path="res://components/enemies/enemyAI.tscn" id="9_ojsl5"]
+[ext_resource type="Script" path="res://components/attack/attack_component.gd" id="7_rv2oi"]
+[ext_resource type="PackedScene" path="res://components/enemies/enemyAI.tscn" id="9_ojsl5"]
+[ext_resource type="Script" path="res://components/health/health_component.gd" id="9_rmb8v"]
+[ext_resource type="Script" path="res://scripts/components/enemyAI.gd" id="11_2wjws"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_igguu"]
 atlas = ExtResource("1_nhfcj")
@@ -414,12 +417,17 @@ collision_mask = 7
 position = Vector2(19, -7.5)
 shape = SubResource("RectangleShape2D_0b61b")
 
-[node name="AttackComponent" parent="." unique_id=505067519 node_paths=PackedStringArray("hitbox") instance=ExtResource("6_5futs")]
+[node name="AttackComponent" type="Node" parent="." unique_id=505067519 node_paths=PackedStringArray("hitbox") instance=ExtResource("6_5futs")]
+script = ExtResource("7_rv2oi")
 hitbox = NodePath("../hitbox")
+attack_damage = 2
 knockback_force = 75.0
 
-[node name="HealthComponent" parent="." unique_id=1833183971 instance=ExtResource("7_qnbdn")]
-start_hp = 10
+[node name="HealthComponent" type="Node" parent="." unique_id=1833183971 instance=ExtResource("7_qnbdn")]
+script = ExtResource("9_rmb8v")
+max_hp = 80
+start_hp = 80
 
-[node name="enemyAI" parent="." unique_id=836135547 node_paths=PackedStringArray("sprite") instance=ExtResource("9_ojsl5")]
+[node name="enemyAI" type="Node" parent="." unique_id=836135547 node_paths=PackedStringArray("sprite") instance=ExtResource("9_ojsl5")]
+script = ExtResource("11_2wjws")
 sprite = NodePath("../orc 1 animation")

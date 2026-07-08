@@ -1,10 +1,16 @@
-[gd_scene format=3 uid="uid://copbyjxlr3kul"]
+[gd_scene format=3]
 
-[ext_resource type="Texture2D" uid="uid://cfkpf70a06nda" path="res://assets/Characters/Enemies/Stone  Golem/Stone-golem-attack-224x192.png" id="1_f8rp6"]
-[ext_resource type="Texture2D" uid="uid://dx3g30fprlrgw" path="res://assets/Characters/Enemies/Stone  Golem/Stone-golem-death-224x192.png" id="2_xu74p"]
-[ext_resource type="Texture2D" uid="uid://c3c7a7mf4227p" path="res://assets/Characters/Enemies/Stone  Golem/Stone-golem-hurt-224x192.png" id="3_7j4va"]
-[ext_resource type="Texture2D" uid="uid://defmhn34uh48t" path="res://assets/Characters/Enemies/Stone  Golem/Stone-golem-idle-224x192.png" id="4_ntqpp"]
-[ext_resource type="Texture2D" uid="uid://b31gcs1reai8o" path="res://assets/Characters/Enemies/Stone  Golem/Stone-golem-run-224x192.png" id="5_qeesg"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Stone  Golem/Stone-golem-attack-224x192.png" id="1_f8rp6"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Stone  Golem/Stone-golem-death-224x192.png" id="2_xu74p"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Stone  Golem/Stone-golem-hurt-224x192.png" id="3_7j4va"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Stone  Golem/Stone-golem-idle-224x192.png" id="4_ntqpp"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Stone  Golem/Stone-golem-run-224x192.png" id="5_qeesg"]
+[ext_resource type="PackedScene" path="res://components/attack/attack_component.tscn" id="6_juvpx"]
+[ext_resource type="Script" path="res://components/attack/attack_component.gd" id="7_bpc0r"]
+[ext_resource type="PackedScene" path="res://components/health/health_component.tscn" id="8_1s7il"]
+[ext_resource type="Script" path="res://components/health/health_component.gd" id="9_issw5"]
+[ext_resource type="PackedScene" path="res://components/enemies/enemyAI.tscn" id="10_lnnjm"]
+[ext_resource type="Script" path="res://scripts/components/enemyAI.gd" id="11_u0m7p"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xu74p"]
 atlas = ExtResource("1_f8rp6")
@@ -444,7 +450,12 @@ animations = [{
 radius = 21.0
 height = 50.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a3e75"]
+size = Vector2(36, 24)
+
 [node name="stone golem" type="CharacterBody2D" unique_id=1527895450]
+collision_layer = 7
+collision_mask = 7
 
 [node name="stone golem animation" type="AnimatedSprite2D" parent="." unique_id=967812934]
 sprite_frames = SubResource("SpriteFrames_wodrh")
@@ -453,3 +464,30 @@ animation = &"stone golem attack"
 [node name="stone golem hitbox" type="CollisionShape2D" parent="." unique_id=1150959906]
 position = Vector2(0, -2)
 shape = SubResource("CapsuleShape2D_wodrh")
+
+[node name="hitbox" type="Area2D" parent="." unique_id=610268419]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox" unique_id=1878016188]
+shape = SubResource("RectangleShape2D_a3e75")
+
+[node name="AttackComponent" type="Node" parent="." unique_id=41253365 instance=ExtResource("6_juvpx")]
+script = ExtResource("7_bpc0r")
+attack_damage = 4
+
+[node name="HealthComponent" type="Node" parent="." unique_id=644629803 instance=ExtResource("8_1s7il")]
+script = ExtResource("9_issw5")
+max_hp = 120
+start_hp = 120
+
+[node name="enemyAI" type="Node" parent="." unique_id=836135547 instance=ExtResource("10_lnnjm")]
+script = ExtResource("11_u0m7p")
+move_speed = 36.0
+attack_range = 44.0
+attack_cooldown = 1.45
+idle_animation = "stone golem idle"
+walk_animation = "stone golem walk"
+attack_animation = "stone golem attack"
+hurt_animation = "stone golem hurt"
+death_animation = "stone golem death"

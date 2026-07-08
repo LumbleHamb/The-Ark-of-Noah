@@ -1,83 +1,89 @@
-[gd_scene format=3 uid="uid://dhr2qc2g3p3iw"]
+[gd_scene format=3]
 
-[ext_resource type="Texture2D" uid="uid://dsvb6h30b3njg" path="res://assets/Characters/Enemies/orc mage/orc2/orc mage - with hand fx-atk1.png" id="1_is2xn"]
-[ext_resource type="Texture2D" uid="uid://dqchysqdoqafa" path="res://assets/Characters/Enemies/orc mage/orc2/orc mage - with hand fx-atk2.png" id="2_hbeka"]
-[ext_resource type="Texture2D" uid="uid://c31hkyn7ssiwf" path="res://assets/Characters/Enemies/orc mage/orc2/orc mage - with hand fx-death.png" id="3_iu562"]
-[ext_resource type="Texture2D" uid="uid://d12m3jno6jf1k" path="res://assets/Characters/Enemies/orc mage/orc2/orc mage - with hand fx-hurt.png" id="4_5fbck"]
-[ext_resource type="Texture2D" uid="uid://ix3dok4n3n63" path="res://assets/Characters/Enemies/orc mage/orc2/orc mage - with hand fx-idle.png" id="5_oovtx"]
-[ext_resource type="Texture2D" uid="uid://w4n773evt558" path="res://assets/Characters/Enemies/orc mage/orc2/orc mage - with hand fx-walk.png" id="6_ihnb5"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc mage/orc2/orc mage - with hand fx-atk1.png" id="1_is2xn"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc mage/orc2/orc mage - with hand fx-atk2.png" id="2_hbeka"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc mage/orc2/orc mage - with hand fx-death.png" id="3_iu562"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc mage/orc2/orc mage - with hand fx-hurt.png" id="4_5fbck"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc mage/orc2/orc mage - with hand fx-idle.png" id="5_oovtx"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc mage/orc2/orc mage - with hand fx-walk.png" id="6_ihnb5"]
+[ext_resource type="PackedScene" path="res://components/attack/attack_component.tscn" id="7_6ywvr"]
+[ext_resource type="Script" path="res://components/attack/attack_component.gd" id="8_skqp1"]
+[ext_resource type="PackedScene" path="res://components/health/health_component.tscn" id="9_2wmsa"]
+[ext_resource type="Script" path="res://components/health/health_component.gd" id="10_btqie"]
+[ext_resource type="PackedScene" path="res://components/enemies/enemyAI.tscn" id="11_7e2wo"]
+[ext_resource type="Script" path="res://scripts/components/enemyAI.gd" id="12_c1147"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6ywvr"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(0, 0, 256, 256)
+region = Rect2(0, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_skqp1"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(256, 0, 256, 256)
+region = Rect2(228, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2wmsa"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(512, 0, 256, 256)
+region = Rect2(455, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_btqie"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(768, 0, 256, 256)
+region = Rect2(683, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7e2wo"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(1024, 0, 256, 256)
+region = Rect2(910, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c1147"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(1280, 0, 256, 256)
+region = Rect2(1138, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3thod"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(1536, 0, 256, 256)
+region = Rect2(1365, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ymjdn"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(1792, 0, 256, 256)
+region = Rect2(1593, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5viff"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(2048, 0, 256, 256)
+region = Rect2(1820, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8xmys"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(2304, 0, 256, 256)
+region = Rect2(2048, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0m05o"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(2560, 0, 256, 256)
+region = Rect2(2276, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4i0p0"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(2816, 0, 256, 256)
+region = Rect2(2503, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5us3h"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(3072, 0, 256, 256)
+region = Rect2(2731, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rp1s6"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(3328, 0, 256, 256)
+region = Rect2(2958, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bmqha"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(3584, 0, 256, 256)
+region = Rect2(3186, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2di7x"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(3840, 0, 256, 256)
+region = Rect2(3413, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7rqig"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(4096, 0, 256, 256)
+region = Rect2(3641, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8pok4"]
 atlas = ExtResource("1_is2xn")
-region = Rect2(4352, 0, 256, 256)
+region = Rect2(3868, 0, 228, 228)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_t3axr"]
 atlas = ExtResource("2_hbeka")
@@ -145,71 +151,71 @@ region = Rect2(3840, 0, 256, 256)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xwdv7"]
 atlas = ExtResource("3_iu562")
-region = Rect2(0, 0, 256, 256)
+region = Rect2(0, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2tv7f"]
 atlas = ExtResource("3_iu562")
-region = Rect2(256, 0, 256, 256)
+region = Rect2(241, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ltifb"]
 atlas = ExtResource("3_iu562")
-region = Rect2(512, 0, 256, 256)
+region = Rect2(482, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eop2t"]
 atlas = ExtResource("3_iu562")
-region = Rect2(768, 0, 256, 256)
+region = Rect2(723, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c53i0"]
 atlas = ExtResource("3_iu562")
-region = Rect2(1024, 0, 256, 256)
+region = Rect2(964, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xb3gt"]
 atlas = ExtResource("3_iu562")
-region = Rect2(1280, 0, 256, 256)
+region = Rect2(1205, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_io5hs"]
 atlas = ExtResource("3_iu562")
-region = Rect2(1536, 0, 256, 256)
+region = Rect2(1446, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_btxwx"]
 atlas = ExtResource("3_iu562")
-region = Rect2(1792, 0, 256, 256)
+region = Rect2(1687, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yc6oo"]
 atlas = ExtResource("3_iu562")
-region = Rect2(2048, 0, 256, 256)
+region = Rect2(1928, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yqe2b"]
 atlas = ExtResource("3_iu562")
-region = Rect2(2304, 0, 256, 256)
+region = Rect2(2168, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lf6o2"]
 atlas = ExtResource("3_iu562")
-region = Rect2(2560, 0, 256, 256)
+region = Rect2(2409, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_62nhv"]
 atlas = ExtResource("3_iu562")
-region = Rect2(2816, 0, 256, 256)
+region = Rect2(2650, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8ging"]
 atlas = ExtResource("3_iu562")
-region = Rect2(3072, 0, 256, 256)
+region = Rect2(2891, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dnps6"]
 atlas = ExtResource("3_iu562")
-region = Rect2(3328, 0, 256, 256)
+region = Rect2(3132, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rbexn"]
 atlas = ExtResource("3_iu562")
-region = Rect2(3584, 0, 256, 256)
+region = Rect2(3373, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8fw0d"]
 atlas = ExtResource("3_iu562")
-region = Rect2(3840, 0, 256, 256)
+region = Rect2(3614, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0c3ma"]
 atlas = ExtResource("3_iu562")
-region = Rect2(4096, 0, 256, 256)
+region = Rect2(3855, 0, 241, 241)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qvjj8"]
 atlas = ExtResource("4_5fbck")
@@ -562,7 +568,12 @@ animations = [{
 radius = 16.0
 height = 38.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3thod"]
+size = Vector2(36, 24)
+
 [node name="orc mage 2" type="CharacterBody2D" unique_id=1527895450]
+collision_layer = 7
+collision_mask = 7
 
 [node name="orc mage 2 animation" type="AnimatedSprite2D" parent="." unique_id=967812934]
 sprite_frames = SubResource("SpriteFrames_wodrh")
@@ -573,3 +584,35 @@ frame_progress = 1.0
 [node name="orc mage 2 hitbox" type="CollisionShape2D" parent="." unique_id=1150959906]
 position = Vector2(0, 1)
 shape = SubResource("CapsuleShape2D_wodrh")
+
+[node name="hitbox" type="Area2D" parent="." unique_id=1712028162]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox" unique_id=639900489]
+shape = SubResource("RectangleShape2D_3thod")
+
+[node name="AttackComponent" type="Node" parent="." unique_id=110263920 instance=ExtResource("7_6ywvr")]
+script = ExtResource("8_skqp1")
+
+[node name="HealthComponent" type="Node" parent="." unique_id=670773115 instance=ExtResource("9_2wmsa")]
+script = ExtResource("10_btqie")
+max_hp = 70
+start_hp = 70
+
+[node name="enemyAI" type="Node" parent="." unique_id=836135547 instance=ExtResource("11_7e2wo")]
+script = ExtResource("12_c1147")
+move_speed = 46.0
+attack_range = 24.0
+use_projectile_attack = true
+projectile_attack_animation = "orc mage 2 attack 2"
+projectile_damage = 2
+projectile_speed = 180.0
+projectile_lifetime = 2.8
+ranged_attack_range = 300.0
+projectile_custom_prep = "orc mage 2 attack 2"
+idle_animation = "orc mage 2 idle"
+walk_animation = "orc mage 2 walk"
+attack_animation = "orc mage 2 attack"
+hurt_animation = "orc mage 2 hurt"
+death_animation = "orc mage 2 death"

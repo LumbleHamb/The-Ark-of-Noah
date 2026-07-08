@@ -1,14 +1,20 @@
-[gd_scene format=3 uid="uid://bn6rx2odc4whs"]
+[gd_scene format=3]
 
-[ext_resource type="Texture2D" uid="uid://b3e5paluxs7li" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-atk1.png" id="1_ke0to"]
-[ext_resource type="Texture2D" uid="uid://c6afuxnkxa0bt" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-atk2.png" id="2_cstj6"]
-[ext_resource type="Texture2D" uid="uid://dxvhcebjrsbey" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-death.png" id="3_jnoyo"]
-[ext_resource type="Texture2D" uid="uid://dss1kgys6b8rt" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-hurt.png" id="4_3wubx"]
-[ext_resource type="Texture2D" uid="uid://buq4d5i1gnqbw" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-idle.png" id="5_wthfj"]
-[ext_resource type="Texture2D" uid="uid://bxqkuvmp50cja" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-revealing itself.png" id="6_ayk1l"]
-[ext_resource type="Texture2D" uid="uid://di2aptohnceja" path="res://assets/Characters/Enemies/Pot Creature/atk2 projectile-splash.png" id="7_vfrst"]
-[ext_resource type="Texture2D" uid="uid://dqobunmn011h1" path="res://assets/Characters/Enemies/Pot Creature/atk2 projectile-travelling.png" id="8_ewr2r"]
-[ext_resource type="Texture2D" uid="uid://bm2yk5gtex2rs" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-walk.png" id="9_8mv64"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-atk1.png" id="1_ke0to"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-atk2.png" id="2_cstj6"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-death.png" id="3_jnoyo"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-hurt.png" id="4_3wubx"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-idle.png" id="5_wthfj"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-revealing itself.png" id="6_ayk1l"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Pot Creature/atk2 projectile-splash.png" id="7_vfrst"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Pot Creature/atk2 projectile-travelling.png" id="8_ewr2r"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/Pot Creature/Pot Creature-walk.png" id="9_8mv64"]
+[ext_resource type="PackedScene" path="res://components/attack/attack_component.tscn" id="10_vfrst"]
+[ext_resource type="Script" path="res://components/attack/attack_component.gd" id="11_ewr2r"]
+[ext_resource type="PackedScene" path="res://components/health/health_component.tscn" id="12_8mv64"]
+[ext_resource type="Script" path="res://components/health/health_component.gd" id="13_aeair"]
+[ext_resource type="PackedScene" path="res://components/enemies/enemyAI.tscn" id="14_6oj12"]
+[ext_resource type="Script" path="res://scripts/components/enemyAI.gd" id="15_efeuq"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_aeair"]
 atlas = ExtResource("1_ke0to")
@@ -783,7 +789,12 @@ animations = [{
 radius = 13.0
 height = 26.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jqhqn"]
+size = Vector2(36, 24)
+
 [node name="pot enemy" type="CharacterBody2D" unique_id=1527895450]
+collision_layer = 7
+collision_mask = 7
 
 [node name="pot enemy animation" type="AnimatedSprite2D" parent="." unique_id=967812934]
 sprite_frames = SubResource("SpriteFrames_wodrh")
@@ -792,3 +803,44 @@ animation = &"pot enemy projectile hit"
 [node name="pot enemy hitbox" type="CollisionShape2D" parent="." unique_id=1150959906]
 position = Vector2(0, 8)
 shape = SubResource("CapsuleShape2D_wodrh")
+
+[node name="hitbox" type="Area2D" parent="." unique_id=1848810755]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox" unique_id=344621251]
+shape = SubResource("RectangleShape2D_jqhqn")
+
+[node name="AttackComponent" type="Node" parent="." unique_id=958245127 instance=ExtResource("10_vfrst")]
+script = ExtResource("11_ewr2r")
+attack_damage = 2
+
+[node name="HealthComponent" type="Node" parent="." unique_id=1477074997 instance=ExtResource("12_8mv64")]
+script = ExtResource("13_aeair")
+max_hp = 65
+start_hp = 65
+
+[node name="enemyAI" type="Node" parent="." unique_id=836135547 instance=ExtResource("14_6oj12")]
+script = ExtResource("15_efeuq")
+move_speed = 38.0
+use_projectile_attack = true
+projectile_attack_animation = "pot enemy projectile"
+projectile_speed = 95.0
+projectile_lifetime = 2.1
+ranged_attack_range = 230.0
+ranged_attack_min_range = 90.0
+ranged_attack_cooldown = 2.8
+melee_attack_cooldown = 1.05
+ranged_windup_time = 0.42
+ranged_recover_time = 0.34
+projectile_explode_animation = "pot enemy projectile hit"
+projectile_splash_radius = 34.0
+projectile_splash_damage = 1
+one_projectile_at_a_time = true
+projectile_fx_animation = "pot enemy projectile"
+projectile_custom_prep = "pot enemy attack 2"
+idle_animation = "pot enemy idle"
+walk_animation = "pot enemy walk"
+attack_animation = "pot enemy attack 2"
+hurt_animation = "pot enemy hurt"
+death_animation = "pot enemy death"

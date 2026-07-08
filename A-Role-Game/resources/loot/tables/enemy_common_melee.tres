@@ -1,0 +1,30 @@
+[gd_resource type="Resource" format=3 uid="uid://o7nh4qk3gol0"]
+
+[ext_resource type="Script" uid="uid://72wyk37rp3am" path="res://scripts/loot/loot_table.gd" id="1_table_script"]
+[ext_resource type="Script" uid="uid://c6ys15s4ogahe" path="res://scripts/loot/loot_entry.gd" id="2_entry_script"]
+
+[sub_resource type="Resource" id="LootEntry_wood"]
+script = ExtResource("2_entry_script")
+item_id = "wood"
+chance = 0.6
+weight = 1.2
+max_quantity = 2
+
+[sub_resource type="Resource" id="LootEntry_bone"]
+script = ExtResource("2_entry_script")
+item_id = "animal_bone"
+chance = 0.35
+weight = 0.8
+
+[sub_resource type="Resource" id="LootEntry_stone"]
+script = ExtResource("2_entry_script")
+item_id = "stone"
+chance = 0.4
+max_quantity = 2
+
+[resource]
+script = ExtResource("1_table_script")
+table_id = "enemy_common_melee"
+entries = Array[ExtResource("2_entry_script")]([SubResource("LootEntry_wood"), SubResource("LootEntry_bone"), SubResource("LootEntry_stone")])
+rolls_min = 1
+rolls_max = 2

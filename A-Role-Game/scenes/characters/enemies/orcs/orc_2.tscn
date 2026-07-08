@@ -1,17 +1,20 @@
-[gd_scene format=3 uid="uid://clavdcl52xd2l"]
+[gd_scene format=3]
 
-[ext_resource type="Texture2D" uid="uid://8qejrmgdjaa2" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-atk1 with fx.png" id="1_v1bpt"]
-[ext_resource type="Texture2D" uid="uid://p6u7f4bc81kf" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-atk2-ending spin with fx.png" id="2_kkcsp"]
-[ext_resource type="Texture2D" uid="uid://xx2xd5t70um6" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-death.png" id="2_oe0xo"]
-[ext_resource type="Texture2D" uid="uid://coesi8d6xqx2q" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-atk2-prep with fx.png" id="3_kffdk"]
-[ext_resource type="Texture2D" uid="uid://drsj02te8yc5d" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-hurt.png" id="3_n04jy"]
-[ext_resource type="Texture2D" uid="uid://bvehtg74rcqkb" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-atk2 - loop with fx.png" id="4_iovfq"]
-[ext_resource type="Texture2D" uid="uid://bofbb11omgx1h" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-idle.png" id="4_kkcsp"]
-[ext_resource type="Texture2D" uid="uid://dglbv1bn8fj2i" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-idle to walk transition.png" id="5_kffdk"]
-[ext_resource type="Texture2D" uid="uid://c0loyvojo8e5i" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-walk.png" id="6_iovfq"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-atk1 with fx.png" id="1_v1bpt"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-atk2-ending spin with fx.png" id="2_kkcsp"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-death.png" id="2_oe0xo"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-atk2-prep with fx.png" id="3_kffdk"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-hurt.png" id="3_n04jy"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-atk2 - loop with fx.png" id="4_iovfq"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-idle.png" id="4_kkcsp"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-idle to walk transition.png" id="5_kffdk"]
+[ext_resource type="Texture2D" path="res://assets/Characters/Enemies/orc warrior/orc1/orc melee - anims-walk.png" id="6_iovfq"]
 [ext_resource type="PackedScene" path="res://components/attack/attack_component.tscn" id="10_h82du"]
+[ext_resource type="Script" path="res://components/attack/attack_component.gd" id="11_3gwdi"]
 [ext_resource type="PackedScene" path="res://components/health/health_component.tscn" id="11_qgd51"]
-[ext_resource type="PackedScene" uid="uid://dwvgxexymy6is" path="res://components/enemies/enemyAI.tscn" id="12_08dh3"]
+[ext_resource type="PackedScene" path="res://components/enemies/enemyAI.tscn" id="12_08dh3"]
+[ext_resource type="Script" path="res://components/health/health_component.gd" id="13_775ob"]
+[ext_resource type="Script" path="res://scripts/components/enemyAI.gd" id="15_tvvn0"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_h82du"]
 atlas = ExtResource("1_v1bpt")
@@ -596,20 +599,29 @@ frame_progress = 0.4840402
 position = Vector2(0, 1)
 shape = SubResource("CapsuleShape2D_wodrh")
 
-[node name="AttackComponent" parent="." unique_id=902689918 node_paths=PackedStringArray("hitbox") instance=ExtResource("10_h82du")]
+[node name="AttackComponent" type="Node" parent="." unique_id=902689918 node_paths=PackedStringArray("hitbox") instance=ExtResource("10_h82du")]
+script = ExtResource("11_3gwdi")
 hitbox = NodePath("../hitbox")
+attack_damage = 2
 
-[node name="HealthComponent" parent="." unique_id=1251344618 instance=ExtResource("11_qgd51")]
-start_hp = 10
+[node name="HealthComponent" type="Node" parent="." unique_id=1251344618 instance=ExtResource("11_qgd51")]
+script = ExtResource("13_775ob")
+max_hp = 80
+start_hp = 80
 
-[node name="enemyAI" parent="." unique_id=836135547 node_paths=PackedStringArray("sprite") instance=ExtResource("12_08dh3")]
+[node name="enemyAI" type="Node" parent="." unique_id=836135547 node_paths=PackedStringArray("sprite") instance=ExtResource("12_08dh3")]
+script = ExtResource("15_tvvn0")
 sprite = NodePath("../orc 2 animation")
 special_attack_enabled = true
-special_attack_chance = 1.0
+special_attack_chance = 0.42
 special_prep_animation = "orc 2 attack 2 prep spin"
 special_spin_animation = "orc 2 attack 2 spin"
 special_end_animation = "orc 2 attack 2 ending spin"
+special_prep_duration = 0.45
+special_spin_duration = 0.95
+special_end_duration = 0.28
 hitbox_spin_path = NodePath("../hitbox_spin")
+spin_attack_damage = 3
 idle_animation = "orc 2 idle"
 walk_animation = "orc 2 walk"
 attack_animation = "orc 2 attack"

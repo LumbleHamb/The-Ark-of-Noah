@@ -1,0 +1,30 @@
+[gd_resource type="Resource" format=3 uid="uid://p2gjndrtam0l"]
+
+[ext_resource type="Script" uid="uid://72wyk37rp3am" path="res://scripts/loot/loot_table.gd" id="1_table_script"]
+[ext_resource type="Script" uid="uid://c6ys15s4ogahe" path="res://scripts/loot/loot_entry.gd" id="2_entry_script"]
+
+[sub_resource type="Resource" id="LootEntry_emerald"]
+script = ExtResource("2_entry_script")
+item_id = "emerald"
+chance = 0.08
+weight = 0.6
+rare_tier = 2
+
+[sub_resource type="Resource" id="LootEntry_ruby"]
+script = ExtResource("2_entry_script")
+item_id = "ruby"
+chance = 0.07
+weight = 0.55
+rare_tier = 2
+
+[sub_resource type="Resource" id="LootEntry_sapphire"]
+script = ExtResource("2_entry_script")
+item_id = "sapphire"
+chance = 0.07
+weight = 0.55
+rare_tier = 2
+
+[resource]
+script = ExtResource("1_table_script")
+table_id = "enemy_rare_gems"
+entries = Array[ExtResource("2_entry_script")]([SubResource("LootEntry_emerald"), SubResource("LootEntry_ruby"), SubResource("LootEntry_sapphire")])

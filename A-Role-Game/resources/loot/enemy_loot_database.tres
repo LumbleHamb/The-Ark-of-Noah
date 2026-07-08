@@ -1,0 +1,88 @@
+[gd_resource type="Resource" format=3 uid="uid://c8tq4qh25j1u7"]
+
+[ext_resource type="Script" uid="uid://b8xwma514f062" path="res://scripts/loot/enemy_loot_database.gd" id="1_db_script"]
+[ext_resource type="Script" uid="uid://bno5gwalxb6ip" path="res://scripts/loot/enemy_loot_entry.gd" id="2_entry_script"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/goblin.tscn" id="3_gob"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/orcs/orc_1.tscn" id="4_orc1"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/orcs/orc_2.tscn" id="5_orc2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/orcs/orc_3.tscn" id="6_orc3"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/orcs/orc_mage_1.tscn" id="7_mage1"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/orcs/orc_mage_2.tscn" id="8_mage2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/orcs/crystal_orc.tscn" id="9_crys"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/moose_beast.tscn" id="10_m1"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/moose_beast_2.tscn" id="11_m2"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/moose_beast_3.tscn" id="12_m3"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/pot_enemy.tscn" id="13_pot"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/stone_golem.tscn" id="14_sg1"]
+[ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/stone_golem_2.tscn" id="15_sg2"]
+[ext_resource type="EnemyLootConfig" path="res://resources/loot/configs/enemy_default_config.tres" id="16_cfg_default"]
+[ext_resource type="EnemyLootConfig" path="res://resources/loot/configs/enemy_caves_heavy_config.tres" id="17_cfg_caves"]
+
+[sub_resource type="Resource" id="EnemyLootEntry_gob"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("3_gob")
+loot_config = ExtResource("16_cfg_default")
+
+[sub_resource type="Resource" id="EnemyLootEntry_orc1"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("4_orc1")
+loot_config = ExtResource("16_cfg_default")
+
+[sub_resource type="Resource" id="EnemyLootEntry_orc2"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("5_orc2")
+loot_config = ExtResource("16_cfg_default")
+
+[sub_resource type="Resource" id="EnemyLootEntry_orc3"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("6_orc3")
+loot_config = ExtResource("16_cfg_default")
+
+[sub_resource type="Resource" id="EnemyLootEntry_mage1"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("7_mage1")
+loot_config = ExtResource("16_cfg_default")
+
+[sub_resource type="Resource" id="EnemyLootEntry_mage2"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("8_mage2")
+loot_config = ExtResource("16_cfg_default")
+
+[sub_resource type="Resource" id="EnemyLootEntry_crys"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("9_crys")
+loot_config = ExtResource("17_cfg_caves")
+
+[sub_resource type="Resource" id="EnemyLootEntry_m1"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("10_m1")
+loot_config = ExtResource("16_cfg_default")
+
+[sub_resource type="Resource" id="EnemyLootEntry_m2"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("11_m2")
+loot_config = ExtResource("16_cfg_default")
+
+[sub_resource type="Resource" id="EnemyLootEntry_m3"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("12_m3")
+loot_config = ExtResource("16_cfg_default")
+
+[sub_resource type="Resource" id="EnemyLootEntry_pot"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("13_pot")
+loot_config = ExtResource("16_cfg_default")
+
+[sub_resource type="Resource" id="EnemyLootEntry_sg1"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("14_sg1")
+loot_config = ExtResource("17_cfg_caves")
+
+[sub_resource type="Resource" id="EnemyLootEntry_sg2"]
+script = ExtResource("2_entry_script")
+enemy_scene = ExtResource("15_sg2")
+loot_config = ExtResource("17_cfg_caves")
+
+[resource]
+script = ExtResource("1_db_script")
+entries = Array[ExtResource("2_entry_script")]([SubResource("EnemyLootEntry_gob"), SubResource("EnemyLootEntry_orc1"), SubResource("EnemyLootEntry_orc2"), SubResource("EnemyLootEntry_orc3"), SubResource("EnemyLootEntry_mage1"), SubResource("EnemyLootEntry_mage2"), SubResource("EnemyLootEntry_crys"), SubResource("EnemyLootEntry_m1"), SubResource("EnemyLootEntry_m2"), SubResource("EnemyLootEntry_m3"), SubResource("EnemyLootEntry_pot"), SubResource("EnemyLootEntry_sg1"), SubResource("EnemyLootEntry_sg2")])

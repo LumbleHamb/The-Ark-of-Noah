@@ -31,13 +31,10 @@ default_bus_layout="res://resources/audio/default_bus_layout.tres"
 save_manager="*res://scripts/world/save_manager.gd"
 virtual_joystick="*res://scripts/ui/virtual_joystick.gd"
 scene_transition="*res://scripts/autoload/scene_transition.gd"
-WeatherManager="*res://scripts/world/weather_manager.gd"
-ChestUI="*res://scenes/ui/chest_ui.tscn"
-InventoryUI="*res://scenes/ui/inventory_window.tscn"
-game_stats="*res://scripts/world/game_stats.gd"
-ItemRegistry="*res://scripts/items/item_registry.gd"
 AudioManager="*res://scripts/audio/audio_manager.gd"
 BreadcrumbManager="*res://scripts/world/breadcrumb_manager.gd"
+game_stats="*res://scripts/world/game_stats.gd"
+ItemRegistry="*res://scripts/items/item_registry.gd"
 
 [display]
 
@@ -122,6 +119,7 @@ roll={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":67,"key_label":0,"unicode":99,"location":0,"echo":false,"script":null)
 ]
 }
+bow="{\"deadzone\":0.2,\"events\":[Object(InputEventKey,\"resource_local_to_scene\":false,\"resource_name\":\"\",\"device\":-1,\"window_id\":0,\"alt_pressed\":false,\"shift_pressed\":false,\"ctrl_pressed\":false,\"meta_pressed\":false,\"pressed\":false,\"keycode\":0,\"physical_keycode\":66,\"key_label\":0,\"unicode\":98,\"location\":0,\"echo\":false,\"script\":null)]}"
 
 [physics]
 

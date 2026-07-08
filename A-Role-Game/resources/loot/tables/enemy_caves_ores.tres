@@ -1,0 +1,32 @@
+[gd_resource type="Resource" format=3 uid="uid://ct0vlgt0l8dnr"]
+
+[ext_resource type="Script" uid="uid://72wyk37rp3am" path="res://scripts/loot/loot_table.gd" id="1_table_script"]
+[ext_resource type="Script" uid="uid://c6ys15s4ogahe" path="res://scripts/loot/loot_entry.gd" id="2_entry_script"]
+
+[sub_resource type="Resource" id="LootEntry_iron"]
+script = ExtResource("2_entry_script")
+item_id = "iron_ore"
+chance = 0.55
+weight = 1.2
+max_quantity = 3
+
+[sub_resource type="Resource" id="LootEntry_copper"]
+script = ExtResource("2_entry_script")
+item_id = "copper_ore"
+chance = 0.65
+weight = 1.4
+max_quantity = 3
+
+[sub_resource type="Resource" id="LootEntry_gold"]
+script = ExtResource("2_entry_script")
+item_id = "gold_ore"
+chance = 0.25
+weight = 0.7
+max_quantity = 2
+
+[resource]
+script = ExtResource("1_table_script")
+table_id = "enemy_caves_ores"
+entries = Array[ExtResource("2_entry_script")]([SubResource("LootEntry_iron"), SubResource("LootEntry_copper"), SubResource("LootEntry_gold")])
+rolls_min = 1
+rolls_max = 2
