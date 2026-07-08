@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://dgbmsnfwce6sr"]
+
+[ext_resource type="PackedScene" uid="uid://dnws63ivuqshv" path="res://scenes/player/player.tscn" id="1_dphjl"]
+
+[node name="world" type="Node2D" unique_id=1775208307]
+
+[node name="player" parent="." unique_id=520032644 instance=ExtResource("1_dphjl")]
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="player" unique_id=1800210885]
+remote_path = NodePath("..")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=2116945606]
+zoom = Vector2(3, 3)
+position_smoothing_enabled = true
