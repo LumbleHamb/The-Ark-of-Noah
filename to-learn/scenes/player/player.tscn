@@ -21,6 +21,294 @@ tracks/0/keys = {
 "values": [0]
 }
 
+[sub_resource type="Animation" id="Animation_8ydkj"]
+resource_name = "RunEast"
+length = 0.8
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [117, 118, 119, 120, 121, 122, 123, 124]
+}
+
+[sub_resource type="Animation" id="Animation_3j4b4"]
+resource_name = "RunNorth"
+length = 0.8
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [153, 154, 155, 156, 157, 158, 159, 160]
+}
+
+[sub_resource type="Animation" id="Animation_yj68g"]
+resource_name = "RunNortheast"
+length = 0.8
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [135, 136, 137, 138, 139, 140, 141, 142]
+}
+
+[sub_resource type="Animation" id="Animation_ioxgp"]
+resource_name = "RunNorthwest"
+length = 0.8
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [171, 172, 173, 174, 175, 176, 177, 178]
+}
+
+[sub_resource type="Animation" id="Animation_uf5tr"]
+resource_name = "RunSouth"
+length = 0.8
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [81, 82, 83, 84, 85, 86, 87, 88]
+}
+
+[sub_resource type="Animation" id="Animation_lgqa7"]
+resource_name = "RunSoutheast"
+length = 0.8
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [99, 100, 101, 102, 103, 104, 105, 106]
+}
+
+[sub_resource type="Animation" id="Animation_cnsyf"]
+resource_name = "RunSouthwest"
+length = 0.8
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [207, 208, 209, 210, 211, 212, 213, 214]
+}
+
+[sub_resource type="Animation" id="Animation_007i1"]
+resource_name = "RunWest"
+length = 0.8
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [189, 190, 191, 192, 193, 194, 195, 196]
+}
+
+[sub_resource type="Animation" id="Animation_j4nxn"]
+resource_name = "SprintEast"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.099999994, 0.19999999, 0.3, 0.39999998, 0.49999997),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [234, 235, 236, 237, 238, 239]
+}
+
+[sub_resource type="Animation" id="Animation_28m0y"]
+resource_name = "SprintNorth"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.099999994, 0.19999999, 0.3, 0.39999998, 0.49999997),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [252, 253, 254, 255, 256, 257]
+}
+
+[sub_resource type="Animation" id="Animation_uniwh"]
+resource_name = "SprintNortheast"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.099999994, 0.19999999, 0.3, 0.39999998, 0.49999997),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [243, 244, 245, 246, 247, 248]
+}
+
+[sub_resource type="Animation" id="Animation_iqsei"]
+resource_name = "SprintNorthwest"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.099999994, 0.19999999, 0.3, 0.39999998, 0.49999997),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [261, 262, 263, 264, 265, 266]
+}
+
+[sub_resource type="Animation" id="Animation_6cv16"]
+resource_name = "SprintSouth"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.099999994, 0.19999999, 0.3, 0.39999998, 0.49999997),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [216, 217, 218, 219, 220, 221]
+}
+
+[sub_resource type="Animation" id="Animation_tffgl"]
+resource_name = "SprintSoutheast"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.099999994, 0.19999999, 0.3, 0.39999998, 0.49999997),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [225, 226, 227, 228, 229, 230]
+}
+
+[sub_resource type="Animation" id="Animation_pk8ii"]
+resource_name = "SprintSouthwest"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.099999994, 0.19999999, 0.3, 0.39999998, 0.49999997),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [279, 280, 281, 282, 283, 284]
+}
+
+[sub_resource type="Animation" id="Animation_5mf0n"]
+resource_name = "SprintWest"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.099999994, 0.19999999, 0.3, 0.39999998, 0.49999997),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [270, 271, 272, 273, 274, 275]
+}
+
 [sub_resource type="Animation" id="Animation_dovo2"]
 resource_name = "WalkEast"
 length = 0.9
@@ -91,6 +379,142 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [45, 46, 47, 48, 49, 50, 51, 52, 53]
+}
+
+[sub_resource type="Animation" id="Animation_je7p5"]
+resource_name = "WalkRunTransEast"
+length = 0.19999999999999998
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [108, 109]
+}
+
+[sub_resource type="Animation" id="Animation_fm80t"]
+resource_name = "WalkRunTransNorth"
+length = 0.19999999999999998
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [144, 145]
+}
+
+[sub_resource type="Animation" id="Animation_gx1jg"]
+resource_name = "WalkRunTransNortheast"
+length = 0.19999999999999998
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [126, 127]
+}
+
+[sub_resource type="Animation" id="Animation_ugbui"]
+resource_name = "WalkRunTransNorthwest"
+length = 0.19999999999999998
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [162, 163]
+}
+
+[sub_resource type="Animation" id="Animation_h17s1"]
+resource_name = "WalkRunTransSouth"
+length = 0.19999999999999998
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [72, 73]
+}
+
+[sub_resource type="Animation" id="Animation_fcs02"]
+resource_name = "WalkRunTransSoutheast"
+length = 0.19999999999999998
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [90, 91]
+}
+
+[sub_resource type="Animation" id="Animation_kvlxm"]
+resource_name = "WalkRunTransSouthwest"
+length = 0.19999999999999998
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [198, 199]
+}
+
+[sub_resource type="Animation" id="Animation_myrg7"]
+resource_name = "WalkRunTransWest"
+length = 0.19999999999999998
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [180, 181]
 }
 
 [sub_resource type="Animation" id="Animation_75vfm"]
@@ -168,10 +592,34 @@ tracks/0/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_gmlin"]
 _data = {
 &"RESET": SubResource("Animation_8afob"),
+&"RunEast": SubResource("Animation_8ydkj"),
+&"RunNorth": SubResource("Animation_3j4b4"),
+&"RunNortheast": SubResource("Animation_yj68g"),
+&"RunNorthwest": SubResource("Animation_ioxgp"),
+&"RunSouth": SubResource("Animation_uf5tr"),
+&"RunSoutheast": SubResource("Animation_lgqa7"),
+&"RunSouthwest": SubResource("Animation_cnsyf"),
+&"RunWest": SubResource("Animation_007i1"),
+&"SprintEast": SubResource("Animation_j4nxn"),
+&"SprintNorth": SubResource("Animation_28m0y"),
+&"SprintNortheast": SubResource("Animation_uniwh"),
+&"SprintNorthwest": SubResource("Animation_iqsei"),
+&"SprintSouth": SubResource("Animation_6cv16"),
+&"SprintSoutheast": SubResource("Animation_tffgl"),
+&"SprintSouthwest": SubResource("Animation_pk8ii"),
+&"SprintWest": SubResource("Animation_5mf0n"),
 &"WalkEast": SubResource("Animation_dovo2"),
 &"WalkNorth": SubResource("Animation_gmlin"),
 &"WalkNortheast": SubResource("Animation_lvxji"),
 &"WalkNorthwest": SubResource("Animation_p47bc"),
+&"WalkRunTransEast": SubResource("Animation_je7p5"),
+&"WalkRunTransNorth": SubResource("Animation_fm80t"),
+&"WalkRunTransNortheast": SubResource("Animation_gx1jg"),
+&"WalkRunTransNorthwest": SubResource("Animation_ugbui"),
+&"WalkRunTransSouth": SubResource("Animation_h17s1"),
+&"WalkRunTransSoutheast": SubResource("Animation_fcs02"),
+&"WalkRunTransSouthwest": SubResource("Animation_kvlxm"),
+&"WalkRunTransWest": SubResource("Animation_myrg7"),
 &"WalkSouth": SubResource("Animation_75vfm"),
 &"WalkSoutheast": SubResource("Animation_0owmy"),
 &"WalkSouthwest": SubResource("Animation_qek5x"),
