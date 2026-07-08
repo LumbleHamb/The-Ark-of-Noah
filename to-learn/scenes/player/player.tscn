@@ -2,6 +2,9 @@
 
 [ext_resource type="Texture2D" uid="uid://bkljapseod8q7" path="res://assets/player/Char_Movement-Sheet.png" id="1_8afob"]
 [ext_resource type="Script" uid="uid://qmebusqens2t" path="res://scripts/player/player.gd" id="1_dovo2"]
+[ext_resource type="Script" uid="uid://cdtrwtvno6ltl" path="res://scripts/player/walk_state.gd" id="3_gmlin"]
+[ext_resource type="Script" uid="uid://cqyf2l8ps50t2" path="res://scripts/limbo_hsm.gd" id="3_lvxji"]
+[ext_resource type="Script" uid="uid://nojp381lo1pb" path="res://scripts/state_label.gd" id="5_p47bc"]
 
 [sub_resource type="Animation" id="Animation_8afob"]
 length = 0.001
@@ -252,5 +255,20 @@ anim_player = NodePath("../AnimationPlayer")
 parameters/walk/blend_position = Vector2(0, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1829990850]
-visible = false
+position = Vector2(0, -6)
 shape = SubResource("CircleShape2D_8afob")
+
+[node name="LimboHSM" type="LimboHSM" parent="." unique_id=1617207378 node_paths=PackedStringArray("Character")]
+script = ExtResource("3_lvxji")
+Character = NodePath("..")
+
+[node name="WalkState" type="LimboState" parent="LimboHSM" unique_id=1466453704]
+script = ExtResource("3_gmlin")
+
+[node name="StateLabel" type="Label" parent="." unique_id=999061764 node_paths=PackedStringArray("limbo_hsm")]
+offset_left = -20.0
+offset_top = -54.0
+offset_right = 20.0
+offset_bottom = -31.0
+script = ExtResource("5_p47bc")
+limbo_hsm = NodePath("../LimboHSM")
