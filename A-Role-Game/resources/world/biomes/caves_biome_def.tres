@@ -1,4 +1,4 @@
-[gd_resource type="Resource" format=3 uid="uid://d1ilg6vuaokuu"]
+[gd_resource type="Resource" script_class="BiomeDefinition" format=3 uid="uid://d1ilg6vuaokuu"]
 
 [ext_resource type="Script" uid="uid://bwebm0hsnxu0g" path="res://scripts/world/biome_definition.gd" id="1_script"]
 [ext_resource type="Script" uid="uid://b1xn3w0la85fx" path="res://scripts/world/biome_enemy_entry.gd" id="2_entry_script"]

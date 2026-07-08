@@ -1,4 +1,4 @@
-[gd_resource type="Resource" format=3 uid="uid://ct0vlgt0l8dnr"]
+[gd_resource type="Resource" script_class="LootTable" format=3 uid="uid://ct0vlgt0l8dnr"]
 
 [ext_resource type="Script" uid="uid://72wyk37rp3am" path="res://scripts/loot/loot_table.gd" id="1_table_script"]
 [ext_resource type="Script" uid="uid://c6ys15s4ogahe" path="res://scripts/loot/loot_entry.gd" id="2_entry_script"]

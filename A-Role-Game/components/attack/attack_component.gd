@@ -365,6 +365,13 @@ func _on_hitbox_body_entered(body: Node) -> void:
 		)
 
 
+		# Show floating damage number
+		if attack_damage > 0 and get_tree() != null:
+			var world: Node = get_tree().current_scene
+			if world != null:
+				DamageNumber.spawn(attack_damage, body.global_position, world)
+
+
 		return
 
 

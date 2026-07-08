@@ -9,6 +9,14 @@ extends Area2D
 @export var damage: int = 1
 @export var splash_radius: float = 0.0
 @export var splash_damage: int = 0
+
+@export_category("Behavior")
+## How many enemies this projectile can pass through before stopping.
+## 0 = stop on the first enemy hit; 1 = pass through 1 enemy, stop on the 2nd; etc.
+@export var pierce_count: int = 0
+## If true, show an explosion effect when the projectile stops/dies.
+@export var explode_on_hit: bool = false
+## Animation name to play on explosion (only used if explode_on_hit is true).
 @export var explode_animation: String = ""
 
 var direction: Vector2 = Vector2.RIGHT
@@ -16,6 +24,7 @@ var attacker: Node2D = null
 
 var _age: float = 0.0
 var _exploded: bool = false
+var _pierces_left: int = 0
 var _explode_frames: SpriteFrames = null
 
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
@@ -23,19 +32,23 @@ var _explode_frames: SpriteFrames = null
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
+	_pierces_left = pierce_count
 
 func _physics_process(delta: float) -> void:
 	if _exploded:
 		return
 	_age += delta
 	if _age >= lifetime:
-		_explode()
+		_despawn()
+		return
+	if not is_inside_tree():
 		return
 	global_position += direction * speed * delta
 
 func init(dir: Vector2, from: Node2D) -> void:
 	direction = dir.normalized()
 	attacker = from
+	_pierces_left = pierce_count
 
 func set_flight_animation(frames: SpriteFrames, animation_name: String) -> void:
 	if frames == null or animation_name.is_empty() or not frames.has_animation(animation_name):
@@ -70,18 +83,44 @@ func _on_body_entered(body: Node) -> void:
 	if health != null:
 		health.take_damage(damage, attacker)
 		did_hit = true
+		# Show floating damage number
+		if damage > 0 and get_tree() != null:
+			var world: Node = get_tree().current_scene
+			if world != null:
+				DamageNumber.spawn(damage, body.global_position, world)
 	elif body.has_method("hit"):
 		body.hit(attacker, damage)
 		did_hit = true
 
-	if did_hit:
+	if not did_hit:
+		return
+
+	# Piercing: decrement and keep flying if pierces remain
+	_pierces_left -= 1
+	if _pierces_left >= 0:
+		return
+
+	# No more pierces — stop
+	if explode_on_hit:
 		_explode()
+	else:
+		_despawn()
+
+func _despawn() -> void:
+	# Cleanly remove the projectile without explosion effects.
+	if _exploded:
+		return
+	_exploded = true
+	set_deferred("monitoring", false)
+	if collision_shape != null:
+		collision_shape.set_deferred("disabled", true)
+	queue_free()
 
 func _explode() -> void:
 	if _exploded:
 		return
 	_exploded = true
-	monitoring = false
+	set_deferred("monitoring", false)
 	if collision_shape != null:
 		collision_shape.set_deferred("disabled", true)
 	_apply_splash_damage()

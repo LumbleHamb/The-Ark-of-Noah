@@ -82,6 +82,8 @@ enum State {
 @export var projectile_explode_animation: String = ""
 @export var projectile_splash_radius: float = 0.0
 @export var projectile_splash_damage: int = 0
+@export var projectile_explode_on_hit: bool = true
+@export var projectile_pierce_count: int = 0
 @export var one_projectile_at_a_time: bool = false
 
 # Legacy exported fields kept for scene compatibility
@@ -324,7 +326,6 @@ func _process_combat(_delta: float) -> void:
 
 	var facing_dir: Vector2 = to_player.normalized()
 	var ally_avoid: Vector2 = _compute_separation_force()
-	var ring_target: Vector2 = _compute_ring_target(player.global_position)
 
 	if distance <= attack_range + 8.0:
 		entity.velocity = (-facing_dir * push_away_strength) + ally_avoid
@@ -343,7 +344,7 @@ func _process_combat(_delta: float) -> void:
 		if one_projectile_at_a_time and _active_projectile != null and is_instance_valid(_active_projectile):
 			var strafe: Vector2 = Vector2(-facing_dir.y, facing_dir.x)
 			entity.velocity = strafe * (move_speed * 0.55) + ally_avoid
-			update_facing(entity.velocity)
+			update_facing(facing_dir)
 			play_animation(walk_animation)
 			return
 		entity.velocity = ally_avoid
@@ -352,13 +353,14 @@ func _process_combat(_delta: float) -> void:
 		_try_attack(true)
 		return
 
-	var desired_move: Vector2 = (ring_target - entity.global_position).normalized()
+	# Move toward the player (not a fixed ring point) so we enter attack range.
+	# orbit_dir provides the flanking/side-to-side movement.
 	var movement_bias: float = clampf(flanking_bias + _personality.x * 0.2, 0.15, 0.9)
 	var orbit_dir: Vector2 = Vector2(-facing_dir.y, facing_dir.x) * movement_bias
-	var blended: Vector2 = (desired_move * 0.7 + orbit_dir * 0.3).normalized()
+	var blended: Vector2 = (facing_dir * 0.7 + orbit_dir * 0.3).normalized()
 	var speed: float = move_speed * combat_speed_multiplier
 	entity.velocity = blended * speed + ally_avoid
-	update_facing(entity.velocity)
+	update_facing(facing_dir)
 	play_animation(walk_animation)
 
 
@@ -528,6 +530,8 @@ func _fire_projectile() -> void:
 		projectile.lifetime = projectile_lifetime
 		projectile.splash_radius = projectile_splash_radius
 		projectile.splash_damage = projectile_splash_damage
+		projectile.explode_on_hit = projectile_explode_on_hit
+		projectile.pierce_count = projectile_pierce_count
 		projectile.explode_animation = projectile_explode_animation
 		if sprite != null and sprite.sprite_frames != null:
 			if not projectile_fx_animation.is_empty() and sprite.sprite_frames.has_animation(projectile_fx_animation):
@@ -718,9 +722,18 @@ func play_animation(animation_name: String) -> void:
 
 func update_facing(direction: Vector2) -> void:
 	if absf(direction.x) > 0.01:
-		_facing_x_sign = -1 if direction.x < 0.0 else 1
-	if sprite != null and absf(direction.x) > 0.01:
-		sprite.flip_h = direction.x < 0.0
+		var new_sign: int = 1 if direction.x > 0.0 else -1
+		# Hysteresis: once facing a direction, require a stronger X push
+		# in the opposite direction to flip. Prevents oscillation when
+		# velocity X is near-zero (e.g. approaching from above/below).
+		if new_sign != _facing_x_sign:
+			if absf(direction.x) > 0.25:
+				_facing_x_sign = new_sign
+	# Only flip sprite when sign actually differs from current flip state.
+	if sprite != null:
+		var should_flip: bool = _facing_x_sign < 0
+		if sprite.flip_h != should_flip:
+			sprite.flip_h = should_flip
 
 
 func hit(attacker: Node, damage: int) -> void:

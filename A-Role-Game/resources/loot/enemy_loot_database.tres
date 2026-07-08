@@ -1,4 +1,4 @@
-[gd_resource type="Resource" format=3 uid="uid://c8tq4qh25j1u7"]
+[gd_resource type="Resource" script_class="EnemyLootDatabase" format=3 uid="uid://c8tq4qh25j1u7"]
 
 [ext_resource type="Script" uid="uid://b8xwma514f062" path="res://scripts/loot/enemy_loot_database.gd" id="1_db_script"]
 [ext_resource type="Script" uid="uid://bno5gwalxb6ip" path="res://scripts/loot/enemy_loot_entry.gd" id="2_entry_script"]
@@ -9,14 +9,14 @@
 [ext_resource type="PackedScene" path="res://scenes/characters/enemies/orcs/orc_mage_1.tscn" id="7_mage1"]
 [ext_resource type="PackedScene" path="res://scenes/characters/enemies/orcs/orc_mage_2.tscn" id="8_mage2"]
 [ext_resource type="PackedScene" path="res://scenes/characters/enemies/orcs/crystal_orc.tscn" id="9_crys"]
-[ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/moose_beast.tscn" id="10_m1"]
-[ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/moose_beast_2.tscn" id="11_m2"]
+[ext_resource type="PackedScene" uid="uid://cit7e1x50rqur" path="res://scenes/characters/enemies/Creatures/moose_beast.tscn" id="10_m1"]
+[ext_resource type="PackedScene" uid="uid://drouo78ubvnxo" path="res://scenes/characters/enemies/Creatures/moose_beast_2.tscn" id="11_m2"]
 [ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/moose_beast_3.tscn" id="12_m3"]
 [ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/pot_enemy.tscn" id="13_pot"]
 [ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/stone_golem.tscn" id="14_sg1"]
 [ext_resource type="PackedScene" path="res://scenes/characters/enemies/Creatures/stone_golem_2.tscn" id="15_sg2"]
-[ext_resource type="EnemyLootConfig" path="res://resources/loot/configs/enemy_default_config.tres" id="16_cfg_default"]
-[ext_resource type="EnemyLootConfig" path="res://resources/loot/configs/enemy_caves_heavy_config.tres" id="17_cfg_caves"]
+[ext_resource type="Resource" path="res://resources/loot/configs/enemy_default_config.tres" id="16_cfg_default"]
+[ext_resource type="Resource" path="res://resources/loot/configs/enemy_caves_heavy_config.tres" id="17_cfg_caves"]
 
 [sub_resource type="Resource" id="EnemyLootEntry_gob"]
 script = ExtResource("2_entry_script")

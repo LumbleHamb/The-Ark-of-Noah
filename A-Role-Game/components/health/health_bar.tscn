@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ui/Sliders & Bars/Slider01_Box.png" id="1_boxbg"]
+[ext_resource type="Texture2D" path="res://assets/ui/Sliders & Bars/Slider01_Bar05.png" id="2_fillbar"]
+[ext_resource type="Script" path="res://components/health/health_bar.gd" id="3_script"]
+
+[node name="HealthBar" type="CanvasLayer"]
+layer = 128
+script = ExtResource("3_script")
+
+[node name="BoxBg" type="TextureRect" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -140.0
+offset_right = 120.0
+offset_bottom = -108.0
+mouse_filter = 2
+texture = ExtResource("1_boxbg")
+
+[node name="FillBar" type="TextureRect" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -116.0
+offset_top = -136.0
+offset_right = 116.0
+offset_bottom = -112.0
+mouse_filter = 2
+texture = ExtResource("2_fillbar")
